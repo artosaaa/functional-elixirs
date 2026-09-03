@@ -755,6 +755,8 @@ body:has(.drawer[data-open]) .drawer-backdrop { opacity: 1; visibility: visible;
 
 .hero__proof { display: flex; align-items: center; gap: var(--s-3); flex-wrap: wrap; margin-top: var(--s-4); font-size: var(--fs-sm); color: var(--ink-soft); }
 .hero__proof .stars { color: var(--gold); }
+.hero__proof svg { width: 1rem; height: 1rem; color: var(--sage-2); flex: none; vertical-align: -.15em; }
+.hero__proof > span { display: inline-flex; align-items: center; gap: .4em; }
 .hero__proof a { color: var(--ink-soft); }
 
 .deskbar { position: fixed; left: 0; right: 0; top: 0; z-index: 45; background: rgb(251 247 240 / .97);
