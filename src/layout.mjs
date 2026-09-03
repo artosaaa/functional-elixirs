@@ -7,7 +7,7 @@ export const OG_DEFAULT = abs("/assets/img/og-default.svg");
 
 export const jsonld = {
   org: () => ({
-    "@context": "https://schema.org", "@type": "Organization", "@id": abs("/#organization"), name: BRAND.legal, alternateName: BRAND.name, url: SITE_URL, logo: abs("/assets/img/logo.svg"),
+    "@context": "https://schema.org", "@type": "Organization", "@id": abs("/#organization"), name: BRAND.legal, alternateName: BRAND.name, url: SITE_URL, logo: abs("/assets/img/logo.png"),
     email: BRAND.email, foundingDate: String(BRAND.founded), slogan: BRAND.tagline, description: BRAND.positioning,
     address: { "@type": "PostalAddress", addressRegion: BRAND.address.region, addressCountry: BRAND.address.country },
     sameAs: Object.values(BRAND.social), contactPoint: [{ "@type": "ContactPoint", contactType: "customer service", email: BRAND.email, availableLanguage: "English", hoursAvailable: "Mo-Fr 09:00-17:00" }],
@@ -51,7 +51,7 @@ function header() {
   return `<a class="skip" href="#main">Skip to content</a>
 <p class="announce">Free shipping over $${CFG.freeShipOver} · Ships in 1–2 business days · <a href="${HERO_URL}">Honey with Fresh Ginger, 15 oz — $23.99</a></p>
 <header class="header"><div class="wrap header__in">
-  <a class="logo" href="/" aria-label="${BRAND.name} — home">${logoMark({ id: "h" })}</a>
+  <a class="logo" href="/" aria-label="${BRAND.name} — home">${logoMark({ size: 40 })}</a>
   <nav class="nav" aria-label="Primary">${NAV.map((n) => `<a href="${n.href}">${n.label}</a>`).join("")}</nav>
   <div class="header__tools">
     <a class="icon-btn" href="/account/" aria-label="Account">${ICONS.user}</a>
@@ -59,7 +59,7 @@ function header() {
     <button class="icon-btn menu-btn" type="button" data-menu-open aria-label="Open menu" aria-controls="mobile-nav">${ICONS.menu}</button>
   </div></div></header>
 <div class="mobile-nav" id="mobile-nav" aria-hidden="true" role="dialog" aria-label="Menu">
-  <div class="mobile-nav__top"><a class="logo" href="/">${logoMark({ id: "m" })}</a><button class="icon-btn" type="button" data-menu-close aria-label="Close menu">${ICONS.close}</button></div>
+  <div class="mobile-nav__top"><a class="logo" href="/">${logoMark({ size: 40 })}</a><button class="icon-btn" type="button" data-menu-close aria-label="Close menu">${ICONS.close}</button></div>
   <nav aria-label="Mobile">${NAV.map((n) => `<a href="${n.href}">${n.label}</a>`).join("")}<a href="/gift-guide/">Gift guide</a><a href="/account/">Account</a></nav>
   <div class="mobile-nav__foot"><a href="/faq/">FAQ</a><a href="/shipping/">Shipping &amp; delivery</a><a href="/contact/">Contact</a></div>
 </div>`;
@@ -81,7 +81,7 @@ function footer() {
   <div class="footer__news"><div><h2>Notes from the kitchen</h2><p>One letter a month: new batches, recipes, and the occasional early jar. 15% off your first order when you join.</p></div>
     <form class="news-form" data-news-form novalidate><label class="sr-only" for="news-email">Email address</label><input class="input" id="news-email" type="email" name="email" placeholder="you@example.com" autocomplete="email" required><button class="btn btn--on-dark" type="submit">Join</button><p class="small">No spam, ever. Unsubscribe in one tap. <a href="/privacy/">Privacy</a>.</p></form></div>
   <div class="footer__grid">
-    <div class="footer__brand"><a class="logo" href="/">${logoMark({ id: "f" })}</a><p>${BRAND.positioning}</p>
+    <div class="footer__brand"><a class="logo" href="/">${logoMark({ size: 40 })}</a><p>${BRAND.positioning}</p>
       <div class="footer__promise"><div>${ICONS.truck}<span>Free US shipping over $${CFG.freeShipOver} · ships in 1–2 business days</span></div><div>${ICONS.refresh}<span>30-day happiness guarantee — if a jar isn’t for you, we’ll make it right</span></div><div>${ICONS.leaf}<span>Raw honey + fresh ginger · small batches · nothing else</span></div></div></div>
     ${col("Shop", FOOTER.shop)}${col("Functional Elixirs", FOOTER.about)}${col("Help", FOOTER.help)}
   </div>
@@ -104,8 +104,9 @@ export function page({ title, description, path, body, type = "website", image =
 ${noindex ? `<meta name="robots" content="noindex, nofollow">` : `<meta name="robots" content="index, follow, max-image-preview:large">`}
 <meta name="theme-color" content="#F6F0E6">
 <meta name="color-scheme" content="light">
-<link rel="icon" href="/assets/img/favicon.svg" type="image/svg+xml">
-<link rel="apple-touch-icon" href="/assets/img/apple-touch-icon.svg">
+<link rel="icon" href="/assets/img/favicon-32.png" sizes="32x32" type="image/png">
+<link rel="icon" href="/assets/img/favicon-64.png" sizes="64x64" type="image/png">
+<link rel="apple-touch-icon" href="/assets/img/apple-touch-icon.png">
 <link rel="preload" href="/assets/css/site.css" as="style">
 <link rel="stylesheet" href="/assets/css/site.css">
 <meta property="og:type" content="${type === "product" ? "product" : type === "article" ? "article" : "website"}">

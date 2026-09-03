@@ -31,7 +31,7 @@ Deploys anywhere static files go. `vercel.json` is included (clean URLs, immutab
 
 ```
 build.mjs              static renderer (pages → HTML, sitemap, robots, RSS, logo/OG SVGs)
-src/site.mjs           brand config, nav, footer links, icon set, logoMark() — the F·E plaque as vector
+src/site.mjs           brand config, nav, footer links, icon set, logoMark()/logoPlaque()/logoVector()
 src/products.mjs       catalog (7 SKUs), collections, runtime catalog JSON
 src/art.mjs            SVG scene generator: jar on wooden table, cup, ginger, lemon, linen — 4 compositions + OG image
 src/articles.mjs       8 journal pieces (HTML bodies, FAQ schema where useful)
@@ -134,6 +134,29 @@ Optional per-size overrides beat the generic ones: `hg-15-hero.jpg`, `hg-8-front
 - Same table, same light, same white balance across all four so the set looks like one shoot.
 
 Until photos land, the site uses generated SVG scenes of the jar (`src/art.mjs`) — chosen by a three-way design panel and scored against your own jar photos. The rejected alternates are kept in `src/art-candidates/` for reference.
+
+## 6b. The logo
+
+The client's real artwork drives the site. `assets/img/logo.png` is `LOGO-2.jpg` with the white
+surround flood-filled to transparency and trimmed, exported at several sizes:
+
+| File | Used for |
+|---|---|
+| `logo.png` (512) | header, mobile nav, footer, `Organization` JSON-LD |
+| `logo-mark.png` (96) | the plaque **on the jar label** inside every SVG scene |
+| `apple-touch-icon.png` (180), `favicon-64.png`, `favicon-32.png` | icons |
+| `logo-tile.jpg` | opaque navy tile (from `LOGO-3.jpg`) if you need a full-bleed square |
+| `logo-source-LOGO-2.jpg` / `-LOGO-3.jpg` | originals, kept for re-export |
+
+To change the logo, replace `logo.png` (and `logo-mark.png`) — nothing else needs editing;
+`logoMark()` and `logoPlaque()` in `src/site.mjs` point at those paths.
+
+`logoVector()` is a hand-built vector copy of the plaque used **only** by the OG share images,
+which are standalone `.svg` files and cannot reference external assets.
+
+**Note:** the two files you sent differ — `LOGO-2` reads **ELIXIRS**, `LOGO-3` reads **ÉLIXIRS**.
+The site uses `LOGO-2` (no accent), matching the printed jar label and your brand documents.
+Say the word if the accented version is the correct one.
 
 ## 7. Facts to confirm before launch
 

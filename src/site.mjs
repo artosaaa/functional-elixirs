@@ -46,10 +46,23 @@ export const esc = (s) => String(s ?? "").replace(/[&<>"']/g, (c) => ({ "&": "&a
 export const money = (n) => `$${Number(n).toFixed(2)}`;
 export const abs = (p) => SITE_URL + p;
 
-/* ---------- The F·E plaque mark, recreated as vector from the printed label ----------
-   Navy plaque with notched corners, double gold rule, Roman-cap F and E, olive branch, wordmark.
-   If you have the original vector file, drop it at assets/img/logo.svg and set LOGO_FILE=true. */
-export function logoMark({ size = 32, wordmark = true, id = "fe" } = {}) {
+/* ---------- The real F·E plaque mark ----------
+   assets/img/logo.png is the client's artwork with the white surround keyed out
+   (built from LOGO-2.jpg). logoMark() is for HTML; logoPlaque() drops the same
+   art inside an SVG scene; logoVector() is a self-contained vector fallback used
+   only by the standalone OG image, which cannot reference external files. */
+export const LOGO_SRC = "/assets/img/logo.png";
+export const LOGO_MARK_SRC = "/assets/img/logo-mark.png";
+
+export function logoMark({ size = 40, wordmark = true } = {}) {
+  const mark = `<img class="fe-mark" src="${LOGO_SRC}" width="${size}" height="${size}" alt="" decoding="async">`;
+  return wordmark ? `${mark}<span class="logo__word"><span>Functional</span><span>Elixirs</span></span>` : mark;
+}
+/* the plaque inside an SVG scene (jar label) — one cached request, not a data URI */
+export const logoPlaque = ({ x, y, size }) => `<image href="${LOGO_MARK_SRC}" x="${x}" y="${y}" width="${size}" height="${size}" preserveAspectRatio="xMidYMid meet"/>`;
+
+/* self-contained vector plaque — OG images are standalone .svg files and must embed everything */
+export function logoVector({ size = 32, id = "fe" } = {}) {
   const plaque = "M16 0H184A16 16 0 0 0 200 16V184A16 16 0 0 0 184 200H16A16 16 0 0 0 0 184V16A16 16 0 0 0 16 0Z";
   const leaf = (x, y, r, l) => `<ellipse cx="${x}" cy="${y}" rx="${l}" ry="${l * .32}" transform="rotate(${r} ${x} ${y})" fill="#D4AC54"/>`;
   const branch = `<g>
@@ -57,7 +70,7 @@ export function logoMark({ size = 32, wordmark = true, id = "fe" } = {}) {
     ${leaf(66, 138, -62, 12)}${leaf(88, 126, 8, 12)}${leaf(84, 112, -66, 12)}${leaf(108, 104, 4, 12)}${leaf(104, 90, -68, 12)}${leaf(128, 82, 0, 12)}${leaf(124, 68, -70, 12)}${leaf(148, 60, -4, 12)}${leaf(146, 46, -72, 11)}${leaf(166, 40, -10, 10)}
     <circle cx="70" cy="152" r="3.2" fill="#D4AC54"/><circle cx="98" cy="118" r="2.8" fill="#D4AC54"/><circle cx="118" cy="98" r="2.6" fill="#D4AC54"/><circle cx="142" cy="72" r="2.6" fill="#D4AC54"/><circle cx="160" cy="52" r="2.4" fill="#D4AC54"/>
   </g>`;
-  const mark = `<svg viewBox="0 0 200 200" width="${size}" height="${size}" role="img" aria-labelledby="${id}-t" class="fe-mark"><title id="${id}-t">Functional Elixirs</title>
+  return `<svg viewBox="0 0 200 200" width="${size}" height="${size}" role="img" aria-labelledby="${id}-t"><title id="${id}-t">Functional Elixirs</title>
     <path d="${plaque}" fill="#1D2B33"/>
     <path d="${plaque}" fill="none" stroke="#D4AC54" stroke-width="2.4" transform="translate(100 100) scale(.94) translate(-100 -100)"/>
     <path d="${plaque}" fill="none" stroke="#D4AC54" stroke-width="1.2" transform="translate(100 100) scale(.895) translate(-100 -100)"/>
@@ -67,7 +80,6 @@ export function logoMark({ size = 32, wordmark = true, id = "fe" } = {}) {
     <text x="100" y="173" text-anchor="middle" font-family="Iowan Old Style, Palatino Linotype, Palatino, Georgia, serif" font-size="17.5" letter-spacing="1.6" fill="#D4AC54">FUNCTIONAL</text>
     <text x="100" y="191" text-anchor="middle" font-family="Iowan Old Style, Palatino Linotype, Palatino, Georgia, serif" font-size="17.5" letter-spacing="2.4" fill="#D4AC54">ELIXIRS</text>
   </svg>`;
-  return wordmark ? `${mark}<span class="logo__word"><span>Functional</span><span>Elixirs</span></span>` : mark;
 }
 
 /* Inline icon set — stroke icons, currentColor, 24 grid */

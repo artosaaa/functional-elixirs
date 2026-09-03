@@ -5,7 +5,7 @@
    blonde-wood table, long soft light from the upper left, film grain.
    Same contract as src/art.mjs: PHOTOS, REAL, art(), ogImage(), altFor(), photo().
    ========================================================================== */
-import { esc, logoMark } from "./site.mjs";
+import { esc, logoPlaque, logoVector } from "./site.mjs";
 
 /* ------------------------------------------------------------------
    REAL PHOTOS — just drop image files into  assets/img/product/
@@ -126,7 +126,7 @@ function label(id, p) {
     const x = r1(150 * Math.sin(t));
     stripes += `<path d="M${x} 30V280" stroke="#EFE0A6" stroke-width="${r1(8.6 * Math.cos(t))}"/>`;
   }
-  const mark = logoMark({ size: 84, wordmark: false, id: `${id}-lm` }).replace("<svg ", `<svg x="-42" y="64" `);
+  const mark = logoPlaque({ x: -42, y: 64, size: 84 });
   const body = isDipper
     ? `<text x="0" y="198" text-anchor="middle" font-family="${SERIF}" font-size="25" letter-spacing="4" fill="#B8903E" font-weight="700" stroke="#B8903E" stroke-width=".8">DIPPER</text><text x="0" y="226" text-anchor="middle" font-family="${SCRIPT}" font-size="10.5" fill="#6B5A3E" font-style="italic">Crafted from family tradition</text><text x="0" y="240" text-anchor="middle" font-family="${SANS}" font-size="7.5" letter-spacing="1" fill="#6B5A3E">${esc(p?.size || "6 in")}</text>`
     : `<text x="0" y="176" text-anchor="middle" font-family="${SERIF}" font-size="27" letter-spacing="3.4" fill="#B8903E" font-weight="700" stroke="#B8903E" stroke-width=".8">HONEY</text>
@@ -301,7 +301,7 @@ export function art(variant, p, { alt, anim = false, className = "", slot } = {}
 export function ogImage(p) {
   const id = "og"; const T = 470;
   return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630" width="1200" height="630">${defs(id, p)}<rect width="1200" height="630" fill="url(#${id}-wall)"/><rect width="1200" height="630" fill="url(#${id}-light)"/>${table(id, T, 630)}${ground(id, 900, 600, 300, .95, "")}${jar(id, p, 900, 600, .95)}${ginger(id, 560, 545, .75, -10)}
-    <g transform="translate(70 120)">${logoMark({ size: 120, wordmark: false, id: "og-lm" })}<text x="0" y="200" font-family="${SERIF}" font-size="44" letter-spacing="6" fill="#1D2B33">FUNCTIONAL ELIXIRS</text><text x="0" y="260" font-family="${SERIF}" font-size="30" fill="#5C534B">${esc(p ? p.name + " · " + p.size : "Nature’s Daily Elixir.")}</text><text x="0" y="310" font-family="${SANS}" font-size="20" letter-spacing="3" fill="#7F5E1C">RAW HONEY · FRESH GINGER · NOTHING ELSE</text></g>${finish(id, 1200, 630)}</svg>`;
+    <g transform="translate(70 120)">${logoVector({ size: 120, id: "og-lm" })}<text x="0" y="200" font-family="${SERIF}" font-size="44" letter-spacing="6" fill="#1D2B33">FUNCTIONAL ELIXIRS</text><text x="0" y="260" font-family="${SERIF}" font-size="30" fill="#5C534B">${esc(p ? p.name + " · " + p.size : "Nature’s Daily Elixir.")}</text><text x="0" y="310" font-family="${SANS}" font-size="20" letter-spacing="3" fill="#7F5E1C">RAW HONEY · FRESH GINGER · NOTHING ELSE</text></g>${finish(id, 1200, 630)}</svg>`;
 }
 
 export const altFor = (p, variant) => ({

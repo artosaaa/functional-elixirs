@@ -3,7 +3,7 @@
    Usage: SITE_URL=https://your-domain.com node build.mjs */
 import { mkdirSync, writeFileSync, rmSync, existsSync, readdirSync, statSync } from "node:fs";
 import { dirname, join } from "node:path";
-import { SITE_URL, logoMark, BRAND } from "./src/site.mjs";
+import { SITE_URL, BRAND } from "./src/site.mjs";
 import { PRODUCTS, HERO } from "./src/products.mjs";
 import { ARTICLES } from "./src/articles.mjs";
 import { ogImage } from "./src/art.mjs";
@@ -28,10 +28,8 @@ for (const { path, html } of pages) {
 }
 
 // Brand assets
-const standalone = (svg) => svg.replace("<svg ", '<svg xmlns="http://www.w3.org/2000/svg" ');
-out("assets/img/logo.svg", standalone(logoMark({ size: 512, wordmark: false, id: "logo" })));
-out("assets/img/favicon.svg", standalone(logoMark({ size: 64, wordmark: false, id: "fav" })));
-out("assets/img/apple-touch-icon.svg", standalone(logoMark({ size: 180, wordmark: false, id: "ati" })));
+/* logo.png / logo-mark.png / favicon-*.png / apple-touch-icon.png are the client's real
+   artwork, committed under assets/img — not generated here. */
 out("assets/img/og-default.svg", ogImage(null));
 for (const p of PRODUCTS) out(`assets/img/og-${p.slug}.svg`, ogImage(p));
 

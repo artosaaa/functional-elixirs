@@ -662,7 +662,8 @@ body:has(.drawer[data-open]) .drawer-backdrop { opacity: 1; visibility: visible;
 
 /* ---------- 17. Brand mark ---------- */
 .logo { gap: .65rem; text-transform: none; letter-spacing: 0; }
-.logo .fe-mark { width: 2.25rem; height: 2.25rem; flex: none; border-radius: 3px; }
+.logo .fe-mark { width: 2.5rem; height: 2.5rem; flex: none; object-fit: contain; }
+.footer .logo .fe-mark, .mobile-nav .logo .fe-mark { filter: drop-shadow(0 0 1px rgb(212 172 84 / .5)); }
 .logo__word { display: grid; line-height: 1; font-family: var(--serif); text-transform: uppercase; letter-spacing: .16em; font-size: .78rem; color: var(--navy-2); }
 .logo__word span:last-child { font-size: .6rem; letter-spacing: .32em; color: var(--gold); margin-top: .22rem; }
 .footer .logo__word { color: var(--cream); } .footer .logo__word span:last-child { color: var(--gold-2); }
