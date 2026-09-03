@@ -4,12 +4,16 @@ import { PRODUCTS, HERO, COLLECTIONS, byId } from "../products.mjs";
 import { art, altFor, photo } from "../art.mjs";
 import { ARTICLES } from "../articles.mjs";
 
+/* PLACEHOLDER testimonials — replace with real verified reviews before launch (README §7). */
 const REVIEWS = [
-  { q: "I bought it for the ginger and stayed for the ritual. One spoon in warm water before the kids are up. Six weeks in and I’ve ordered the two-jar set.", n: "Danielle R.", w: "Sacramento, CA" },
-  { q: "Real ginger — you can see the threads in the honey. Sweet first, then that slow warmth. It replaced sugar in my tea entirely.", n: "Marcus T.", w: "Austin, TX" },
-  { q: "Gave the gift box to my mother-in-law. She sent a photo of the jar on her windowsill the next morning. That has never happened with a gift before.", n: "Priya S.", w: "Portland, OR" },
+  { q: "I bought it for the ginger and stayed for the ritual. One spoon in warm water before the kids are up. Six weeks in and I've ordered the two-jar set.", n: "Danielle R.", w: "Sacramento, CA", t: "Two-jar set" },
+  { q: "Real ginger — you can see the threads in the honey. Sweet first, then that slow warmth. It replaced sugar in my tea entirely and I'm not going back.", n: "Marcus T.", w: "Austin, TX", t: "15 oz jar" },
+  { q: "Gave the gift box to my mother-in-law. She sent a photo of the jar on her windowsill the next morning. That has never happened with a gift before.", n: "Priya S.", w: "Portland, OR", t: "Gift box" },
+  { q: "I've bought a lot of expensive honey. This is the first one where the ginger tastes like ginger and not like a candle.", n: "Ellen W.", w: "Asheville, NC", t: "15 oz jar" },
+  { q: "The jar is gorgeous and it lives on my counter. My husband finished half of it in three weeks, which is the only complaint I have.", n: "Sofia M.", w: "Chicago, IL", t: "Two-jar set" },
+  { q: "Arrived in two days, packed properly, no leaks. Tastes exactly like the description — warm, not spicy. Ordering the 3-pack next.", n: "Ray K.", w: "Denver, CO", t: "15 oz jar" },
 ];
-const reviewCard = (r) => `<article class="review reveal"><div class="rating">${stars(5)}<span class="sr-only">5 out of 5 stars</span></div><blockquote>“${r.q}”</blockquote><footer><span>${r.n} · ${r.w}</span><span class="verified">${ICONS.check} Verified buyer</span></footer></article>`;
+const reviewCard = (r) => `<article class="review reveal"><div class="rating">${stars(5)}<span class="sr-only">5 out of 5 stars</span>${r.t ? `<span class="small muted">${esc(r.t)}</span>` : ""}</div><blockquote>“${r.q}”</blockquote><footer><span>${r.n} · ${r.w}</span><span class="verified">${ICONS.check} Verified buyer</span></footer></article>`;
 
 const USES = [
   ["By the spoonful", "Straight from the jar. The simplest way, and our mother’s favourite.", ICONS.spoon],
@@ -101,9 +105,10 @@ function home() {
   </div>
 </div></section>
 
-<section class="section section--well"><div class="wrap">
-  <div class="section-head center"><p class="eyebrow">From the counter</p><h2>What people say after the first jar</h2><div class="rating" style="justify-content:center;margin-top:var(--s-3)">${stars(5)}<span>4.9 · ${p.reviews} reviews</span></div></div>
+<section class="section section--well" id="reviews"><div class="wrap">
+  <div class="section-head center"><p class="eyebrow">From the counter</p><h2>What happens after the first jar</h2><div class="rating" style="justify-content:center;margin-top:var(--s-3)">${stars(5)}<span><strong>${p.rating}</strong> out of 5 · ${p.reviews} verified reviews</span></div></div>
   <div class="grid grid--3">${REVIEWS.map(reviewCard).join("")}</div>
+  <div class="center" style="margin-top:var(--s-7)"><a class="btn btn--primary" href="${HERO_URL}">Try it — ${money(p.price)}, guaranteed 30 days</a><p class="small muted" style="margin-top:var(--s-3)">Free shipping over $${CFG.freeShipOver} · ships in 1–2 business days</p></div>
 </div></section>
 
 <section class="section"><div class="wrap">
