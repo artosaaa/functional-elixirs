@@ -112,18 +112,28 @@ The checkout already runs the real browser flows where they exist and falls back
 
 ---
 
-## 6. Swapping in real photos of the jar
+## 6. Swapping in real photos — just drop files in a folder
 
-The SVG scenes are placeholders shaped like the final shots. To use real photography:
+**No code changes.** Put your photos in `assets/img/product/` and run `node build.mjs`.
 
-1. **Shoot** — the jar at ~30° off-axis, lid on, label facing camera; wooden table; window light from the side/back (morning or late afternoon); one prop cluster (cup with spoon, a knob of fresh ginger, half a lemon, folded linen) placed *behind and to the side*, never in front of the label. f/2.8–f/4 so the props fall soft. Leave 15 % breathing room around the jar.
-2. **Crop** — hero: **4:5 portrait** (5:6 on desktop), jar's label centre at roughly 45 % from the left and 55 % from the top. Product cards: 4:5. Gallery thumbs: 1:1. Journal/OG: 16:9 and 1200×630.
-3. **Export** — 1600 px wide JPEG q≈72 (or AVIF/WebP + JPEG fallback), name descriptively (`honey-ginger-jar-wooden-table-morning-light.jpg`), drop in `assets/img/`.
-4. **Map** — in `src/art.mjs`, set `PHOTOS["hg-15:hero"] = "/assets/img/…jpg"` (slots are `<productId>:<variant>` — `hero | front | open | cup`). Rebuild. The layout swaps to `<img>` with the same alt text and dimensions, so nothing shifts.
-5. **Make it look "in-scene"** — match colour temperature across all shots (same white balance), keep the same table and light direction across the four gallery variants, and let one prop overlap the jar's base by a few pixels so it sits *on* the table rather than floating.
-6. **Logo** — `assets/img/logo.svg` is a faithful vector recreation of the F·E plaque from the printed label (`assets/img/logo-photo-reference.jpg`). If you have the original artwork, replace that file and the header will pick it up on rebuild via `logoMark()` in `src/site.mjs`.
+| File | Where it shows |
+|---|---|
+| `hero.jpg` | home hero + product page main image |
+| `front.jpg` | jar alone — product cards, shop grid |
+| `open.jpg` | lid off, dipper / honey visible |
+| `cup.jpg` | cup in front, jar behind |
 
----
+Optional per-size overrides beat the generic ones: `hg-15-hero.jpg`, `hg-8-front.jpg`, `hg-duo-front.jpg`, `hg-gift-front.jpg`, `dipper-front.jpg`, `hg-3-front.jpg`, `hg-trio-front.jpg`. `.jpg .jpeg .png .webp .avif` all work. Any variant you don't supply falls back to another photo you did, then to the drawn SVG scene — so one photo is enough to start.
+
+**Shooting notes** (also in `assets/img/product/README.txt`):
+- Portrait ~4:5 (1600×2000 is plenty). The site crops to fill, centred.
+- Jar slightly off-axis, label to camera, lid on (except `open.jpg`).
+- Window light from the side or behind — no direct flash, no hard shadow across the label.
+- Props (cup, ginger, lemon, linen) behind and beside the jar, never covering the label.
+- Leave ~15% space around the jar so cropping never clips it.
+- Same table, same light, same white balance across all four so the set looks like one shoot.
+
+Until photos land, the site uses generated SVG scenes of the jar (`src/art.mjs`) — chosen by a three-way design panel and scored against your own jar photos. The rejected alternates are kept in `src/art-candidates/` for reference.
 
 ## 7. Facts to confirm before launch
 

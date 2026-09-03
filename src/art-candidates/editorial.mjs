@@ -5,43 +5,11 @@
    blonde-wood table, long soft light from the upper left, film grain.
    Same contract as src/art.mjs: PHOTOS, REAL, art(), ogImage(), altFor(), photo().
    ========================================================================== */
-import { esc, logoMark } from "./site.mjs";
+import { esc, logoMark } from "../site.mjs";
 
-/* ------------------------------------------------------------------
-   REAL PHOTOS — just drop image files into  assets/img/product/
-   and the build uses them automatically. No code changes needed.
-
-   Filenames it looks for (jpg / jpeg / png / webp / avif):
-     hero.jpg      → the big home + product hero (jar on the table, props)
-     front.jpg     → jar straight on, alone
-     open.jpg      → lid off, dipper / honey visible
-     cup.jpg       → cup in front, jar behind
-   Per-size overrides (optional) — prefix with the product id:
-     hg-15-hero.jpg, hg-8-front.jpg, dipper-front.jpg, ...
-   Anything missing falls back to the next best photo, then to the
-   generated SVG scene. See README → "Swapping in real photos".
-   ------------------------------------------------------------------ */
-import { readdirSync, existsSync } from "node:fs";
-
-const PHOTO_DIR = new URL("../assets/img/product/", import.meta.url);
-const VARIANTS_ORDER = ["hero", "front", "open", "cup"];
-export const PHOTOS = {};
-try {
-  if (existsSync(PHOTO_DIR)) {
-    for (const f of readdirSync(PHOTO_DIR)) {
-      const m = /^(.*?)\.(jpe?g|png|webp|avif)$/i.exec(f); if (!m) continue;
-      PHOTOS[m[1].toLowerCase()] = `/assets/img/product/${f}`;
-    }
-  }
-} catch {}
-/* resolve a photo for (productId, variant): exact → generic variant → any sibling variant → none */
-function findPhoto(pid, variant) {
-  const tries = [`${pid}-${variant}`, variant, ...VARIANTS_ORDER.filter((v) => v !== variant).map((v) => `${pid}-${v}`), ...VARIANTS_ORDER.filter((v) => v !== variant)];
-  for (const t of tries) if (PHOTOS[t]) return PHOTOS[t];
-  return null;
-}
-export const photoCount = () => Object.keys(PHOTOS).length;
-
+export const PHOTOS = {
+  // "hg-15:hero": "/assets/img/honey-ginger-hero.jpg",   ← uncomment + drop the file to replace the hero scene
+};
 export const REAL = {
   ritual: { src: "/assets/img/ritual-teapot-window-light.jpg", w: 480, h: 640, alt: "Pale celadon teapot and cup on a linen-covered wooden table beside a tall window, soft morning light and red curtains" },
   garden: { src: "/assets/img/tea-table-garden-morning.jpg", w: 480, h: 640, alt: "Teapot and two cups of pale tea on a dark table overlooking a sunlit garden and lake" },
@@ -87,7 +55,6 @@ function defs(id, p) {
     <linearGradient id="${id}-gingerv" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#fff" stop-opacity=".1"/><stop offset=".5" stop-color="#000" stop-opacity="0"/><stop offset="1" stop-color="#4a2e14" stop-opacity=".3"/></linearGradient>
     <linearGradient id="${id}-rind" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#F6DB63"/><stop offset="1" stop-color="#CFA426"/></linearGradient>
     <linearGradient id="${id}-ginger" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#EBD6AC"/><stop offset=".5" stop-color="#D5B27E"/><stop offset="1" stop-color="#A88459"/></linearGradient>
-    <radialGradient id="${id}-veil"><stop offset="0" stop-color="#FDFAF2" stop-opacity=".92"/><stop offset=".55" stop-color="#FDFAF2" stop-opacity=".78"/><stop offset="1" stop-color="#FDFAF2" stop-opacity="0"/></radialGradient>
     <radialGradient id="${id}-lemon" cx=".5" cy=".5" r=".5"><stop offset="0" stop-color="#FBEFA6"/><stop offset=".72" stop-color="#F3D65E"/><stop offset=".8" stop-color="#FCF6DA"/><stop offset=".9" stop-color="#F1CF48"/><stop offset="1" stop-color="#D9B22E"/></radialGradient>
     <radialGradient id="${id}-vig" cx=".5" cy=".5" r=".72"><stop offset=".6" stop-color="#000" stop-opacity="0"/><stop offset="1" stop-color="#3a2614" stop-opacity=".2"/></radialGradient>
     <filter id="${id}-soft" x="-50%" y="-80%" width="200%" height="260%"><feGaussianBlur stdDeviation="18"/></filter>
@@ -106,9 +73,8 @@ function defs(id, p) {
 /* ---------- room ---------- */
 const wall = (id, H) => `<rect width="1000" height="${H}" fill="url(#${id}-wall)"/><rect width="1000" height="${H}" fill="url(#${id}-light)"/>`;
 function bokeh(id, anim) {
-  const dots = [[840, 150, 90, .26], [930, 320, 62, .18], [720, 96, 48, .22], [120, 260, 72, .12], [640, 240, 34, .16], [900, 92, 30, .18]];
-  return `<g filter="url(#${id}-soft)"><ellipse cx="790" cy="150" rx="330" ry="270" fill="#FFF6DC" opacity=".5"/></g>
-  <g class="${anim ? "bokeh" : ""}" filter="url(#${id}-soft)">${dots.map(([x, y, r, o], i) => `<circle cx="${x}" cy="${y}" r="${r}" fill="#FFF8E6" opacity="${o}" style="--i:${i}"/>`).join("")}</g>`;
+  const dots = [[840, 150, 90, .22], [930, 320, 60, .16], [720, 80, 46, .2], [120, 260, 70, .1]];
+  return `<g class="${anim ? "bokeh" : ""}" filter="url(#${id}-soft)">${dots.map(([x, y, r, o], i) => `<circle cx="${x}" cy="${y}" r="${r}" fill="#FFF8E6" opacity="${o}" style="--i:${i}"/>`).join("")}</g>`;
 }
 function table(id, y, H) {
   const grain = Array.from({ length: 7 }, (_, i) => { const yy = y + 50 + i * ((H - y) / 7) + (i % 2) * 9; return `<path d="M-20 ${yy} C 260 ${yy - 6}, 560 ${yy + 8}, 1020 ${yy - 3}" fill="none" stroke="#8a6a44" stroke-opacity=".${i % 3 ? "04" : "06"}" stroke-width="${1 + (i % 3) * .5}"/>`; }).join("");
@@ -123,18 +89,18 @@ function label(id, p) {
   const isDipper = p?.id === "dipper";
   let stripes = "";
   for (let t = -1.4; t <= 1.41; t += .1) {
-    const x = r1(150 * Math.sin(t));
-    stripes += `<path d="M${x} 30V280" stroke="#EFE0A6" stroke-width="${r1(8.6 * Math.cos(t))}"/>`;
+    const x = r1(150 * Math.sin(t)); if (Math.abs(x) < 64) continue;
+    stripes += `<path d="M${x} 30V280" stroke="#F0E2AE" stroke-width="${r1(7.4 * Math.cos(t))}"/>`;
   }
   const mark = logoMark({ size: 84, wordmark: false, id: `${id}-lm` }).replace("<svg ", `<svg x="-42" y="64" `);
   const body = isDipper
-    ? `<text x="0" y="198" text-anchor="middle" font-family="${SERIF}" font-size="25" letter-spacing="4" fill="#B8903E" font-weight="700" stroke="#B8903E" stroke-width=".8">DIPPER</text><text x="0" y="226" text-anchor="middle" font-family="${SCRIPT}" font-size="10.5" fill="#6B5A3E" font-style="italic">Crafted from family tradition</text><text x="0" y="240" text-anchor="middle" font-family="${SANS}" font-size="7.5" letter-spacing="1" fill="#6B5A3E">${esc(p?.size || "6 in")}</text>`
-    : `<text x="0" y="176" text-anchor="middle" font-family="${SERIF}" font-size="27" letter-spacing="3.4" fill="#B8903E" font-weight="700" stroke="#B8903E" stroke-width=".8">HONEY</text>
+    ? `<text x="0" y="198" text-anchor="middle" font-family="${SERIF}" font-size="24" letter-spacing="4" fill="#B8903E" font-weight="600">DIPPER</text><text x="0" y="226" text-anchor="middle" font-family="${SCRIPT}" font-size="10.5" fill="#6B5A3E" font-style="italic">Crafted from family tradition</text><text x="0" y="240" text-anchor="middle" font-family="${SANS}" font-size="7.5" letter-spacing="1" fill="#6B5A3E">${esc(p?.size || "6 in")}</text>`
+    : `<text x="0" y="176" text-anchor="middle" font-family="${SERIF}" font-size="26" letter-spacing="3" fill="#B8903E" font-weight="600">HONEY</text>
        <text x="0" y="190" text-anchor="middle" font-family="${SCRIPT}" font-size="12" fill="#6B5A3E" font-style="italic">with fresh</text>
-       <text x="0" y="215" text-anchor="middle" font-family="${SERIF}" font-size="27" letter-spacing="3.4" fill="#B8903E" font-weight="700" stroke="#B8903E" stroke-width=".8">GINGER</text>
+       <text x="0" y="215" text-anchor="middle" font-family="${SERIF}" font-size="26" letter-spacing="3" fill="#B8903E" font-weight="600">GINGER</text>
        <text x="0" y="229" text-anchor="middle" font-family="${SCRIPT}" font-size="10" fill="#6B5A3E" font-style="italic">Crafted from family tradition</text>
        <text x="0" y="241" text-anchor="middle" font-family="${SANS}" font-size="7.5" letter-spacing="1" fill="#6B5A3E">${esc(p?.size || "15 oz")} (425 g)</text>`;
-  return `<g clip-path="url(#${id}-label)"><path d="${LABEL}" fill="#FBF7EC"/>${stripes}<ellipse cx="0" cy="202" rx="118" ry="62" fill="url(#${id}-veil)"/>${mark}${body}<path d="${LABEL}" fill="url(#${id}-paper)"/></g>`;
+  return `<g clip-path="url(#${id}-label)"><path d="${LABEL}" fill="#FBF7EC"/>${stripes}<rect x="-64" y="30" width="128" height="250" fill="#FCF9F1"/>${mark}${body}<path d="${LABEL}" fill="url(#${id}-paper)"/></g>`;
 }
 
 /* ---------- bamboo lid, on the jar ---------- */
@@ -180,13 +146,13 @@ function mouthFront(id) {
 /* ---------- beechwood dipper (local: head at the origin, handle rising) ---------- */
 function dipper(id, x, y, rot = 0, s = 1, glaze = "") {
   return `<g transform="translate(${x} ${y}) rotate(${rot}) scale(${s})">
-    <rect x="-6" y="-178" width="12" height="178" rx="6" fill="url(#${id}-wood)"/>
-    <ellipse cx="0" cy="-180" rx="10" ry="9" fill="url(#${id}-wood)"/>
+    <rect x="-6" y="-236" width="12" height="236" rx="6" fill="url(#${id}-wood)"/>
+    <ellipse cx="0" cy="-238" rx="10" ry="9" fill="url(#${id}-wood)"/>
     <path d="M-23 0 C-26 18 -26 34 -21 52 Q0 62 21 52 C26 34 26 18 23 0 Q0 -10 -23 0 Z" fill="url(#${id}-wood)"/>
     ${[8, 21, 34, 46].map((yy) => `<path d="M-${r1(24 - Math.abs(yy - 26) * .14)} ${yy} Q0 ${yy + 7} ${r1(24 - Math.abs(yy - 26) * .14)} ${yy}" fill="none" stroke="#6f5330" stroke-opacity=".45" stroke-width="2"/>`).join("")}
-    <path d="M-3 -172 V-8" stroke="#fff" stroke-opacity=".3" stroke-width="2.5" stroke-linecap="round"/>
+    <path d="M-3 -230 V-8" stroke="#fff" stroke-opacity=".3" stroke-width="2.5" stroke-linecap="round"/>
     ${glaze ? `<path d="M-24 6 C-26 22 -25 40 -21 52 Q0 62 21 52 C25 40 26 22 24 6 Q0 16 -24 6 Z" fill="${glaze}" opacity=".9"/><path d="M-14 30 Q0 36 14 30" fill="none" stroke="#fff" stroke-opacity=".3" stroke-width="2"/>
-    <path d="M2 -104 C 5 -86, -1 -68, 2 -50 C 4 -34, 0 -20, 1 -6" stroke="${glaze}" stroke-width="3.6" stroke-linecap="round" fill="none"/><path class="honey-drip" d="M2 -104 C 5 -86, -1 -68, 2 -50 C 4 -34, 0 -20, 1 -6" stroke="${shade(glaze, .4)}" stroke-width="1.6" stroke-linecap="round" fill="none" opacity=".9"/><ellipse cx="3" cy="-104" rx="3" ry="4" fill="${glaze}"/>` : ""}
+    <path d="M2 -128 C 5 -108, -1 -86, 2 -64 C 4 -46, 0 -28, 1 -6" stroke="${glaze}" stroke-width="3.6" stroke-linecap="round" fill="none"/><path class="honey-drip" d="M2 -128 C 5 -108, -1 -86, 2 -64 C 4 -46, 0 -28, 1 -6" stroke="${shade(glaze, .4)}" stroke-width="1.6" stroke-linecap="round" fill="none" opacity=".9"/><ellipse cx="3" cy="-128" rx="3" ry="4" fill="${glaze}"/>` : ""}
   </g>`;
 }
 
@@ -236,7 +202,7 @@ function ginger(id, x, y, s = 1, rot = 0) {
     <path d="M-70 10 C-80 -8 -64 -22 -46 -16 C-40 -36 -18 -42 -6 -26 C6 -46 32 -48 42 -30 C58 -52 88 -42 82 -20 C96 -10 98 10 82 18 C92 34 74 48 56 38 C48 56 22 58 12 42 C2 58 -24 56 -32 38 C-52 46 -74 32 -70 10 Z" fill="url(#${id}-ginger)"/>
     <path d="M-70 10 C-80 -8 -64 -22 -46 -16 C-40 -36 -18 -42 -6 -26 C6 -46 32 -48 42 -30 C58 -52 88 -42 82 -20 C96 -10 98 10 82 18 C92 34 74 48 56 38 C48 56 22 58 12 42 C2 58 -24 56 -32 38 C-52 46 -74 32 -70 10 Z" fill="url(#${id}-gingerv)"/>
     <path d="M-52 -6 c 5 6 5 16 0 24 M-20 -24 c 5 8 6 20 1 30 M30 -30 c 5 8 5 20 0 30 M62 -32 c 5 8 5 18 0 26 M42 24 c -6 6 -14 8 -22 4 M-6 30 c -6 4 -12 4 -18 0" fill="none" stroke="#8F6B45" stroke-opacity=".38" stroke-width="2" stroke-linecap="round"/>
-    <path d="M-40 -8 C-24 -20 -6 -22 8 -14" fill="none" stroke="#fff" stroke-opacity=".3" stroke-width="4" stroke-linecap="round"/>\n    <path d="M-70 10 C-80 -8 -64 -22 -46 -16 C-40 -36 -18 -42 -6 -26 C6 -46 32 -48 42 -30 C58 -52 88 -42 82 -20 C96 -10 98 10 82 18 C92 34 74 48 56 38 C48 56 22 58 12 42 C2 58 -24 56 -32 38 C-52 46 -74 32 -70 10 Z" fill="#A8875A" opacity=".26"/>
+    <path d="M-40 -8 C-24 -20 -6 -22 8 -14" fill="none" stroke="#fff" stroke-opacity=".35" stroke-width="4" stroke-linecap="round"/>
     <g transform="translate(86 0) rotate(-16)"><ellipse cx="0" cy="0" rx="14" ry="20" fill="#F3E6AE"/><ellipse cx="0" cy="0" rx="9" ry="13.5" fill="none" stroke="#CBB46E" stroke-opacity=".7"/><ellipse cx="0" cy="0" rx="14" ry="20" fill="none" stroke="#B9955E" stroke-opacity=".6" stroke-width="1.5"/><ellipse class="glint" cx="-3" cy="-7" rx="4" ry="6" fill="#fff" opacity=".6"/></g>
   </g>`;
 }
@@ -249,37 +215,37 @@ const finish = (id, W, H) => `<rect width="${W}" height="${H}" fill="url(#${id}-
 
 const VARIANTS = {
   hero(id, p, anim) {
-    const W = 1000, H = 1200, T = 560;
+    const W = 1000, H = 1200, T = 680;
     return `${defs(id, p)}${wall(id, H)}${bokeh(id, anim)}${table(id, T, H)}
-      ${ground(id, 400, 930, 300, 1.34)}
-      ${jar(id, p, 400, 930, 1.34)}
-      ${shadow(id, 840, 1152, 190, 28, .26, "", "softer")}${shadow(id, 768, 1144, 136, 14, .42, "", "contact")}
-      ${cup(id, 760, 932, 1.34, { anim })}
-      ${shadow(id, 190, 1120, 116, 15, .35, "", "contact")}${ginger(id, 180, 1090, 1.12, -8)}
+      ${ground(id, 400, 962, 300, 1.2)}
+      ${jar(id, p, 400, 962, 1.2)}
+      ${shadow(id, 840, 1150, 190, 28, .26, "", "softer")}${shadow(id, 768, 1142, 136, 14, .42, "", "contact")}
+      ${cup(id, 760, 930, 1.32, { anim })}
+      ${shadow(id, 190, 1112, 110, 14, .35, "", "contact")}${ginger(id, 180, 1082, 1.05, -8)}
       ${finish(id, W, H)}`;
   },
   front(id, p, anim) {
-    const W = 1000, H = 1250, T = 585;
+    const W = 1000, H = 1250, T = 700;
     const isDipper = p?.id === "dipper";
     const prop = isDipper
       ? `${shadow(id, 300, 1124, 200, 12, .35, "", "contact")}${dipper(id, 440, 1116, -100, 1.3)}`
       : `${shadow(id, 230, 1112, 116, 14, .35, "", "contact")}${ginger(id, 215, 1080, 1.1, -8)}`;
     return `${defs(id, p)}${wall(id, H)}${bokeh(id, anim)}${table(id, T, H)}
-      ${ground(id, 500, 985, 300, 1.56)}
-      ${jar(id, p, 500, 985, 1.56)}
+      ${ground(id, 500, 985, 300, 1.42)}
+      ${jar(id, p, 500, 985, 1.42)}
       ${prop}
       ${finish(id, W, H)}`;
   },
   open(id, p, anim) {
-    const W = 1000, H = 1250, T = 590;
+    const W = 1000, H = 1250, T = 700;
     return `${defs(id, p)}${wall(id, H)}${bokeh(id, anim)}${table(id, T, H)}
-      ${ground(id, 400, 985, 300, 1.42)}
-      ${jar(id, p, 400, 985, 1.42, { lidOff: true, withDipper: true })}
-      ${lidFlat(id, 790, 1075, 1.02)}
+      ${ground(id, 400, 980, 300, 1.3)}
+      ${jar(id, p, 400, 980, 1.3, { lidOff: true, withDipper: true })}
+      ${lidFlat(id, 770, 1052, 1.08)}
       ${finish(id, W, H)}`;
   },
   cup(id, p, anim) {
-    const W = 1000, H = 1250, T = 585;
+    const W = 1000, H = 1250, T = 680;
     return `${defs(id, p)}${wall(id, H)}${bokeh(id, anim)}${table(id, T, H)}
       <g filter="url(#${id}-dof)">${ground(id, 650, 890, 300, 1.05)}${jar(id, p, 650, 890, 1.05)}</g>
       ${shadow(id, 430, 1206, 240, 30, .26, "", "softer")}${shadow(id, 340, 1200, 170, 14, .42, "", "contact")}
@@ -291,8 +257,8 @@ const VARIANTS = {
 
 let n = 0;
 export function art(variant, p, { alt, anim = false, className = "", slot } = {}) {
-  const src = slot ? PHOTOS[slot] : findPhoto(p?.id || "brand", variant);
-  if (src) return `<img src="${src}" alt="${esc(alt)}" class="${className}" width="1000" height="${variant === "hero" ? 1200 : 1250}" loading="${anim ? "eager" : "lazy"}" ${anim ? 'fetchpriority="high"' : ""} decoding="async" style="width:100%;height:100%;object-fit:cover">`;
+  const key = slot || `${p?.id || "brand"}:${variant}`;
+  if (PHOTOS[key]) return `<img src="${PHOTOS[key]}" alt="${esc(alt)}" class="${className}" width="1000" height="1250" loading="${anim ? "eager" : "lazy"}" decoding="async">`;
   const id = `a${(n++).toString(36)}`; const fn = VARIANTS[variant] || VARIANTS.front;
   const H = variant === "hero" ? 1200 : 1250;
   return `<svg class="${className} scene" viewBox="0 0 1000 ${H}" role="img" aria-labelledby="${id}-t" preserveAspectRatio="xMidYMid slice"><title id="${id}-t">${esc(alt)}</title>${fn(id, p, anim)}</svg>`;
