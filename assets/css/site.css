@@ -692,8 +692,10 @@ body:has(.drawer[data-open]) .drawer-backdrop { opacity: 1; visibility: visible;
   .scene--live .float { transform-box: fill-box; transform-origin: 50% 100%; animation: float 6.5s ease-in-out infinite; }
   .scene--live .float-shadow { transform-box: fill-box; transform-origin: 50% 50%; animation: breathe 6.5s ease-in-out infinite; }
   /* slow push-in on the hero scene (Ken Burns), never more than 5% */
-  @keyframes kenburns { from { transform: scale(1); } to { transform: scale(1.05); } }
-  .scene--live { transform-origin: 55% 62%; animation: kenburns 26s ease-in-out infinite alternate; }
+  @keyframes kenburns { from { transform: scale(1); } to { transform: scale(1.03); } }
+  /* transform-box must be border-box: the default (view-box) applies the transform in
+     SVG user units while transform-origin resolves in CSS px, which throws the scene off. */
+  .scene--live { transform-box: border-box; transform-origin: 55% 62%; animation: kenburns 26s ease-in-out infinite alternate; }
   /* honey thread: a dash that keeps pouring */
   @keyframes drip { from { stroke-dashoffset: 520; } to { stroke-dashoffset: 0; } }
   .honey-drip { stroke-dasharray: 90 430; animation: drip 3.6s linear infinite; }

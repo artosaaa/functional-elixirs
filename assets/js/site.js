@@ -340,7 +340,7 @@
     }
     // PDP shipping snippet: estimate from remembered zip
     const est = $("[data-ship-estimate]");
-    if (est) { const s = Ship.get(); const q = Ship.quote(s.country, s.zip, product(est.dataset.shipEstimate)?.price || 0)[0]; est.textContent = s.zip ? `Arrives in ${Ship.daysLabel(q.days)} to ${s.zip}` : `Arrives in ${Ship.daysLabel(q.days)} · free over ${money(CFG.freeShipOver)}`; }
+    if (est) { const s = Ship.get(); const q = Ship.quote(s.country, s.zip, product(est.dataset.shipEstimate)?.price || 0)[0]; est.textContent = s.zip ? `Arrives in ${Ship.daysLabel(q.days)} to ${s.zip}` : `Arrives in ${Ship.daysLabel(q.days)}`; }
   }
 
   /* Shipping calculator (used on cart, checkout, shipping policy) */

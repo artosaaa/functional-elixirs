@@ -195,7 +195,7 @@ function jar(id, p, x, base, s = 1, { lidOff = false, withDipper = false } = {})
   const hc = p?.honey || "#7A3E0F";
   const dip = withDipper ? dipper(id, 36, -70, 16, 1, hc) : "";
   const top = lidOff ? `${mouthBack(id)}${dip}${mouthFront(id)}` : `${lidOn(id)}${dip}`;
-  return `<g class="float" transform="translate(${x} ${base - JAR_BASE * s}) scale(${s})">
+  return `<g class="float"><g transform="translate(${x} ${base - JAR_BASE * s}) scale(${s})">
     <g clip-path="url(#${id}-body)">
       <rect x="-150" y="-4" width="300" height="280" fill="url(#${id}-honey)"/>
       <ellipse cx="-30" cy="130" rx="90" ry="120" fill="url(#${id}-glow)" filter="url(#${id}-glowf)"/>
@@ -212,7 +212,7 @@ function jar(id, p, x, base, s = 1, { lidOff = false, withDipper = false } = {})
     </g>
     <path d="${BODY}" fill="none" stroke="#fff" stroke-opacity=".28" stroke-width="1.5"/>
     ${top}
-  </g>`;
+  </g></g>`;
 }
 
 /* ---------- stoneware cup (local: rim centre at the origin) ---------- */
