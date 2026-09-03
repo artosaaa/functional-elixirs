@@ -55,7 +55,7 @@
   --wrap-prose:  40rem;
 
   /* shape + depth */
-  --r-sm: 6px; --r-md: 12px; --r-lg: 20px; --r-pill: 999px;
+  --r-sm: 10px; --r-md: 18px; --r-lg: 28px; --r-xl: 36px; --r-pill: 999px;
   --shadow-1: 0 1px 2px rgb(36 31 26 / .06), 0 2px 8px rgb(36 31 26 / .05);
   --shadow-2: 0 4px 14px rgb(36 31 26 / .08), 0 12px 32px rgb(36 31 26 / .08);
   --shadow-3: 0 18px 50px rgb(36 31 26 / .16);
@@ -577,11 +577,11 @@ body:has(.drawer[data-open]) .drawer-backdrop { opacity: 1; visibility: visible;
 .footer__promise { display: grid; gap: var(--s-3); font-size: var(--fs-sm); }
 .footer__promise div { display: flex; gap: .6em; align-items: flex-start; }
 .footer__promise svg { width: 1.1rem; height: 1.1rem; color: var(--gold-2); flex: none; margin-top: .15rem; }
-.footer__bottom { padding-block: var(--s-5) calc(var(--s-5) + env(safe-area-inset-bottom)); border-top: 1px solid rgb(246 240 230 / .12); display: flex; flex-wrap: wrap; justify-content: space-between; gap: var(--s-3) var(--s-5); font-size: var(--fs-xs); color: rgb(246 240 230 / .55); }
+.footer__bottom { padding-block: var(--s-5) calc(var(--s-5) + env(safe-area-inset-bottom)); border-top: 1px solid rgb(246 240 230 / .12); display: flex; flex-wrap: wrap; justify-content: space-between; align-items: flex-start; gap: var(--s-4) var(--s-5); font-size: var(--fs-xs); color: rgb(246 240 230 / .55); }
 .footer__bottom ul { display: flex; flex-wrap: wrap; gap: var(--s-4); }
 .footer__bottom a { color: rgb(246 240 230 / .55); }
-.pay-marks { display: flex; gap: .4rem; }
-.pay-marks span { padding: .25em .5em; border: 1px solid rgb(246 240 230 / .2); border-radius: 3px; font: 600 .6rem/1 var(--sans); letter-spacing: .04em; }
+.pay-marks { display: flex; flex-wrap: wrap; gap: .4rem; align-items: center; align-self: center; }
+.pay-marks span { display: inline-block; padding: .45em .6em; border: 1px solid rgb(246 240 230 / .22); border-radius: var(--r-pill); font: 600 .6rem/1 var(--sans); letter-spacing: .06em; line-height: 1; }
 
 /* Cookie notice */
 .cookie { position: fixed; left: var(--s-4); right: var(--s-4); bottom: calc(var(--s-4) + env(safe-area-inset-bottom)); z-index: 80; background: var(--cream-2); border: 1px solid var(--linen); border-radius: var(--r-lg); box-shadow: var(--shadow-2); padding: var(--s-4) var(--s-5); display: none; gap: var(--s-4); align-items: center; font-size: var(--fs-sm); max-width: 44rem; margin-inline: auto; }
@@ -676,3 +676,31 @@ body:has(.drawer[data-open]) .drawer-backdrop { opacity: 1; visibility: visible;
 .free-ship__bar i { background: var(--honey); }
 .disclaimer { font-size: var(--fs-xs); color: rgb(246 240 230 / .5); max-width: 60ch; line-height: 1.5; }
 .stripe-band { background: repeating-linear-gradient(90deg, #FAF4E4 0 10px, #F3E7B8 10px 20px); border-block: 1px solid var(--cream-3); }
+
+/* ---------- 18. Softer geometry + continuous loops ---------- */
+.section--well, .section--sage, .section--dark { border-radius: clamp(22px, 4vw, 44px); margin-inline: clamp(.5rem, 2vw, 1.5rem); }
+.hero__art, .gallery__main, .article-hero, .marquee-photo, .cta-band { border-radius: var(--r-xl); }
+.pcard__media, .acard__media, .form-card, .panel, .summary, .gift-tier, .review { border-radius: var(--r-lg); }
+.gallery__thumbs button, .line__media, .addr__card, .ship-snippet, .notes div, .brew div, .opt label { border-radius: var(--r-md); }
+.input, .select, .textarea { border-radius: 16px; }
+.btn--apple-pay, .btn--gpay, .btn--shop-pay { border-radius: 14px; }
+.scene { display: block; }
+@media (prefers-reduced-motion: no-preference) {
+  /* the jar breathes: a slow float with its shadow answering underneath */
+  @keyframes float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-9px); } }
+  @keyframes breathe { 0%, 100% { transform: scale(1); opacity: 1; } 50% { transform: scale(.94); opacity: .8; } }
+  .scene--live .float { transform-box: fill-box; transform-origin: 50% 100%; animation: float 6.5s ease-in-out infinite; }
+  .scene--live .float-shadow { transform-box: fill-box; transform-origin: 50% 50%; animation: breathe 6.5s ease-in-out infinite; }
+  /* slow push-in on the hero scene (Ken Burns), never more than 5% */
+  @keyframes kenburns { from { transform: scale(1); } to { transform: scale(1.05); } }
+  .scene--live { transform-origin: 55% 62%; animation: kenburns 26s ease-in-out infinite alternate; }
+  /* honey thread: a dash that keeps pouring */
+  @keyframes drip { from { stroke-dashoffset: 520; } to { stroke-dashoffset: 0; } }
+  .honey-drip { stroke-dasharray: 90 430; animation: drip 3.6s linear infinite; }
+  /* lemon / ginger twinkle: light catching the cut face */
+  @keyframes glint { 0%, 100% { opacity: .35; } 50% { opacity: .8; } }
+  .glint { animation: glint 4s ease-in-out infinite; }
+  /* hero tag nudges once in a while */
+  @keyframes nudge { 0%, 90%, 100% { transform: translateY(0); } 95% { transform: translateY(-3px); } }
+  .hero__tag { animation: rise .8s var(--ease) both .7s, nudge 9s ease-in-out 3s infinite; }
+}

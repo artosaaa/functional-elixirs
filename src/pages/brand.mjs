@@ -48,7 +48,7 @@ function ritual() {
   ];
   const body = `${head("The ritual", "The ritual", "Scoop. Stir. Sip.", "One jar. Two simple ingredients. Endless ways to enjoy. The whole practice takes ninety seconds — here it is, and eight ways to make it yours.")}
 <section class="section--tight"><div class="wrap split split--reverse">
-  <div class="hero__art reveal" style="box-shadow:var(--shadow-2)">${art("cup", p, { alt: altFor(p, "cup"), anim: true })}</div>
+  <div class="hero__art reveal" style="box-shadow:var(--shadow-2)">${art("cup", p, { alt: altFor(p, "cup"), anim: true, className: "scene--live" })}</div>
   <ol class="stack reveal" style="list-style:none;padding:0;--flow:var(--s-5)">
     <li class="ritual-step" style="border-top:0;padding-top:0"><h3>Scoop</h3><p>One teaspoon of <a href="${HERO_URL}">Honey with Fresh Ginger</a>. Use a dry spoon, or the <a href="/shop/beechwood-honey-dipper/">beechwood dipper</a> — water is the one thing honey doesn’t want.</p></li>
     <li class="ritual-step"><h3>Stir</h3><p>Into about 8 oz of warm water — not boiling. Stir until the spoon comes up clean and the ginger threads swirl up from the bottom.</p></li>

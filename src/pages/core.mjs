@@ -41,7 +41,7 @@ function home() {
     </div>
     <div class="hero__meta"><span>${ICONS.truck} Free shipping over $${CFG.freeShipOver}</span><span>${ICONS.refresh} 30-day happiness guarantee</span><span>${ICONS.leaf} Raw honey · fresh ginger · nothing else</span></div>
   </div>
-  <div class="hero__art vt-hero">${art("hero", p, { alt: altFor(p, "hero"), anim: true })}<div class="hero__tag"><strong>${esc(p.name)}</strong><span>15 oz (425 g) · ${money(p.price)}</span></div></div>
+  <div class="hero__art vt-hero">${art("hero", p, { alt: altFor(p, "hero"), anim: true, className: "scene--live" })}<div class="hero__tag"><strong>${esc(p.name)}</strong><span>15 oz (425 g) · ${money(p.price)}</span></div></div>
 </div></section>
 
 <div class="ribbon" aria-hidden="true"><div class="ribbon__track">${"<span>Raw honey</span><span>Fresh ginger</span><span>Nothing else</span><span>Scoop</span><span>Stir</span><span>Sip</span><span>Small batch</span><span>Made in the USA</span>".repeat(2)}</div></div>
@@ -143,7 +143,7 @@ function product(p) {
   const body = `${breadcrumbs([{ name: "Shop", href: "/shop/" }, { name: p.name, href: p.url }])}
 <section class="wrap pdp">
   <div class="pdp__gallery"><div class="gallery" data-gallery>
-    <div class="gallery__main vt-hero" tabindex="0" aria-label="Product images — use arrow keys to browse">${variants.map((v, i) => `<div data-slide ${i ? "hidden" : ""}>${art(v, p, { alt: altFor(p, v), anim: i === 0 })}</div>`).join("")}</div>
+    <div class="gallery__main vt-hero" tabindex="0" aria-label="Product images — use arrow keys to browse">${variants.map((v, i) => `<div data-slide ${i ? "hidden" : ""}>${art(v, p, { alt: altFor(p, v), anim: i === 0, className: i === 0 ? "scene--live" : "" })}</div>`).join("")}</div>
     <div class="gallery__thumbs" role="group" aria-label="Choose image">${variants.map((v, i) => `<button type="button" aria-current="${i === 0}" aria-label="${esc(altFor(p, v))}">${art(v, p, { alt: "" })}</button>`).join("")}</div>
   </div></div>
   <div class="pdp__buy">

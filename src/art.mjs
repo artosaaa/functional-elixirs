@@ -60,7 +60,7 @@ function table(id, y, H) {
   const grain = Array.from({ length: 9 }, (_, i) => { const yy = y + 30 + i * ((H - y) / 9) + (i % 2) * 11; return `<path d="M-20 ${yy} C 250 ${yy - 8}, 520 ${yy + 10}, 1020 ${yy - 4}" fill="none" stroke="#3a2415" stroke-opacity=".14" stroke-width="${1.2 + (i % 3) * .6}"/>`; }).join("");
   return `<rect x="0" y="${y}" width="1000" height="${H - y}" fill="url(#${id}-wood)"/><rect x="0" y="${y}" width="1000" height="${H - y}" fill="url(#${id}-woodx)"/>${grain}<rect x="0" y="${y}" width="1000" height="6" fill="#fff" opacity=".08"/>`;
 }
-const shadow = (id, cx, cy, rx, ry, o = .42) => `<ellipse cx="${cx}" cy="${cy}" rx="${rx}" ry="${ry}" fill="#2a1a0e" opacity="${o}" filter="url(#${id}-soft)"/>`;
+const shadow = (id, cx, cy, rx, ry, o = .42, cls = "") => `<ellipse class="${cls}" cx="${cx}" cy="${cy}" rx="${rx}" ry="${ry}" fill="#2a1a0e" opacity="${o}" filter="url(#${id}-soft)"/>`;
 function linen(id, x, y) {
   return `<path d="M${x} ${y + 40} C ${x + 120} ${y - 10}, ${x + 300} ${y + 60}, ${x + 460} ${y + 20} L ${x + 520} ${y + 180} C ${x + 340} ${y + 220}, ${x + 160} ${y + 150}, ${x - 40} ${y + 210} Z" fill="url(#${id}-linen)"/>
     <path d="M${x + 20} ${y + 70} C ${x + 160} ${y + 40}, ${x + 300} ${y + 90}, ${x + 440} ${y + 60}" fill="none" stroke="#fff" stroke-opacity=".5" stroke-width="2"/>
@@ -88,8 +88,8 @@ function jar(id, p, x, y, s = 1, { lidOff = false, dipper = false } = {}) {
   const lid = lidOff
     ? `<g transform="translate(340 300) rotate(-72)"><rect x="-158" y="-34" width="316" height="68" rx="10" fill="url(#${id}-lid)"/><ellipse cx="0" cy="-34" rx="158" ry="26" fill="url(#${id}-lidtop)"/>${[126, 92, 58, 28].map((r) => `<ellipse cx="0" cy="-34" rx="${r}" ry="${r * .16}" fill="none" stroke="#9D7A4E" stroke-opacity=".3"/>`).join("")}</g>`
     : `<g><rect x="-8" y="-72" width="316" height="78" rx="12" fill="url(#${id}-lid)"/>${[40, 90, 140, 190, 240].map((gx) => `<path d="M${gx} -66 v 66" stroke="#8F6D42" stroke-opacity=".18" stroke-width="2"/>`).join("")}<ellipse cx="150" cy="-72" rx="158" ry="26" fill="url(#${id}-lidtop)"/>${[126, 92, 58, 28].map((r) => `<ellipse cx="150" cy="-72" rx="${r}" ry="${r * .16}" fill="none" stroke="#9D7A4E" stroke-opacity=".3"/>`).join("")}<rect x="-8" y="0" width="316" height="8" rx="3" fill="#3a2410" opacity=".35"/></g>`;
-  const dip = dipper ? `<g transform="translate(150 -160) rotate(14)"><rect x="-6" y="0" width="12" height="230" rx="5" fill="#C9A66F"/><ellipse cx="0" cy="230" rx="22" ry="26" fill="#B8955F"/>${[212, 224, 236, 248].map((yy) => `<ellipse cx="0" cy="${yy}" rx="22" ry="4" fill="none" stroke="#8F6D42" stroke-opacity=".6"/>`).join("")}<path d="M0 256 C 0 290, -6 320, 2 360" stroke="url(#${id}-honey)" stroke-width="6" stroke-linecap="round" fill="none" opacity=".95"/></g>` : "";
-  return `<g transform="translate(${x} ${y}) scale(${s})">
+  const dip = dipper ? `<g transform="translate(150 -160) rotate(14)"><rect x="-6" y="0" width="12" height="230" rx="5" fill="#C9A66F"/><ellipse cx="0" cy="230" rx="22" ry="26" fill="#B8955F"/>${[212, 224, 236, 248].map((yy) => `<ellipse cx="0" cy="${yy}" rx="22" ry="4" fill="none" stroke="#8F6D42" stroke-opacity=".6"/>`).join("")}<path class="honey-drip" d="M0 256 C 0 290, -6 320, 2 360" stroke="url(#${id}-honey)" stroke-width="6" stroke-linecap="round" fill="none" opacity=".95"/></g>` : "";
+  return `<g class="float" transform="translate(${x} ${y}) scale(${s})">
     <g clip-path="url(#${id}-jarclip)">
       <rect x="0" y="0" width="300" height="296" fill="url(#${id}-honey)"/>
       ${slices(9, p?.id?.length || 1)}
@@ -133,7 +133,7 @@ const VARIANTS = {
     const W = 1000, H = 1200, T = 760;
     return `${defs(id, p)}${wall(id, H)}${bokeh(id, anim)}<rect x="640" y="0" width="360" height="${T}" fill="#FFF8E8" opacity=".18"/>
       ${table(id, T, H)}${linen(id, -60, T - 10)}
-      ${shadow(id, 470, T + 250, 300, 48, .45)}${shadow(id, 800, T + 150, 130, 26, .35)}${shadow(id, 180, T + 250, 120, 22, .3)}
+      ${shadow(id, 470, T + 250, 300, 48, .45, "float-shadow")}${shadow(id, 800, T + 150, 130, 26, .35)}${shadow(id, 180, T + 250, 120, 22, .3)}
       ${jar(id, p, 320, 420, 1.06)}
       ${ginger(id, 90, T + 170, 1.05, -8)}${lemon(id, 250, T + 190, 40)}
       ${cup(id, 700, T - 10, .92, { anim })}
