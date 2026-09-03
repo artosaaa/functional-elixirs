@@ -1,6 +1,6 @@
 /* Brand config + shared helpers used by every page template.
    ⚠ VERIFY before launch: email, governing state, founding year, social handles (see README → "Facts to confirm"). */
-export const SITE_URL = (process.env.SITE_URL || "https://functional-elixirs.vercel.app").replace(/\/$/, "");
+export const SITE_URL = (process.env.SITE_URL || "https://functional-elixirs-iskakanmarketingvercel.vercel.app").replace(/\/$/, "");
 
 export const BRAND = {
   name: "Functional Elixirs",

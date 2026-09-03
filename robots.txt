@@ -11,4 +11,4 @@ Disallow: /account/
 # User-agent: GPTBot
 # Disallow: /
 
-Sitemap: https://functional-elixirs.vercel.app/sitemap.xml
+Sitemap: https://functional-elixirs-iskakanmarketingvercel.vercel.app/sitemap.xml
