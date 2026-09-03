@@ -11,7 +11,7 @@ function story() {
 <section class="section--tight"><div class="wrap split">
   <div class="marquee-photo reveal">${photo("jars")}</div>
   <div class="prose reveal">
-    <p>She began combining honey and fresh ginger as part of her daily routine while looking for natural ways to support how she felt — particularly with the discomfort she experienced from arthritis. Over time, she told us how much better she felt, and naturally, we wanted to try it ourselves.</p>
+    <p>She began combining honey and fresh ginger as part of her daily routine, looking for natural ways to support how she felt. Over time she told us how much she looked forward to it — and naturally, we wanted to try it ourselves.</p>
     <p>We fell in love with more than the taste. For us, it became a daily ritual that leaves us feeling energized yet calm — a sense of balance that simply feels good.</p>
     <p>What began in our mother’s kitchen became something we genuinely believed was worth sharing.</p>
   </div>

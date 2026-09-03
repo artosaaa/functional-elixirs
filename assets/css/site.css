@@ -802,3 +802,13 @@ body:has(.capture[data-open]) .capture-backdrop { opacity: 1; visibility: visibl
 .offer-nudge strong { color: var(--navy-2); }
 /* --- Sample-review disclosure --- */
 .sample-note { font-size: var(--fs-xs); color: var(--ink-mute); text-align: center; margin-top: var(--s-5); }
+/* --- Objection answers beside the buy button --- */
+.objections { display: grid; gap: var(--s-2); font-size: var(--fs-sm); color: var(--ink-soft); line-height: 1.5; }
+.objections strong { color: var(--navy-2); font-weight: 600; }
+.objections p { margin: 0; }
+/* --- One-tap bundle upsell in the cart drawer --- */
+.ship-upsell { display: grid; gap: .2rem; width: 100%; text-align: left; margin-top: var(--s-3);
+  padding: var(--s-3) var(--s-4); border: 1.5px solid var(--honey); border-radius: var(--r-md);
+  background: #FBF3E2; color: var(--navy-2); font: 600 var(--fs-sm)/1.3 var(--sans); transition: background var(--dur) var(--ease); }
+.ship-upsell:hover { background: #F7EAD2; }
+.ship-upsell span { font-weight: 400; font-size: var(--fs-xs); color: var(--ink-soft); }

@@ -45,7 +45,7 @@ export function productCard(p) {
 
 export const applePayButton = (extra = "") => `<button class="btn btn--apple-pay btn--block" type="button" ${extra}>${ICONS.apple}<span>Pay</span><span class="sr-only">with Apple Pay</span></button>`;
 export const faqList = (items) => `<div class="faq-list">${items.map(([q, a]) => `<details><summary>${esc(q)}</summary><div class="faq-a">${a}</div></details>`).join("")}</div>`;
-export const ctaBand = (h = "One jar. Two ingredients. One daily ritual.", p = `Honey with Fresh Ginger, 15 oz — $23.99. Free shipping over $${CFG.freeShipOver}, 30-day happiness guarantee.`) => `<section class="section--tight"><div class="wrap"><div class="cta-band reveal"><div><h2>${h}</h2><p style="margin-top:.75rem">${p}</p></div><div class="cta-band__actions cluster"><a class="btn btn--on-dark" href="${HERO_URL}">Shop the jar — $23.99</a><a class="btn btn--ghost" style="color:var(--cream);border-color:rgb(246 240 230 / .4)" href="/ritual/">The ritual</a></div></div></div></section>`;
+export const ctaBand = (h = "One jar lasts about six weeks. Start tomorrow morning.", p = `Honey with Fresh Ginger, 15 oz — $23.99. Two jars $44.99 and shipping is on us. Thirty days to change your mind, opened jar included.`) => `<section class="section--tight"><div class="wrap"><div class="cta-band reveal"><div><h2>${h}</h2><p style="margin-top:.75rem">${p}</p></div><div class="cta-band__actions cluster"><a class="btn btn--on-dark" href="${HERO_URL}">Get the jar — $23.99</a><a class="btn btn--ghost" style="color:var(--cream);border-color:rgb(246 240 230 / .4)" href="/ritual/">The ritual</a></div></div></div></section>`;
 
 function header() {
   return `<a class="skip" href="#main">Skip to content</a>
@@ -94,8 +94,8 @@ function drawer() {
 function footer() {
   const col = (t, items) => `<div><h3>${t}</h3><ul>${items.map(([l, h]) => `<li><a href="${h}">${l}</a></li>`).join("")}</ul></div>`;
   return `<footer class="footer"><div class="wrap">
-  <div class="footer__news"><div><h2>Notes from the kitchen</h2><p>One letter a month: new batches, recipes, and the occasional early jar. 15% off your first order when you join.</p></div>
-    <form class="news-form" data-news-form novalidate><label class="sr-only" for="news-email">Email address</label><input class="input" id="news-email" type="email" name="email" placeholder="you@example.com" autocomplete="email" required><button class="btn btn--on-dark" type="submit">Join</button><p class="small">No spam, ever. Unsubscribe in one tap. <a href="/privacy/">Privacy</a>.</p></form></div>
+  <div class="footer__news"><div><h2>Notes from the kitchen</h2><p>One letter a month: new batches, recipes, and the occasional early jar. 15% off your first order (up to $5) when you join.</p></div>
+    <form class="news-form" data-news-form novalidate><label class="sr-only" for="news-email">Email address</label><input class="input" id="news-email" type="email" name="email" placeholder="you@example.com" autocomplete="email" required><button class="btn btn--on-dark" type="submit">Send my code</button><p class="small">No spam, ever. Unsubscribe in one tap. <a href="/privacy/">Privacy</a>.</p></form></div>
   <div class="footer__grid">
     <div class="footer__brand"><a class="logo" href="/">${logoMark({ size: 40 })}</a><p>${BRAND.positioning}</p>
       <div class="footer__promise"><div>${ICONS.truck}<span>Free US shipping over $${CFG.freeShipOver} · ships in 1–2 business days</span></div><div>${ICONS.refresh}<span>30-day happiness guarantee — if a jar isn’t for you, we’ll make it right</span></div><div>${ICONS.leaf}<span>Raw honey + fresh ginger · small batches · nothing else</span></div></div></div>

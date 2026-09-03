@@ -29,7 +29,7 @@ const USES = [
 /* ---------------- HOME ---------------- */
 function home() {
   const p = HERO;
-  const featured = PRODUCTS.filter((x) => x.featured).slice(0, 3);
+  const featured = ["hg-15", "hg-duo", "hg-trio"].map((id) => PRODUCTS.find((x) => x.id === id));
   const body = `
 <section class="hero"><div class="wrap hero__grid">
   <div class="hero__copy">
@@ -43,7 +43,7 @@ function home() {
         <button class="btn btn--primary btn--block" type="button" data-add="${p.id}" data-tier-add style="min-height:3.25rem">Add to cart — <span data-tier-label>${money(p.price)}</span></button>
         ${applePayButton(`data-express-buy="${p.id}" data-tier-express aria-label="Buy now with Apple Pay"`)}
       </div>
-      <p class="offer-nudge" style="margin-top:var(--s-4)">First jar? Code <code>FIRSTJAR</code> takes <strong>15% off</strong> — ${money(p.price * 0.85)} today.</p>
+      <p class="offer-nudge" style="margin-top:var(--s-4)">First jar? Code <code>FIRSTJAR</code> takes <strong>15% off</strong> (up to $5) — ${money(p.price - Math.min(5, p.price * 0.15))} today.</p>
       <p class="urgency" style="margin-top:var(--s-4)" data-dispatch><strong>Ships today</strong> if you order before 1pm PT</p>
       <p class="small muted" data-tier-ship style="margin-top:var(--s-2)"></p>
     </div>
@@ -53,10 +53,12 @@ function home() {
 </div></section>
 
 <section class="proof"><div class="wrap proof__in">
-  <div class="proof__item">${stars(5)}<strong>${p.rating}</strong><span>${p.reviews} REVIEWS</span></div>
-  <div class="proof__item"><strong>2</strong><span>INGREDIENTS, THAT'S ALL</span></div>
-  <div class="proof__item"><strong>30</strong><span>DAY GUARANTEE</span></div>
-  <div class="proof__item"><strong>1–2</strong><span>DAYS TO DISPATCH</span></div>
+  ${REVIEWS_VERIFIED
+    ? `<div class="proof__item">${stars(5)}<strong>${p.rating}</strong><span>${p.reviews} REVIEWS</span></div>`
+    : `<div class="proof__item"><strong>2</strong><span>INGREDIENTS, THAT'S ALL</span></div>`}
+  <div class="proof__item"><strong>15 oz</strong><span>ABOUT SIX WEEKS</span></div>
+  <div class="proof__item"><strong>30</strong><span>DAY GUARANTEE, OPENED JAR TOO</span></div>
+  <div class="proof__item"><strong>1PM PT</strong><span>ORDER BY, SHIPS TODAY</span></div>
 </div></section>
 
 <div class="ribbon" aria-hidden="true"><div class="ribbon__track">${"<span>Raw honey</span><span>Fresh ginger</span><span>Nothing else</span><span>Scoop</span><span>Stir</span><span>Sip</span><span>Small batch</span><span>Made in the USA</span>".repeat(2)}</div></div>
@@ -73,7 +75,7 @@ function home() {
 </div></section>
 
 <section class="section section--well"><div class="wrap">
-  <div class="section-head center"><p class="eyebrow">The jar</p><h2>Honey with Fresh Ginger, three ways to bring it home</h2><p class="lede mx-auto measure">One recipe. The signature 15 oz, the everyday 8 oz, and the set that ships free.</p></div>
+  <div class="section-head center"><p class="eyebrow">The jar</p><h2>One jar, two, or three.</h2><p class="lede mx-auto measure">The same honey either way. The sets ship free and cost less per jar — $23.99, $22.50, $21.00.</p></div>
   <div class="products products--featured">${featured.map(productCard).join("")}</div>
   <p class="center" style="margin-top:var(--s-6)"><a class="btn btn--ghost" href="/shop/">Shop everything</a></p>
 </div></section>
@@ -107,18 +109,31 @@ function home() {
 </div></section>
 
 <section class="section section--well" id="reviews"><div class="wrap">
-  <div class="section-head center"><p class="eyebrow">From the counter</p><h2>${REVIEWS_VERIFIED ? "What happens after the first jar" : "Early jars, honest words"}</h2>${REVIEWS_VERIFIED ? `<div class="rating" style="justify-content:center;margin-top:var(--s-3)">${stars(5)}<span><strong>${p.rating}</strong> out of 5 · ${p.reviews} verified reviews</span></div>` : `<p class="lede mx-auto measure">We're a family, not a factory — we're collecting reviews one jar at a time.</p>`}</div>
-  <div class="grid grid--3">${REVIEWS.map(reviewCard).join("")}</div>
-  ${REVIEWS_VERIFIED ? "" : `<p class="sample-note">Sample reviews shown for layout — to be replaced with verified customer reviews before launch.</p>`}
-  <div class="center" style="margin-top:var(--s-7)"><a class="btn btn--primary" href="${HERO_URL}">Try it — ${money(p.price)}, guaranteed 30 days</a><p class="small muted" style="margin-top:var(--s-3)">Free shipping over $${CFG.freeShipOver} · ships in 1–2 business days</p></div>
+  ${REVIEWS_VERIFIED ? `
+  <div class="section-head center"><p class="eyebrow">From the counter</p><h2>What happens after the first jar</h2><div class="rating" style="justify-content:center;margin-top:var(--s-3)">${stars(5)}<span><strong>${p.rating}</strong> out of 5 · ${p.reviews} verified reviews</span></div></div>
+  <div class="grid grid--3">${REVIEWS.map(reviewCard).join("")}</div>` : `
+  <div class="wrap--narrow center stack" style="--flow:var(--s-4)">
+    <p class="eyebrow">The guarantee</p>
+    <h2>If the first jar isn’t for you, we’ll make it right.</h2>
+    <p class="lede">We’re a family business with one product, so we would rather hear that it wasn’t for you than have you keep a jar you don’t reach for. Thirty days, opened or not — write to us and we’ll refund it. We won’t ask you to ship it back.</p>
+    <p class="serif" style="color:var(--ink-soft)">— the family behind Functional Elixirs</p>
+  </div>`}
+  <div class="center" style="margin-top:var(--s-7)"><a class="btn btn--primary" href="${HERO_URL}">Try it — ${money(p.price)}, guaranteed 30 days</a><p class="small muted" style="margin-top:var(--s-3)">Free shipping over $${CFG.freeShipOver} · ships in 1–2 business days · <a href="/contact/">questions first? write to us</a></p></div>
 </div></section>
+
+<section class="section--tight"><div class="wrap"><div class="split">
+  <div class="stack reveal" style="--flow:var(--s-4)"><p class="eyebrow">Giving one</p><h2>It’s the gift people actually finish.</h2><p class="lede">The signature 15 oz jar, a turned beechwood dipper, an unbleached linen wrap and a printed ritual card — hand-wrapped by us, ready to hand over. Tell us what to write on the card and we’ll write it.</p><p><a class="btn btn--primary" href="/shop/honey-with-fresh-ginger-gift-box/">The Gift Box — ${money(byId["hg-gift"].price)}</a></p><p class="small muted">Ships direct with no prices in the box. <a href="/gift-guide/">More gift ideas →</a></p></div>
+  <div class="hero__art reveal" style="aspect-ratio:4/5;box-shadow:var(--shadow-2)">${art("hero", byId["hg-gift"], { alt: altFor(byId["hg-gift"], "hero") })}</div>
+</div></div></section>
 
 <section class="section"><div class="wrap">
   <div class="section-head" style="display:flex;justify-content:space-between;align-items:baseline;gap:var(--s-4);flex-wrap:wrap"><div><p class="eyebrow">Journal</p><h2>Notes from the kitchen</h2></div><a class="btn btn--link" href="/journal/">All posts →</a></div>
   <div class="grid grid--3">${ARTICLES.slice(0, 3).map((a) => `<article class="acard reveal"><div class="acard__media">${a.photo ? photo(a.photo) : art(a.art, p, { alt: a.title })}</div><span class="meta">${a.tag} · ${a.readTime} min read</span><h3><a href="${a.url}">${esc(a.title)}</a></h3><p>${esc(a.excerpt)}</p></article>`).join("")}</div>
 </div></section>
-${ctaBand()}`;
-  return { path: "/", html: page({ title: `${BRAND.name} — Honey with Fresh Ginger | Nature’s Daily Elixir`, description: "Rich raw honey infused with real fresh ginger. Two ingredients, one daily ritual — scoop, stir, sip. 15 oz jar $23.99, free US shipping over $40, Apple Pay checkout.", path: "/", body, jsonld: [jsonld.product(p)] }) };
+${ctaBand()}
+
+<div class="buybar" id="buybar"><div class="buybar__info"><strong>${esc(p.name)}</strong><span data-tier-sub>${esc(p.size)} · ${money(p.price)}</span></div><div class="cluster" style="flex-wrap:nowrap"><button class="btn btn--apple-pay btn--sm" type="button" data-express-buy="${p.id}" data-tier-express aria-label="Buy now with Apple Pay">${ICONS.apple} Pay</button><button class="btn btn--primary btn--sm" type="button" data-add="${p.id}" data-tier-add>Add — <span data-tier-label>${money(p.price)}</span></button></div></div>`;
+  return { path: "/", html: page({ title: `Raw Honey with Fresh Ginger — 15 oz, ${money(p.price)} | ${BRAND.name}`, description: `Raw honey infused with real fresh ginger root — you can see the threads in the jar. Sweet first, then a slow warmth. 15 oz for ${money(p.price)}, two jars for ${money(byId["hg-duo"].price)} with free US shipping. 30-day guarantee.`, path: "/", body, jsonld: [jsonld.product(p)] }) };
 }
 
 /* ---------------- SHOP ---------------- */
@@ -156,7 +171,9 @@ function product(p) {
     ["Is it safe for children?", "Honey should not be given to infants under 12 months. For everyone else, it’s food — enjoy it as you would any honey."],
     ["Is it vegan / gluten-free?", "It contains honey, so it isn’t vegan. It is naturally gluten-free with no added sugar, colours or preservatives."],
   ];
-  const related = PRODUCTS.filter((x) => x.id !== p.id).slice(0, 4);
+  /* deliberate ladder, not a blind slice — the 3-pack used to fall off the end */
+  const order = ["hg-duo", "hg-trio", "hg-gift", "dipper", "hg-8"];
+  const related = order.map((id) => PRODUCTS.find((x) => x.id === id)).filter((x) => x && x.id !== p.id).slice(0, 4);
   const body = `${breadcrumbs([{ name: "Shop", href: "/shop/" }, { name: p.name, href: p.url }])}
 <section class="wrap pdp">
   <div class="pdp__gallery"><div class="gallery" data-gallery>
@@ -174,7 +191,12 @@ function product(p) {
       ${p.id === "hg-15" ? "" : `<div class="qty" role="group" aria-label="Quantity"><button type="button" data-dec aria-label="Decrease quantity">−</button><input type="number" data-qty-input inputmode="numeric" min="1" max="${Math.max(1, p.stock)}" value="1" aria-label="Quantity"></div>`}
       <button class="btn btn--primary btn--block" type="button" data-add="${p.id}" ${p.id === "hg-15" ? "data-tier-add" : ""} style="min-height:3.25rem;grid-column:${p.id === "hg-15" ? "1 / -1" : "auto"}">Add to cart — <span data-tier-label>${money(p.price)}</span></button>
     </div>
-    <p class="offer-nudge">First jar? Code <code>FIRSTJAR</code> takes <strong>15% off</strong> at checkout.</p>
+    <div class="objections">
+      <p><strong>Worried it’s too hot?</strong> It’s honey first. The ginger arrives after, as warmth rather than heat.</p>
+      <p><strong>How long does it last?</strong> A 15 oz jar is roughly six weeks of morning spoonfuls — one teaspoon a day.</p>
+      <p><strong>What if I don’t like it?</strong> Tell us within 30 days and we’ll make it right. Opened jar included.</p>
+    </div>
+    <p class="offer-nudge">First jar? Code <code>FIRSTJAR</code> takes <strong>15% off</strong> (up to $5) at checkout.</p>
     <p class="urgency" data-dispatch><strong>Ships today</strong> if you order before 1pm PT</p>
     <div class="express">
       ${applePayButton(`data-express-buy="${p.id}" ${p.id === "hg-15" ? "data-tier-express" : ""} aria-label="Buy now with Apple Pay"`)}
@@ -204,7 +226,9 @@ function product(p) {
   <div class="marquee-photo reveal">${photo(p.type === "Accessory" ? "ritual" : "jars")}</div>
 </div></section>
 
-<section class="section section--well" id="reviews"><div class="wrap"><div class="section-head center"><p class="eyebrow">Reviews</p><h2>${REVIEWS_VERIFIED ? `${p.rating} out of 5` : "Early jars, honest words"}</h2><p class="muted">${REVIEWS_VERIFIED ? `${p.reviews} verified reviews` : "Sample reviews shown for layout — to be replaced with verified reviews before launch."}</p></div><div class="grid grid--3">${REVIEWS.slice(0, 3).map(reviewCard).join("")}</div></div></section>
+<section class="section section--well" id="reviews"><div class="wrap">${REVIEWS_VERIFIED
+  ? `<div class="section-head center"><p class="eyebrow">Reviews</p><h2>${p.rating} out of 5</h2><p class="muted">${p.reviews} verified reviews</p></div><div class="grid grid--3">${REVIEWS.slice(0, 3).map(reviewCard).join("")}</div>`
+  : `<div class="wrap--narrow center stack" style="--flow:var(--s-4)"><p class="eyebrow">The guarantee</p><h2>If it isn’t for you, we’ll make it right.</h2><p class="lede">Thirty days, opened or not. Write to us and we’ll refund it — we won’t ask you to ship the jar back.</p><p><a class="btn btn--ghost" href="/contact/">Questions first? Write to us</a></p></div>`}</div></section>
 
 <section class="section"><div class="wrap--narrow"><h2 class="center" style="margin-bottom:var(--s-5)">Questions</h2>${faqList(faq)}</div></section>
 

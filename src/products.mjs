@@ -10,7 +10,7 @@ export const PRODUCTS = [
   P({
     id: "hg-15", slug: "honey-with-fresh-ginger", sku: "FE-HG-15",
     name: "Honey with Fresh Ginger", sub: "15 oz (425 g) glass jar", label: ["HONEY", "with fresh", "GINGER"], size: "15 oz",
-    price: 23.99, stock: 9, badge: "Signature", rating: 4.9, reviews: 214,
+    price: 23.99, stock: 240, badge: "Signature", rating: 4.9, reviews: 214,
     honey: "#7A3E0F", art: "hero",
     notes: ["Warm honey", "Fresh ginger", "Gentle heat"],
     use: { spoon: "1 tsp", water: "8 oz warm", when: "Morning", also: "Tea · oats · glazes" },
@@ -34,7 +34,7 @@ export const PRODUCTS = [
   P({
     id: "hg-duo", slug: "honey-with-fresh-ginger-two-jar-set", sku: "FE-HG-DUO",
     name: "The Two-Jar Set", sub: "2 × 15 oz jars · one for the counter, one for the pantry", label: ["HONEY", "with fresh", "GINGER"], size: "2 × 15 oz",
-    price: 44.99, compareAt: 47.98, stock: 20, badge: "Ships free", rating: 5.0, reviews: 41,
+    price: 44.99, compareAt: 47.98, stock: 150, badge: "Ships free", rating: 5.0, reviews: 41,
     honey: "#7A3E0F", art: "open",
     notes: ["Two months", "of mornings", "Ships free"],
     use: { spoon: "1 tsp", water: "8 oz warm", when: "Daily", also: "Share one" },
@@ -46,7 +46,7 @@ export const PRODUCTS = [
   P({
     id: "hg-gift", slug: "honey-with-fresh-ginger-gift-box", sku: "FE-HG-GIFT",
     name: "The Gift Box", sub: "15 oz jar · wooden dipper · linen wrap · ritual card", label: ["HONEY", "with fresh", "GINGER"], size: "15 oz + dipper",
-    price: 34.99, stock: 12, badge: "Gift", rating: 5.0, reviews: 37,
+    price: 34.99, stock: 80, badge: "Gift", rating: 5.0, reviews: 37,
     honey: "#7A3E0F", art: "hero",
     notes: ["Ready to give", "Hand-wrapped", "Card included"],
     use: { spoon: "1 tsp", water: "8 oz warm", when: "Morning", also: "Write a note at checkout" },
@@ -81,13 +81,13 @@ export const PRODUCTS = [
   }),
   P({
     id: "hg-trio", slug: "honey-with-fresh-ginger-family-pack", sku: "FE-HG-TRIO",
-    name: "The Family Pack", sub: "3 × 15 oz jars · the whole household, covered", label: ["HONEY", "with fresh", "GINGER"], size: "3 × 15 oz",
-    price: 64.99, compareAt: 71.97, stock: 8, badge: "Best value", rating: 5.0, reviews: 18,
+    name: "The Family Pack", sub: "3 × 15 oz jars · about four months of mornings", label: ["HONEY", "with fresh", "GINGER"], size: "3 × 15 oz",
+    price: 62.99, compareAt: 71.97, stock: 60, badge: "Best value", rating: 5.0, reviews: 18,
     honey: "#7A3E0F", art: "open",
     notes: ["Three jars", "Ships free", "Best value"],
     use: { spoon: "1 tsp", water: "8 oz warm", when: "Daily", also: "Kitchen · office · gift" },
     ingredients: "Three 15 oz jars of Honey with Fresh Ginger.", origin: "Blended and jarred in small batches in the USA",
-    short: "Three signature jars at our best per-jar price. One for the kitchen, one for the office, one to give.",
+    short: "Three signature jars at $21.00 each — our lowest one-time price. Save $8.98, and it ships free.",
     story: "For the houses where the jar empties faster than anyone admits.",
     tags: ["set", "value", "gift"],
   }),
