@@ -89,7 +89,7 @@ function jar(id, p, x, y, s = 1, { lidOff = false, dipper = false } = {}) {
     ? `<g transform="translate(340 300) rotate(-72)"><rect x="-158" y="-34" width="316" height="68" rx="10" fill="url(#${id}-lid)"/><ellipse cx="0" cy="-34" rx="158" ry="26" fill="url(#${id}-lidtop)"/>${[126, 92, 58, 28].map((r) => `<ellipse cx="0" cy="-34" rx="${r}" ry="${r * .16}" fill="none" stroke="#9D7A4E" stroke-opacity=".3"/>`).join("")}</g>`
     : `<g><rect x="-8" y="-72" width="316" height="78" rx="12" fill="url(#${id}-lid)"/>${[40, 90, 140, 190, 240].map((gx) => `<path d="M${gx} -66 v 66" stroke="#8F6D42" stroke-opacity=".18" stroke-width="2"/>`).join("")}<ellipse cx="150" cy="-72" rx="158" ry="26" fill="url(#${id}-lidtop)"/>${[126, 92, 58, 28].map((r) => `<ellipse cx="150" cy="-72" rx="${r}" ry="${r * .16}" fill="none" stroke="#9D7A4E" stroke-opacity=".3"/>`).join("")}<rect x="-8" y="0" width="316" height="8" rx="3" fill="#3a2410" opacity=".35"/></g>`;
   const dip = dipper ? `<g transform="translate(150 -160) rotate(14)"><rect x="-6" y="0" width="12" height="230" rx="5" fill="#C9A66F"/><ellipse cx="0" cy="230" rx="22" ry="26" fill="#B8955F"/>${[212, 224, 236, 248].map((yy) => `<ellipse cx="0" cy="${yy}" rx="22" ry="4" fill="none" stroke="#8F6D42" stroke-opacity=".6"/>`).join("")}<path class="honey-drip" d="M0 256 C 0 290, -6 320, 2 360" stroke="url(#${id}-honey)" stroke-width="6" stroke-linecap="round" fill="none" opacity=".95"/></g>` : "";
-  return `<g class="float" transform="translate(${x} ${y}) scale(${s})">
+  return `<g class="float"><g transform="translate(${x} ${y}) scale(${s})">
     <g clip-path="url(#${id}-jarclip)">
       <rect x="0" y="0" width="300" height="296" fill="url(#${id}-honey)"/>
       ${slices(9, p?.id?.length || 1)}
@@ -102,7 +102,7 @@ function jar(id, p, x, y, s = 1, { lidOff = false, dipper = false } = {}) {
     <path class="glass-sweep" d="M26 40 L 26 262" stroke="#fff" stroke-opacity=".55" stroke-width="9" stroke-linecap="round"/>
     <path d="M270 60 L 270 250" stroke="#fff" stroke-opacity=".22" stroke-width="5" stroke-linecap="round"/>
     ${lid}${dip}
-  </g>`;
+  </g></g>`;
 }
 
 function cup(id, x, y, s = 1, { steam = true, anim = false, spoon = true } = {}) {
