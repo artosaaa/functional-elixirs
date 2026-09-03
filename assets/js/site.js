@@ -207,7 +207,7 @@
 
   function freeShipHTML() {
     const sub = Cart.subtotal(); const left = CFG.freeShipOver - sub; const pct = Math.min(100, (sub / CFG.freeShipOver) * 100);
-    return `<div class="free-ship">${left > 0 ? `Add <strong>${money(left)}</strong> for free standard shipping` : `<strong>You’ve unlocked free shipping.</strong>`}<div class="free-ship__bar"><i style="width:${pct}%"></i></div></div>`;
+    return `<div class="free-ship"><span>${left > 0 ? `Add <strong>${money(left)}</strong> more for free standard shipping` : `<strong>You’ve unlocked free shipping.</strong>`}</span><div class="free-ship__bar"><i style="width:${pct}%"></i></div></div>`;
   }
 
   const emptyHTML = `<div class="empty">
