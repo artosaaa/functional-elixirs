@@ -107,7 +107,7 @@ function defs(id, p) {
 const wall = (id, H) => `<rect width="1000" height="${H}" fill="url(#${id}-wall)"/><rect width="1000" height="${H}" fill="url(#${id}-light)"/>`;
 function bokeh(id, anim) {
   const dots = [[840, 150, 90, .26], [930, 320, 62, .18], [720, 96, 48, .22], [120, 260, 72, .12], [640, 240, 34, .16], [900, 92, 30, .18]];
-  return `<g filter="url(#${id}-soft)"><ellipse cx="790" cy="150" rx="330" ry="270" fill="#FFF6DC" opacity=".5"/></g>
+  return `<g filter="url(#${id}-soft)"><ellipse class="window-glow" cx="790" cy="150" rx="330" ry="270" fill="#FFF6DC" opacity=".5"/></g>
   <g class="${anim ? "bokeh" : ""}" filter="url(#${id}-soft)">${dots.map(([x, y, r, o], i) => `<circle cx="${x}" cy="${y}" r="${r}" fill="#FFF8E6" opacity="${o}" style="--i:${i}"/>`).join("")}</g>`;
 }
 function table(id, y, H) {
@@ -134,7 +134,7 @@ function label(id, p) {
        <text x="0" y="215" text-anchor="middle" font-family="${SERIF}" font-size="27" letter-spacing="3.4" fill="#B8903E" font-weight="700" stroke="#B8903E" stroke-width=".8">GINGER</text>
        <text x="0" y="229" text-anchor="middle" font-family="${SCRIPT}" font-size="10" fill="#6B5A3E" font-style="italic">Crafted from family tradition</text>
        <text x="0" y="241" text-anchor="middle" font-family="${SANS}" font-size="7.5" letter-spacing="1" fill="#6B5A3E">${esc(p?.size || "15 oz")} (425 g)</text>`;
-  return `<g clip-path="url(#${id}-label)"><path d="${LABEL}" fill="#FBF7EC"/>${stripes}<ellipse cx="0" cy="202" rx="118" ry="62" fill="url(#${id}-veil)"/>${mark}${body}<path d="${LABEL}" fill="url(#${id}-paper)"/></g>`;
+  return `<g clip-path="url(#${id}-label)"><path d="${LABEL}" fill="#FBF7EC"/>${stripes}<ellipse cx="0" cy="202" rx="118" ry="62" fill="url(#${id}-veil)"/>${mark}${body}<path d="${LABEL}" fill="url(#${id}-paper)"/><g class="label-sheen"><path d="M-190 -60 L-120 -60 L-40 360 L-110 360 Z" fill="#fff" opacity=".42"/></g></g>`;
 }
 
 /* ---------- bamboo lid, on the jar ---------- */

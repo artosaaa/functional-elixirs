@@ -48,6 +48,7 @@ function home() {
       <p class="small muted" data-tier-ship style="margin-top:var(--s-2)"></p>
     </div>
     <div class="hero__meta"><span>${ICONS.truck} Free shipping over $${CFG.freeShipOver}</span><span>${ICONS.refresh} 30-day guarantee</span><span>${ICONS.leaf} Made in the USA</span></div>
+    <a class="scroll-cue" href="#reviews"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 5v14M6 13l6 6 6-6"/></svg>How it's made</a>
   </div>
   <div class="hero__art vt-hero">${art("hero", p, { alt: altFor(p, "hero"), anim: true, className: "scene--live" })}<div class="hero__tag"><strong>${esc(p.name)}</strong><span>15 oz (425 g) · ${money(p.price)}</span></div></div>
 </div></section>
