@@ -704,3 +704,4 @@ body:has(.drawer[data-open]) .drawer-backdrop { opacity: 1; visibility: visible;
   @keyframes nudge { 0%, 90%, 100% { transform: translateY(0); } 95% { transform: translateY(-3px); } }
   .hero__tag { animation: rise .8s var(--ease) both .7s, nudge 9s ease-in-out 3s infinite; }
 }
+@media (min-width: 64em) { .grid--4 { grid-template-columns: repeat(4, 1fr); } }
