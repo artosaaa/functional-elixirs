@@ -1,0 +1,14 @@
+# Functional Elixirs — robots.txt
+# Everything public is crawlable. Transactional and account pages are noindex via <meta> and excluded here for tidiness.
+User-agent: *
+Allow: /
+Disallow: /cart/
+Disallow: /checkout/
+Disallow: /order-confirmation/
+Disallow: /account/
+
+# AI crawlers: allowed by default. Uncomment to opt out of training crawls.
+# User-agent: GPTBot
+# Disallow: /
+
+Sitemap: https://functional-elixirs.vercel.app/sitemap.xml
