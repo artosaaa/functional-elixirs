@@ -88,7 +88,7 @@ function drawer() {
     <p class="tiny" style="margin-top:1rem">No spam, ever. Unsubscribe in one tap. <a href="/privacy/">Privacy</a>.</p>
   </div>
 </div>
-<div class="cookie" id="cookie" role="region" aria-label="Cookie notice"><p>We use a few essential cookies to run the cart, and nothing else unless you say so. <a href="/cookies/">Cookie notice</a></p><div class="cluster"><button class="btn btn--primary btn--sm" type="button" data-cookie="all">Accept all</button><button class="btn btn--ghost btn--sm" type="button" data-cookie="essential">Essential only</button></div></div>`;
+<div class="cookie" id="cookie" role="region" aria-label="Cookie notice"><p>Essential cookies only, unless you say otherwise. <a href="/cookies/">Details</a></p><div class="cluster"><button class="btn btn--primary btn--sm" type="button" data-cookie="all">Accept all</button><button class="btn btn--ghost btn--sm" type="button" data-cookie="essential">Essential only</button></div></div>`;
 }
 
 function footer() {
