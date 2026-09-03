@@ -19,6 +19,12 @@ export const BRAND = {
 
 export const CFG = { freeShipOver: 40, lowStockAt: 10, returnsDays: 30 };
 
+/* Star ratings, review counts and testimonials on this site are SAMPLES, not real customer data.
+   While this is false the site shows no numeric rating and emits no aggregateRating in JSON-LD —
+   publishing invented ratings is an FTC problem and a Google structured-data violation.
+   Flip to true only once REVIEWS/rating/reviews in products.mjs hold real verified data. */
+export const REVIEWS_VERIFIED = false;
+
 export const NAV = [
   { label: "Shop", href: "/shop/" },
   { label: "The Ritual", href: "/ritual/" },

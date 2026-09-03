@@ -1,5 +1,5 @@
 /* Home · Shop · Product (all SKUs) · Collections · Cart · Checkout · Confirmation · Track */
-import { page, jsonld, breadcrumbs, productCard, applePayButton, faqList, ctaBand, stars, ICONS, esc, money, BRAND, CFG, abs, HERO_URL, bundleTiers, valueBullets } from "../layout.mjs";
+import { page, jsonld, breadcrumbs, productCard, applePayButton, faqList, ctaBand, stars, ICONS, esc, money, BRAND, CFG, abs, HERO_URL, bundleTiers, valueBullets, guaranteeBlock, REVIEWS_VERIFIED } from "../layout.mjs";
 import { PRODUCTS, HERO, COLLECTIONS, byId } from "../products.mjs";
 import { art, altFor, photo } from "../art.mjs";
 import { ARTICLES } from "../articles.mjs";
@@ -36,13 +36,14 @@ function home() {
     <p class="eyebrow">Raw honey · fresh ginger · nothing else</p>
     <h1>Sweet first. Then the warmth.</h1>
     <p class="lede">The two-ingredient jar our mother made every morning for herself. One spoon in warm water — and the day starts differently.</p>
-    <div class="hero__proof">${stars(p.rating)}<span><strong>${p.rating}</strong> · <a href="#reviews">${p.reviews} reviews</a></span><span aria-hidden="true">·</span><span class="stock" data-tier-stock data-stock="${p.id}">In stock</span></div>
+    <div class="hero__proof">${REVIEWS_VERIFIED ? `${stars(p.rating)}<span><strong>${p.rating}</strong> · <a href="#reviews">${p.reviews} reviews</a></span><span aria-hidden="true">·</span>` : `<span>${ICONS.leaf} Two ingredients · nothing else</span><span aria-hidden="true">·</span>`}<span class="stock" data-tier-stock data-stock="${p.id}">In stock</span></div>
     <div class="hero__ctas" style="max-width:28rem" data-buy-anchor>
       ${bundleTiers(["hg-15", "hg-duo", "hg-trio"], { selected: 0 })}
       <div class="express" style="margin-top:var(--s-4)">
         <button class="btn btn--primary btn--block" type="button" data-add="${p.id}" data-tier-add style="min-height:3.25rem">Add to cart — <span data-tier-label>${money(p.price)}</span></button>
         ${applePayButton(`data-express-buy="${p.id}" data-tier-express aria-label="Buy now with Apple Pay"`)}
       </div>
+      <p class="offer-nudge" style="margin-top:var(--s-4)">First jar? Code <code>FIRSTJAR</code> takes <strong>15% off</strong> — ${money(p.price * 0.85)} today.</p>
       <p class="urgency" style="margin-top:var(--s-4)" data-dispatch><strong>Ships today</strong> if you order before 1pm PT</p>
       <p class="small muted" data-tier-ship style="margin-top:var(--s-2)"></p>
     </div>
@@ -106,8 +107,9 @@ function home() {
 </div></section>
 
 <section class="section section--well" id="reviews"><div class="wrap">
-  <div class="section-head center"><p class="eyebrow">From the counter</p><h2>What happens after the first jar</h2><div class="rating" style="justify-content:center;margin-top:var(--s-3)">${stars(5)}<span><strong>${p.rating}</strong> out of 5 · ${p.reviews} verified reviews</span></div></div>
+  <div class="section-head center"><p class="eyebrow">From the counter</p><h2>${REVIEWS_VERIFIED ? "What happens after the first jar" : "Early jars, honest words"}</h2>${REVIEWS_VERIFIED ? `<div class="rating" style="justify-content:center;margin-top:var(--s-3)">${stars(5)}<span><strong>${p.rating}</strong> out of 5 · ${p.reviews} verified reviews</span></div>` : `<p class="lede mx-auto measure">We're a family, not a factory — we're collecting reviews one jar at a time.</p>`}</div>
   <div class="grid grid--3">${REVIEWS.map(reviewCard).join("")}</div>
+  ${REVIEWS_VERIFIED ? "" : `<p class="sample-note">Sample reviews shown for layout — to be replaced with verified customer reviews before launch.</p>`}
   <div class="center" style="margin-top:var(--s-7)"><a class="btn btn--primary" href="${HERO_URL}">Try it — ${money(p.price)}, guaranteed 30 days</a><p class="small muted" style="margin-top:var(--s-3)">Free shipping over $${CFG.freeShipOver} · ships in 1–2 business days</p></div>
 </div></section>
 
@@ -163,7 +165,7 @@ function product(p) {
   </div></div>
   <div class="pdp__buy">
     <div class="pdp__title"><p class="eyebrow">${esc(p.type)}${p.badge ? ` · ${esc(p.badge)}` : ""}</p><h1>${esc(p.name)}</h1><p class="sub">${esc(p.sub)}</p></div>
-    <div class="rating">${stars(p.rating)}<span>${p.rating} · <a href="#reviews">${p.reviews} reviews</a></span></div>
+    ${REVIEWS_VERIFIED ? `<div class="rating">${stars(p.rating)}<span>${p.rating} · <a href="#reviews">${p.reviews} reviews</a></span></div>` : ""}
     <div class="pdp__price"><span class="price">${money(p.price)}${p.compareAt ? `<s>${money(p.compareAt)}</s>` : ""}</span><span class="stock" data-stock="${p.id}">In stock</span></div>
     <p class="muted">${esc(p.short)}</p>
     <div class="notes">${p.notes.map((n, i) => `<div><small>${["Taste", "Then", "Finish"][i] || "Note"}</small><strong>${esc(n)}</strong></div>`).join("")}</div>
@@ -172,6 +174,7 @@ function product(p) {
       ${p.id === "hg-15" ? "" : `<div class="qty" role="group" aria-label="Quantity"><button type="button" data-dec aria-label="Decrease quantity">−</button><input type="number" data-qty-input inputmode="numeric" min="1" max="${Math.max(1, p.stock)}" value="1" aria-label="Quantity"></div>`}
       <button class="btn btn--primary btn--block" type="button" data-add="${p.id}" ${p.id === "hg-15" ? "data-tier-add" : ""} style="min-height:3.25rem;grid-column:${p.id === "hg-15" ? "1 / -1" : "auto"}">Add to cart — <span data-tier-label>${money(p.price)}</span></button>
     </div>
+    <p class="offer-nudge">First jar? Code <code>FIRSTJAR</code> takes <strong>15% off</strong> at checkout.</p>
     <p class="urgency" data-dispatch><strong>Ships today</strong> if you order before 1pm PT</p>
     <div class="express">
       ${applePayButton(`data-express-buy="${p.id}" ${p.id === "hg-15" ? "data-tier-express" : ""} aria-label="Buy now with Apple Pay"`)}
@@ -184,6 +187,7 @@ function product(p) {
       <div>${ICONS.lock}<span>Secure checkout · Apple Pay, Google Pay, all major cards</span></div>
     </div>
     ${valueBullets()}
+    ${guaranteeBlock()}
     <div class="acc">
       <details open><summary>How to enjoy it</summary><div class="acc__body">
         <div class="brew"><div><strong>${esc(p.use.spoon)}</strong><small>Scoop</small></div><div><strong>${esc(p.use.water)}</strong><small>Stir into</small></div><div><strong>${esc(p.use.when)}</strong><small>When</small></div><div><strong style="font-size:var(--fs-base)">${esc(p.use.also)}</strong><small>Also</small></div></div>
@@ -200,7 +204,7 @@ function product(p) {
   <div class="marquee-photo reveal">${photo(p.type === "Accessory" ? "ritual" : "jars")}</div>
 </div></section>
 
-<section class="section section--well" id="reviews"><div class="wrap"><div class="section-head center"><p class="eyebrow">Reviews</p><h2>${p.rating} out of 5</h2><p class="muted">${p.reviews} verified reviews</p></div><div class="grid grid--3">${REVIEWS.map(reviewCard).join("")}</div></div></section>
+<section class="section section--well" id="reviews"><div class="wrap"><div class="section-head center"><p class="eyebrow">Reviews</p><h2>${REVIEWS_VERIFIED ? `${p.rating} out of 5` : "Early jars, honest words"}</h2><p class="muted">${REVIEWS_VERIFIED ? `${p.reviews} verified reviews` : "Sample reviews shown for layout — to be replaced with verified reviews before launch."}</p></div><div class="grid grid--3">${REVIEWS.slice(0, 3).map(reviewCard).join("")}</div></div></section>
 
 <section class="section"><div class="wrap--narrow"><h2 class="center" style="margin-bottom:var(--s-5)">Questions</h2>${faqList(faq)}</div></section>
 

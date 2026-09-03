@@ -790,3 +790,15 @@ body:has(.capture[data-open]) .capture-backdrop { opacity: 1; visibility: visibl
 .value-bullets { display: grid; gap: var(--s-2); font-size: var(--fs-sm); }
 .value-bullets div { display: flex; gap: .55em; align-items: flex-start; color: var(--ink); }
 .value-bullets svg { width: 1.05rem; height: 1.05rem; flex: none; color: var(--sage-2); margin-top: .18rem; }
+
+/* --- Named guarantee block --- */
+.guarantee { border: 1px solid var(--sage); background: var(--sage-tint); border-radius: var(--r-md); padding: var(--s-4) var(--s-5); }
+.guarantee strong { display: flex; align-items: center; gap: .5em; font: 600 var(--fs-base)/1.3 var(--sans); color: var(--navy-2); }
+.guarantee strong svg { width: 1.2rem; height: 1.2rem; color: var(--sage-2); flex: none; }
+.guarantee p { margin-top: .5rem; font-size: var(--fs-sm); color: var(--ink-soft); line-height: 1.55; }
+/* --- First-order offer nudge under the CTA --- */
+.offer-nudge { font-size: var(--fs-sm); color: var(--ink); background: #FBF3E2; border: 1px dashed var(--gold-2); border-radius: var(--r-md); padding: .7em 1em; text-align: center; }
+.offer-nudge code { font-family: var(--mono); font-weight: 700; letter-spacing: .08em; color: var(--navy-2); }
+.offer-nudge strong { color: var(--navy-2); }
+/* --- Sample-review disclosure --- */
+.sample-note { font-size: var(--fs-xs); color: var(--ink-mute); text-align: center; margin-top: var(--s-5); }

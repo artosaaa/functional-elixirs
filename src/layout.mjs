@@ -1,5 +1,5 @@
 /* Page shell: <head> with SEO + JSON-LD, header, footer, cart drawer, cookie notice, runtime catalog */
-import { BRAND, CFG, NAV, FOOTER, SITE_URL, HERO_URL, esc, money, abs, ICONS, stars, logoMark } from "./site.mjs";
+import { BRAND, CFG, NAV, FOOTER, SITE_URL, HERO_URL, esc, money, abs, ICONS, stars, logoMark, REVIEWS_VERIFIED } from "./site.mjs";
 import { PRODUCTS, catalogJSON } from "./products.mjs";
 import { art, altFor } from "./art.mjs";
 
@@ -18,7 +18,7 @@ export const jsonld = {
     "@context": "https://schema.org", "@type": "Product", "@id": abs(p.url + "#product"), name: `${p.name} — ${p.sub}`, description: p.short, sku: p.sku, brand: { "@type": "Brand", name: BRAND.name },
     image: [abs(`/assets/img/og-${p.slug}.svg`)], url: abs(p.url), category: p.type === "Accessory" ? "Kitchen > Utensils" : "Food > Honey > Infused honey",
     additionalProperty: [{ "@type": "PropertyValue", name: "Ingredients", value: p.ingredients }, { "@type": "PropertyValue", name: "Size", value: p.size }],
-    aggregateRating: { "@type": "AggregateRating", ratingValue: p.rating, reviewCount: p.reviews, bestRating: 5 },
+    ...(REVIEWS_VERIFIED ? { aggregateRating: { "@type": "AggregateRating", ratingValue: p.rating, reviewCount: p.reviews, bestRating: 5 } } : {}),
     offers: { "@type": "Offer", url: abs(p.url), priceCurrency: "USD", price: p.price.toFixed(2), priceValidUntil: "2027-12-31", itemCondition: "https://schema.org/NewCondition", availability: p.stock > 0 ? (p.stock <= CFG.lowStockAt ? "https://schema.org/LimitedAvailability" : "https://schema.org/InStock") : "https://schema.org/OutOfStock", seller: { "@id": abs("/#organization") },
       shippingDetails: { "@type": "OfferShippingDetails", shippingRate: { "@type": "MonetaryAmount", value: "5.95", currency: "USD" }, shippingDestination: { "@type": "DefinedRegion", addressCountry: "US" }, deliveryTime: { "@type": "ShippingDeliveryTime", handlingTime: { "@type": "QuantitativeValue", minValue: 0, maxValue: 1, unitCode: "DAY" }, transitTime: { "@type": "QuantitativeValue", minValue: 2, maxValue: 7, unitCode: "DAY" } } },
       hasMerchantReturnPolicy: { "@type": "MerchantReturnPolicy", applicableCountry: "US", returnPolicyCategory: "https://schema.org/MerchantReturnFiniteReturnWindow", merchantReturnDays: CFG.returnsDays, returnMethod: "https://schema.org/ReturnByMail", returnFees: "https://schema.org/FreeReturn" } },
@@ -49,7 +49,7 @@ export const ctaBand = (h = "One jar. Two ingredients. One daily ritual.", p = `
 
 function header() {
   return `<a class="skip" href="#main">Skip to content</a>
-<p class="announce">Free shipping over $${CFG.freeShipOver} · Ships in 1–2 business days · <a href="${HERO_URL}">Honey with Fresh Ginger, 15 oz — $23.99</a></p>
+<p class="announce"><strong>15% off your first jar</strong> with code <strong>FIRSTJAR</strong> · Free US shipping over $${CFG.freeShipOver} · <a href="${HERO_URL}">Shop the 15 oz jar — $23.99</a></p>
 <header class="header"><div class="wrap header__in">
   <a class="logo" href="/" aria-label="${BRAND.name} — home">${logoMark({ size: 40 })}</a>
   <nav class="nav" aria-label="Primary">${NAV.map((n) => `<a href="${n.href}">${n.label}</a>`).join("")}</nav>
@@ -104,6 +104,12 @@ function footer() {
   <div class="footer__bottom"><div><p>© ${new Date().getFullYear()} ${BRAND.legal} · Made in the USA</p><p class="disclaimer" style="margin-top:.5rem">${BRAND.disclaimer}</p></div><ul>${FOOTER.legal.map(([l, h]) => `<li><a href="${h}">${l}</a></li>`).join("")}</ul><div class="pay-marks" aria-label="Accepted payments"><span>APPLE PAY</span><span>G PAY</span><span>VISA</span><span>MC</span><span>AMEX</span></div></div>
 </div></footer>`;
 }
+
+/* The guarantee, given a name and a position next to the price (offer-strategist rec). */
+export const guaranteeBlock = () => `<div class="guarantee">
+  <strong>${ICONS.shield} Open the jar. Then decide.</strong>
+  <p>Take it every morning for thirty days. If it isn't for you, write to us — we'll refund you. An opened jar is fine; please don't ship it back. <a href="/returns/">How it works</a></p>
+</div>`;
 
 export function page({ title, description, path, body, type = "website", image = OG_DEFAULT, jsonld: ld = [], breadcrumbs: bc, noindex = false, bodyClass = "", published, modified, extraHead = "" }) {
   const fullTitle = title.includes(BRAND.name) ? title : `${title} | ${BRAND.name}`;
@@ -183,4 +189,4 @@ export const valueBullets = () => `<div class="value-bullets">
   <div>${ICONS.refresh}<span><strong>30-day happiness guarantee.</strong> Don't love it? We'll make it right, jar or no jar.</span></div>
 </div>`;
 
-export { stars, PRODUCTS, ICONS, esc, money, BRAND, CFG, abs, SITE_URL, HERO_URL, logoMark };
+export { stars, PRODUCTS, ICONS, esc, money, BRAND, CFG, abs, SITE_URL, HERO_URL, logoMark, REVIEWS_VERIFIED };
