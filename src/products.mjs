@@ -96,7 +96,7 @@ export const PRODUCTS = [
 export const HERO = PRODUCTS[0];
 export const byId = Object.fromEntries(PRODUCTS.map((p) => [p.id, p]));
 export const COLLECTIONS = {
-  "gifts-under-30": { title: "Gifts under $30", h1: "Gifts under $30", description: "Honey with fresh ginger gifts under $30 — the signature 15 oz jar, the 8 oz everyday jar and the beechwood dipper. Free shipping over $45.", lede: "A jar of honey-ginger is the kind of gift people actually finish. These are the ones we wrap most often.", filter: (p) => p.price < 30 && p.tags.includes("gift") },
+  "gifts-under-30": { title: "Gifts under $30", h1: "Gifts under $30", description: "Honey with fresh ginger gifts under $30 — the signature 15 oz jar, the 8 oz everyday jar and the beechwood dipper. Free shipping over $40.", lede: "A jar of honey-ginger is the kind of gift people actually finish. These are the ones we wrap most often.", filter: (p) => p.price < 30 && p.tags.includes("gift") },
   "for-beginners": { title: "New here? Start here", h1: "Start here", description: "New to Functional Elixirs? Start with the 15 oz signature jar or the 8 oz everyday jar, and the simple daily ritual: scoop, stir, sip.", lede: "Two ingredients and a teaspoon. If you’re new, start with a jar and the ritual — the rest follows.", filter: (p) => p.tags.includes("beginner") },
 };
 

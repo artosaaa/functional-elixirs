@@ -1,5 +1,5 @@
 /* Home · Shop · Product (all SKUs) · Collections · Cart · Checkout · Confirmation · Track */
-import { page, jsonld, breadcrumbs, productCard, applePayButton, faqList, ctaBand, stars, ICONS, esc, money, BRAND, CFG, abs, HERO_URL } from "../layout.mjs";
+import { page, jsonld, breadcrumbs, productCard, applePayButton, faqList, ctaBand, stars, ICONS, esc, money, BRAND, CFG, abs, HERO_URL, bundleTiers, valueBullets } from "../layout.mjs";
 import { PRODUCTS, HERO, COLLECTIONS, byId } from "../products.mjs";
 import { art, altFor, photo } from "../art.mjs";
 import { ARTICLES } from "../articles.mjs";
@@ -29,19 +29,29 @@ function home() {
   const body = `
 <section class="hero"><div class="wrap hero__grid">
   <div class="hero__copy">
-    <p class="eyebrow">Honey with Fresh Ginger · 15 oz jar</p>
-    <h1>Two ingredients. One daily ritual.</h1>
-    <p class="lede">Rich raw honey infused with real fresh ginger. Sweet first, then a slow, clean warmth. From our mother’s kitchen counter to yours — <a href="/ritual/">scoop, stir, sip</a>.</p>
-    <div class="hero__ctas">
-      <div class="cluster" style="margin-bottom:var(--s-3)"><span class="price" style="font-size:var(--fs-lg)">${money(p.price)}</span><span class="stock" data-stock="${p.id}">In stock</span></div>
-      <div class="express" style="max-width:26rem">
-        <div class="cluster"><button class="btn btn--primary" type="button" data-add="${p.id}">Add to cart — ${money(p.price)}</button><a class="btn btn--ghost" href="${HERO_URL}">See the jar</a></div>
-        ${applePayButton(`data-express-buy="${p.id}" aria-label="Buy Honey with Fresh Ginger with Apple Pay, ${money(p.price)}"`)}
+    <p class="eyebrow">Raw honey · fresh ginger · nothing else</p>
+    <h1>Sweet first. Then the warmth.</h1>
+    <p class="lede">The two-ingredient jar our mother made every morning for herself. One spoon in warm water — and the day starts differently.</p>
+    <div class="hero__proof">${stars(p.rating)}<span><strong>${p.rating}</strong> · <a href="#reviews">${p.reviews} reviews</a></span><span aria-hidden="true">·</span><span class="stock" data-tier-stock data-stock="${p.id}">In stock</span></div>
+    <div class="hero__ctas" style="max-width:28rem" data-buy-anchor>
+      ${bundleTiers(["hg-15", "hg-duo", "hg-trio"], { selected: 0 })}
+      <div class="express" style="margin-top:var(--s-4)">
+        <button class="btn btn--primary btn--block" type="button" data-add="${p.id}" data-tier-add style="min-height:3.25rem">Add to cart — <span data-tier-label>${money(p.price)}</span></button>
+        ${applePayButton(`data-express-buy="${p.id}" data-tier-express aria-label="Buy now with Apple Pay"`)}
       </div>
+      <p class="urgency" style="margin-top:var(--s-4)" data-dispatch><strong>Ships today</strong> if you order before 1pm PT</p>
+      <p class="small muted" data-tier-ship style="margin-top:var(--s-2)"></p>
     </div>
-    <div class="hero__meta"><span>${ICONS.truck} Free shipping over $${CFG.freeShipOver}</span><span>${ICONS.refresh} 30-day happiness guarantee</span><span>${ICONS.leaf} Raw honey · fresh ginger · nothing else</span></div>
+    <div class="hero__meta"><span>${ICONS.truck} Free shipping over $${CFG.freeShipOver}</span><span>${ICONS.refresh} 30-day guarantee</span><span>${ICONS.leaf} Made in the USA</span></div>
   </div>
   <div class="hero__art vt-hero">${art("hero", p, { alt: altFor(p, "hero"), anim: true, className: "scene--live" })}<div class="hero__tag"><strong>${esc(p.name)}</strong><span>15 oz (425 g) · ${money(p.price)}</span></div></div>
+</div></section>
+
+<section class="proof"><div class="wrap proof__in">
+  <div class="proof__item">${stars(5)}<strong>${p.rating}</strong><span>${p.reviews} REVIEWS</span></div>
+  <div class="proof__item"><strong>2</strong><span>INGREDIENTS, THAT'S ALL</span></div>
+  <div class="proof__item"><strong>30</strong><span>DAY GUARANTEE</span></div>
+  <div class="proof__item"><strong>1–2</strong><span>DAYS TO DISPATCH</span></div>
 </div></section>
 
 <div class="ribbon" aria-hidden="true"><div class="ribbon__track">${"<span>Raw honey</span><span>Fresh ginger</span><span>Nothing else</span><span>Scoop</span><span>Stir</span><span>Sip</span><span>Small batch</span><span>Made in the USA</span>".repeat(2)}</div></div>
@@ -101,7 +111,7 @@ function home() {
   <div class="grid grid--3">${ARTICLES.slice(0, 3).map((a) => `<article class="acard reveal"><div class="acard__media">${a.photo ? photo(a.photo) : art(a.art, p, { alt: a.title })}</div><span class="meta">${a.tag} · ${a.readTime} min read</span><h3><a href="${a.url}">${esc(a.title)}</a></h3><p>${esc(a.excerpt)}</p></article>`).join("")}</div>
 </div></section>
 ${ctaBand()}`;
-  return { path: "/", html: page({ title: `${BRAND.name} — Honey with Fresh Ginger | Nature’s Daily Elixir`, description: "Rich raw honey infused with real fresh ginger. Two ingredients, one daily ritual — scoop, stir, sip. 15 oz jar $23.99, free US shipping over $45, Apple Pay checkout.", path: "/", body, jsonld: [jsonld.product(p)] }) };
+  return { path: "/", html: page({ title: `${BRAND.name} — Honey with Fresh Ginger | Nature’s Daily Elixir`, description: "Rich raw honey infused with real fresh ginger. Two ingredients, one daily ritual — scoop, stir, sip. 15 oz jar $23.99, free US shipping over $40, Apple Pay checkout.", path: "/", body, jsonld: [jsonld.product(p)] }) };
 }
 
 /* ---------------- SHOP ---------------- */
@@ -114,7 +124,7 @@ function shop() {
   ["Is it the same recipe in every jar?", "Yes. Raw honey and fresh ginger root, blended in small batches. Only the amount changes."],
   ["How long does a jar last?", "Honey is naturally shelf-stable. For peak ginger flavour, enjoy within 12 months of opening — see the date on the base. <a href='/journal/how-to-store-honey-and-why-it-crystallizes/'>Storage tips</a>."],
 ])}</div></section>`;
-  return { path: "/shop/", html: page({ title: "Shop Honey with Fresh Ginger — 8 oz, 15 oz, sets & gifts", description: "Shop Functional Elixirs Honey with Fresh Ginger: the 15 oz signature jar ($23.99), 8 oz everyday jar, two-jar set, gift box and beechwood dipper. Free US shipping over $45.", path: "/shop/", body, breadcrumbs: [{ name: "Shop", href: "/shop/" }] }) };
+  return { path: "/shop/", html: page({ title: "Shop Honey with Fresh Ginger — 8 oz, 15 oz, sets & gifts", description: "Shop Functional Elixirs Honey with Fresh Ginger: the 15 oz signature jar ($23.99), 8 oz everyday jar, two-jar set, gift box and beechwood dipper. Free US shipping over $40.", path: "/shop/", body, breadcrumbs: [{ name: "Shop", href: "/shop/" }] }) };
 }
 
 function collection(slug) {
@@ -152,12 +162,14 @@ function product(p) {
     <div class="pdp__price"><span class="price">${money(p.price)}${p.compareAt ? `<s>${money(p.compareAt)}</s>` : ""}</span><span class="stock" data-stock="${p.id}">In stock</span></div>
     <p class="muted">${esc(p.short)}</p>
     <div class="notes">${p.notes.map((n, i) => `<div><small>${["Taste", "Then", "Finish"][i] || "Note"}</small><strong>${esc(n)}</strong></div>`).join("")}</div>
+    ${p.id === "hg-15" ? bundleTiers(["hg-15", "hg-duo", "hg-trio"], { selected: 0 }) : ""}
     <div class="pdp__actions" data-buy-anchor>
-      <div class="qty" role="group" aria-label="Quantity"><button type="button" data-dec aria-label="Decrease quantity">−</button><input type="number" data-qty-input inputmode="numeric" min="1" max="${Math.max(1, p.stock)}" value="1" aria-label="Quantity"></div>
-      <button class="btn btn--primary btn--block" type="button" data-add="${p.id}">Add to cart — ${money(p.price)}</button>
+      ${p.id === "hg-15" ? "" : `<div class="qty" role="group" aria-label="Quantity"><button type="button" data-dec aria-label="Decrease quantity">−</button><input type="number" data-qty-input inputmode="numeric" min="1" max="${Math.max(1, p.stock)}" value="1" aria-label="Quantity"></div>`}
+      <button class="btn btn--primary btn--block" type="button" data-add="${p.id}" ${p.id === "hg-15" ? "data-tier-add" : ""} style="min-height:3.25rem;grid-column:${p.id === "hg-15" ? "1 / -1" : "auto"}">Add to cart — <span data-tier-label>${money(p.price)}</span></button>
     </div>
+    <p class="urgency" data-dispatch><strong>Ships today</strong> if you order before 1pm PT</p>
     <div class="express">
-      ${applePayButton(`data-express-buy="${p.id}" aria-label="Buy now with Apple Pay, ${money(p.price)}"`)}
+      ${applePayButton(`data-express-buy="${p.id}" ${p.id === "hg-15" ? "data-tier-express" : ""} aria-label="Buy now with Apple Pay"`)}
       <div class="express__secondary"><button class="btn btn--gpay" type="button" data-express-buy="${p.id}" aria-label="Buy with Google Pay"><strong style="color:#4285F4">G</strong>&nbsp;Pay</button><button class="btn btn--shop-pay" type="button" data-express-buy="${p.id}" aria-label="Buy with Shop Pay">Shop <span style="font-style:normal;font-weight:400">Pay</span></button></div>
       <p class="express__or">or pay with card at checkout</p>
     </div>
@@ -166,6 +178,7 @@ function product(p) {
       <div>${ICONS.refresh}<span>30-day happiness guarantee. Not for you? <a href="/returns/">We’ll make it right.</a></span></div>
       <div>${ICONS.lock}<span>Secure checkout · Apple Pay, Google Pay, all major cards</span></div>
     </div>
+    ${valueBullets()}
     <div class="acc">
       <details open><summary>How to enjoy it</summary><div class="acc__body">
         <div class="brew"><div><strong>${esc(p.use.spoon)}</strong><small>Scoop</small></div><div><strong>${esc(p.use.water)}</strong><small>Stir into</small></div><div><strong>${esc(p.use.when)}</strong><small>When</small></div><div><strong style="font-size:var(--fs-base)">${esc(p.use.also)}</strong><small>Also</small></div></div>
@@ -188,6 +201,14 @@ function product(p) {
 
 <section class="section section--well"><div class="wrap"><div class="section-head"><p class="eyebrow">Also</p><h2>Other sizes &amp; sets</h2></div><div class="products">${related.map(productCard).join("")}</div></div></section>
 
+<div class="deskbar" id="deskbar"><div class="wrap deskbar__in">
+  <div class="deskbar__thumb">${art("front", p, { alt: "" })}</div>
+  <div class="deskbar__info"><strong>${esc(p.name)}</strong><span>${esc(p.size)} · <span data-tier-price>${money(p.price)}</span></span></div>
+  <div class="deskbar__actions">
+    ${applePayButton(`data-express-buy="${p.id}" ${p.id === "hg-15" ? "data-tier-express" : ""} aria-label="Buy now with Apple Pay"`).replace('btn--block', '')}
+    <button class="btn btn--primary" type="button" data-add="${p.id}" ${p.id === "hg-15" ? "data-tier-add" : ""}>Add to cart — <span data-tier-label>${money(p.price)}</span></button>
+  </div>
+</div></div>
 <div class="buybar" id="buybar"><div class="buybar__info"><strong>${esc(p.name)}</strong><span>${esc(p.size)} · ${money(p.price)}</span></div><div class="cluster" style="flex-wrap:nowrap"><button class="btn btn--apple-pay btn--sm" type="button" data-express-buy="${p.id}" aria-label="Buy with Apple Pay">${ICONS.apple} Pay</button><button class="btn btn--primary btn--sm" type="button" data-add="${p.id}">Add</button></div></div>`;
   return { path: p.url, html: page({ title: `${p.name} — ${p.sub} | ${money(p.price)}`, description: `${p.short} ${p.size}, ${money(p.price)}. Free US shipping over $${CFG.freeShipOver}. Apple Pay checkout.`, path: p.url, body, type: "product", image: abs(`/assets/img/og-${p.slug}.svg`), jsonld: [jsonld.product(p), jsonld.faq(faq)], breadcrumbs: [{ name: "Shop", href: "/shop/" }, { name: p.name, href: p.url }] }) };
 }

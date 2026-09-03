@@ -72,6 +72,22 @@ function drawer() {
   <div class="drawer__body" data-drawer-lines></div>
   <div class="drawer__foot" data-drawer-foot hidden></div>
 </aside>
+<div class="capture-backdrop"></div>
+<div class="capture" id="capture" role="dialog" aria-modal="true" aria-hidden="true" aria-labelledby="capture-title">
+  <button class="icon-btn capture__close" type="button" data-capture-close aria-label="Close">${ICONS.close}</button>
+  <div data-capture-body>
+    <img class="fe-mark" src="/assets/img/logo.png" width="48" height="48" alt="" decoding="async">
+    <h2 id="capture-title">Take 15% off your first jar</h2>
+    <p>One letter a month from the kitchen — new batches, recipes, and the occasional early jar. Your code arrives the moment you join.</p>
+    <form novalidate>
+      <label class="sr-only" for="capture-email">Email address</label>
+      <input class="input" id="capture-email" type="email" name="email" placeholder="you@example.com" autocomplete="email" required>
+      <button class="btn btn--primary btn--block" type="submit">Send my 15% code</button>
+      <button class="btn btn--link tiny mx-auto" type="button" data-capture-close>No thanks, I'll pay full price</button>
+    </form>
+    <p class="tiny" style="margin-top:1rem">No spam, ever. Unsubscribe in one tap. <a href="/privacy/">Privacy</a>.</p>
+  </div>
+</div>
 <div class="cookie" id="cookie" role="region" aria-label="Cookie notice"><p>We use a few essential cookies to run the cart, and nothing else unless you say so. <a href="/cookies/">Cookie notice</a></p><div class="cluster"><button class="btn btn--primary btn--sm" type="button" data-cookie="all">Accept all</button><button class="btn btn--ghost btn--sm" type="button" data-cookie="essential">Essential only</button></div></div>`;
 }
 
@@ -138,5 +154,33 @@ ${drawer()}
 </body>
 </html>`;
 }
+
+/* Bundle tiers — the buy buttons follow the selected radio (see initTiers in site.js). */
+export function bundleTiers(ids, { selected = 0 } = {}) {
+  const items = ids.map((id) => PRODUCTS.find((p) => p.id === id)).filter(Boolean);
+  const base = items[0];
+  return `<fieldset class="tiers" data-tiers>
+    <legend class="sr-only">Choose your pack</legend>
+    <div class="tiers__head"><strong>Choose your pack</strong><span>Two ships free</span></div>
+    ${items.map((p, i) => {
+      const jars = p.id === "hg-trio" ? 3 : p.id === "hg-duo" ? 2 : 1;
+      const each = p.price / jars;
+      const save = p.compareAt ? p.compareAt - p.price : 0;
+      const pct = p.compareAt ? Math.round((save / p.compareAt) * 100) : 0;
+      const badge = save ? `<span class="tier__save ${i === items.length - 1 ? "tier__save--best" : ""}">${i === 1 ? "Most popular · " : ""}save ${money(save)}</span>` : "";
+      return `<label class="tier ${i === 1 ? "tier--pop" : ""}">
+        <input type="radio" name="tier" value="${p.id}" ${i === selected ? "checked" : ""}>
+        <span class="tier__main"><span class="tier__qty">${jars} jar${jars > 1 ? "s" : ""}</span><span class="tier__meta">${jars === 1 ? "15 oz · about six weeks" : jars === 2 ? "30 oz · one to keep, one to give" : "45 oz · the whole household"}${p.price >= CFG.freeShipOver ? " · ships free" : ""}</span></span>
+        <span class="tier__right"><span class="tier__price">${p.compareAt ? `<s>${money(p.compareAt)}</s>` : ""}${money(p.price)}</span><span class="tier__each">${money(each)} each</span></span>
+        ${badge}</label>`;
+    }).join("")}
+  </fieldset>`;
+}
+
+export const valueBullets = () => `<div class="value-bullets">
+  <div>${ICONS.check}<span><strong>Two ingredients.</strong> Raw honey and fresh ginger root — never powder, never extract.</span></div>
+  <div>${ICONS.check}<span><strong>No added sugar</strong>, colours, flavourings or preservatives.</span></div>
+  <div>${ICONS.refresh}<span><strong>30-day happiness guarantee.</strong> Don't love it? We'll make it right, jar or no jar.</span></div>
+</div>`;
 
 export { stars, PRODUCTS, ICONS, esc, money, BRAND, CFG, abs, SITE_URL, HERO_URL, logoMark };

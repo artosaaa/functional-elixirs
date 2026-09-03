@@ -25,7 +25,7 @@ function article(a) {
   <div class="wrap--narrow"><div class="article-hero">${media(a)}</div></div>
   <div class="wrap--prose prose">${a.body}
     ${a.faq ? `<h2>Quick answers</h2>${a.faq.map(([q, ans]) => `<h3>${esc(q)}</h3><p>${ans}</p>`).join("")}` : ""}
-    <div class="callout"><strong>The jar in this story</strong><p style="margin-top:.4em"><a href="${HERO_URL}">Honey with Fresh Ginger, 15 oz</a> — $23.99, free shipping over $45. Or read <a href="/ritual/">the ritual</a> first.</p></div>
+    <div class="callout"><strong>The jar in this story</strong><p style="margin-top:.4em"><a href="${HERO_URL}">Honey with Fresh Ginger, 15 oz</a> — $23.99, free shipping over $40. Or read <a href="/ritual/">the ritual</a> first.</p></div>
   </div>
 </article>
 <section class="wrap related"><div class="section-head"><p class="eyebrow">Keep reading</p><h2>Related notes</h2></div><div class="grid grid--3">${rel.map(card).join("")}</div></section>

@@ -119,7 +119,7 @@ export const ARTICLES = [
 <h2>What to write</h2>
 <p>Keep it short and give them one instruction. Our favourite: <em>“One spoon, warm water, before the phone. Thinking of you.”</em> A gift with a tiny ritual attached is more likely to be used than admired.</p>
 <h2>Shipping straight to them</h2>
-<p>Enter their address at checkout and add a gift note; we never include prices in the box. Orders over $45 ship free, and most US addresses see the jar in 2–5 business days. Details on the <a href="/shipping/">shipping page</a>, and more ideas in the <a href="/gift-guide/">gift guide</a>.</p>`,
+<p>Enter their address at checkout and add a gift note; we never include prices in the box. Orders over $40 ship free, and most US addresses see the jar in 2–5 business days. Details on the <a href="/shipping/">shipping page</a>, and more ideas in the <a href="/gift-guide/">gift guide</a>.</p>`,
   }),
   A({
     slug: "a-jar-for-the-cold-months", tag: "Seasonal", date: "2026-04-14", readTime: 3, art: "cup", photo: "garden",

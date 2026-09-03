@@ -87,7 +87,7 @@ function shipping() {
     <p>Questions about returns? See <a href="/returns/">Returns &amp; exchanges</a>.</p>
   </div>
 </div></section>`;
-  return { path, html: page({ title: "Shipping & Delivery — Rates, Times and Free Shipping over $45", description: "Functional Elixirs shipping: free US standard shipping over $45, $5.95 standard (2–7 days), $14 express (1–3 days), free local pickup, and tracked international rates to Canada, UK and Australia.", path, body, breadcrumbs: [{ name: "Shipping & delivery", href: path }] }) };
+  return { path, html: page({ title: "Shipping & Delivery — Rates, Times and Free Shipping over $40", description: "Functional Elixirs shipping: free US standard shipping over $40, $5.95 standard (2–7 days), $14 express (1–3 days), free local pickup, and tracked international rates to Canada, UK and Australia.", path, body, breadcrumbs: [{ name: "Shipping & delivery", href: path }] }) };
 }
 
 const returns = () => policy({

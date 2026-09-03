@@ -17,7 +17,7 @@ export const BRAND = {
   disclaimer: "These statements have not been evaluated by the Food and Drug Administration. This product is not intended to diagnose, treat, cure, or prevent any disease.",
 };
 
-export const CFG = { freeShipOver: 45, lowStockAt: 10, returnsDays: 30 };
+export const CFG = { freeShipOver: 40, lowStockAt: 10, returnsDays: 30 };
 
 export const NAV = [
   { label: "Shop", href: "/shop/" },

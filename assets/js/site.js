@@ -10,7 +10,7 @@
 
   /* ---------- 0. Config (mirrors src/site.mjs — keep in sync) ---------- */
   const CFG = {
-    freeShipOver: 45,
+    freeShipOver: 40,
     lowStockAt: 10,
     taxRateCA: 0.0875,               // California nexus (edit for your state). Real: use a tax API (Stripe Tax / TaxJar).
     promos: {
@@ -122,7 +122,7 @@
         const adj = { west: [-2, -3], central: [-1, -2], east: [0, 0] }[z] || [0, 0];
         const std = CFG.rates.standard, exp = CFG.rates.express;
         return [
-          { ...std, price: free ? 0 : std.price, days: [Math.max(2, std.days[0] + adj[0]), Math.max(3, std.days[1] + adj[1])], note: free ? "Free — you’re over $45" : `Free over ${money(CFG.freeShipOver)}` },
+          { ...std, price: free ? 0 : std.price, days: [Math.max(2, std.days[0] + adj[0]), Math.max(3, std.days[1] + adj[1])], note: free ? `Free — you’re over ${money(CFG.freeShipOver)}` : `Free over ${money(CFG.freeShipOver)}` },
           { ...exp, days: z === "west" ? [1, 2] : exp.days, note: "USPS Priority Express / UPS 2nd Day" },
           { ...CFG.rates.pickup, note: "Ready same day — we’ll email you when it’s boxed." },
         ];
@@ -614,10 +614,94 @@
   /* Current nav */
   function markNav() { const p = location.pathname; $$(".nav a, .mobile-nav nav a").forEach((a) => { const h = a.getAttribute("href"); if (h !== "/" && p.startsWith(h)) a.setAttribute("aria-current", "page"); }); }
 
+  /* ---------- 7b. Selling layer ---------- */
+
+  /* Bundle tiers: the radio picks which SKU the buy buttons add. */
+  function initTiers() {
+    $$("[data-tiers]").forEach((box) => {
+      const sync = () => {
+        const r = $('input[name="tier"]:checked', box); if (!r) return;
+        const p = product(r.value); if (!p) return;
+        $$("[data-tier-add]").forEach((b) => { b.dataset.add = p.id; const l = $("[data-tier-label]", b); if (l) l.textContent = money(p.price); });
+        $$("[data-tier-express]").forEach((b) => (b.dataset.expressBuy = p.id));
+        $$("[data-tier-price]").forEach((el) => (el.textContent = money(p.price)));
+        $$("[data-tier-compare]").forEach((el) => { el.textContent = p.compareAt ? money(p.compareAt) : ""; el.hidden = !p.compareAt; });
+        $$("[data-tier-stock]").forEach((el) => (el.dataset.stock = p.id));
+        $$("[data-tier-ship]").forEach((el) => {
+          const free = p.price >= CFG.freeShipOver;
+          el.innerHTML = free ? "<strong>Ships free.</strong> No minimum to hit." : `Add ${money(CFG.freeShipOver - p.price)} more for free shipping`;
+        });
+        render();
+      };
+      box.addEventListener("change", (e) => { if (e.target.name === "tier") sync(); });
+      sync();
+    });
+  }
+
+  /* Same-day dispatch line — honest: counts down to the real 1pm PT cutoff, then rolls to the next business day. */
+  function initDispatch() {
+    const els = $$("[data-dispatch]"); if (!els.length) return;
+    const tick = () => {
+      const now = new Date();
+      // "now" expressed in Los Angeles wall-clock time
+      const pt = new Date(now.toLocaleString("en-US", { timeZone: "America/Los_Angeles" }));
+      const cutoff = new Date(pt); cutoff.setHours(13, 0, 0, 0);
+      const day = pt.getDay(); const weekend = day === 0 || day === 6;
+      let msg;
+      if (!weekend && pt < cutoff) {
+        const mins = Math.floor((cutoff - pt) / 60000), h = Math.floor(mins / 60), m = mins % 60;
+        msg = `<strong>Ships today</strong> if you order in the next ${h ? h + "h " : ""}${m}m`;
+      } else {
+        const next = new Date(pt); next.setDate(next.getDate() + 1);
+        while (next.getDay() === 0 || next.getDay() === 6) next.setDate(next.getDate() + 1);
+        msg = `<strong>Ships ${next.toLocaleDateString("en-US", { weekday: "long" })}</strong> — packed by hand in small batches`;
+      }
+      els.forEach((el) => (el.innerHTML = msg));
+    };
+    tick(); setInterval(tick, 60000);
+  }
+
+  /* Sticky desktop buy bar — mirrors the mobile one above 56em. */
+  function initDeskbar() {
+    const bar = $("#deskbar"), anchor = $("[data-buy-anchor]");
+    if (!bar || !anchor || !("IntersectionObserver" in window)) return;
+    new IntersectionObserver(([en]) => bar.toggleAttribute("data-show", !en.isIntersecting && en.boundingClientRect.top < 0), { threshold: 0 }).observe(anchor);
+  }
+
+  /* First-order email capture: once per 14 days, never on cart/checkout, never if already joined. */
+  function initCapture() {
+    const el = $("#capture"); if (!el) return;
+    if (/^\/(cart|checkout|order-confirmation|account)\//.test(location.pathname)) return;
+    const seen = store.get("sw_capture", null);
+    if (seen && (Date.now() - seen.at) < 14 * 864e5) return;
+    let opened = false;
+    const open = () => {
+      if (opened || document.querySelector(".drawer[data-open]")) return;
+      opened = true; el.setAttribute("data-open", ""); el.removeAttribute("aria-hidden");
+      store.set("sw_capture", { at: Date.now(), state: "shown" });
+      setTimeout(() => $("input", el)?.focus(), 340);
+    };
+    const close = () => { el.removeAttribute("data-open"); el.setAttribute("aria-hidden", "true"); };
+    const timer = setTimeout(open, 28000);
+    const exit = (e) => { if (e.clientY <= 0) { clearTimeout(timer); open(); document.removeEventListener("mouseout", exit); } };
+    document.addEventListener("mouseout", exit);
+    $$("[data-capture-close]", el).forEach((b) => b.addEventListener("click", close));
+    $(".capture-backdrop")?.addEventListener("click", close);
+    document.addEventListener("keydown", (e) => { if (e.key === "Escape" && el.hasAttribute("data-open")) close(); });
+    $("form", el)?.addEventListener("submit", (e) => {
+      e.preventDefault(); const em = $('input[type="email"]', e.target);
+      if (!em.checkValidity()) { em.reportValidity(); return; }
+      store.set("sw_capture", { at: Date.now(), state: "joined" });
+      /* REAL: POST to Klaviyo / Mailchimp here, then issue a single-use code. */
+      $("[data-capture-body]", el).innerHTML = `<h2>Here's your code.</h2><p>15% off your first jar — it's already waiting in your cart at checkout.</p><p><span class="capture__code">FIRSTJAR</span></p><p style="margin-top:1.25rem"><a class="btn btn--primary btn--block" href="/shop/honey-with-fresh-ginger/">Shop the 15 oz jar</a></p>`;
+      Promo.apply("FIRSTJAR");
+    });
+  }
+
   /* ---------- 8. Boot ---------- */
   document.addEventListener("DOMContentLoaded", () => {
     Drawer.init(); render(); markNav();
-    initPDP(); initShipCalc(); Checkout.init(); initConfirmation(); initTrack(); initAuth(); initAccount(); initContact(); initCookie(); initReveal();
+    initPDP(); initTiers(); initDispatch(); initDeskbar(); initCapture(); initShipCalc(); Checkout.init(); initConfirmation(); initTrack(); initAuth(); initAccount(); initContact(); initCookie(); initReveal();
     window.addEventListener("storage", (e) => { if (e.key?.startsWith("sw_")) render(); }); // multi-tab sync
   });
 
