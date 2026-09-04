@@ -74,7 +74,7 @@ function home() {
 /* ---------------- SHOP ---------------- */
 function shop() {
   const body = `${breadcrumbs([{ name: "Shop", href: "/shop/" }])}
-<div class="wrap page-head"><p class="eyebrow">Shop</p><h1>One honey. Every size of ritual.</h1><p class="lede measure--wide">Everything here is the same jar in different amounts — raw honey, fresh ginger — plus the dipper made to fit it. Free US shipping over $${CFG.freeShipOver}. Use code <strong>FIRSTJAR</strong> for 15% off your first order.</p></div>
+<div class="wrap page-head"><p class="eyebrow">Shop</p><h1>One honey. Every size of ritual.</h1><p class="lede measure--wide">Everything here is the same jar in different amounts — raw honey, fresh ginger — plus the dipper made to fit it. Free US shipping over $${CFG.freeShipOver}.</p></div>
 <section class="section--tight"><div class="wrap"><div class="products">${PRODUCTS.map(productCard).join("")}</div></div></section>
 <section class="section"><div class="wrap--narrow"><h2 class="center" style="margin-bottom:var(--s-5)">Before you choose</h2>${faqList([
   ["Which size should I start with?", `The <a href="${HERO_URL}">15 oz jar</a> is about six weeks of daily spoonfuls and the best value per ounce. The <a href="/shop/honey-with-fresh-ginger-8oz/">8 oz</a> is right for a first try or a gift.`],
@@ -131,7 +131,6 @@ function product(p) {
       <p><strong>How long does it last?</strong> A 15 oz jar is roughly six weeks of morning spoonfuls — one teaspoon a day.</p>
       <p><strong>What if I don’t like it?</strong> Tell us within 30 days and we’ll make it right. Opened jar included.</p>
     </div>
-    <p class="offer-nudge">First jar? Code <code>FIRSTJAR</code> takes <strong>15% off</strong> (up to $5) at checkout.</p>
     <p class="urgency" data-dispatch><strong>Ships today</strong> if you order before 1pm PT</p>
     <div class="express">
       ${applePayButton(`data-express-buy="${p.id}" ${p.id === "hg-15" ? "data-tier-express" : ""} aria-label="Buy now with Apple Pay"`)}

@@ -104,7 +104,7 @@
     get() { return store.get(this.key, null); },
     apply(code) {
       code = (code || "").trim().toUpperCase();
-      const p = CFG.promos[code]; if (!p) return { ok: false, msg: "That code isn’t valid. Try FIRSTJAR." };
+      const p = CFG.promos[code]; if (!p) return { ok: false, msg: "That code isn’t valid." };
       store.set(this.key, { code, ...p }); render(); return { ok: true, msg: `${p.label} applied` };
     },
     clear() { store.del(this.key); render(); },
@@ -705,7 +705,7 @@
       if (!em.checkValidity()) { em.reportValidity(); return; }
       store.set("sw_capture", { at: Date.now(), state: "joined" });
       /* REAL: POST to Klaviyo / Mailchimp here, then issue a single-use code. */
-      $("[data-capture-body]", el).innerHTML = `<h2>Here's your code.</h2><p>15% off your first jar — it's already waiting in your cart at checkout.</p><p><span class="capture__code">FIRSTJAR</span></p><p style="margin-top:1.25rem"><a class="btn btn--primary btn--block" href="${U('/shop/honey-with-fresh-ginger/')}">Shop the 15 oz jar</a></p>`;
+      $("[data-capture-body]", el).innerHTML = `<h2>You’re on the list.</h2><p>Thanks for joining — welcome to the kitchen.</p><p><span class="capture__code">FIRSTJAR</span></p><p style="margin-top:1.25rem"><a class="btn btn--primary btn--block" href="${U('/shop/honey-with-fresh-ginger/')}">Shop the 15 oz jar</a></p>`;
       Promo.apply("FIRSTJAR");
     });
   }

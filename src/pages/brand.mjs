@@ -29,6 +29,8 @@ function story() {
   <figure class="about-story__photo reveal"><img src="/assets/img/honey-ginger-jars-kitchen.jpg" alt="Jars of Functional Elixirs Honey with Fresh Ginger stacked on the kitchen counter, ready to ship" width="1200" height="1200" loading="lazy" decoding="async"><figcaption>Every batch is still jarred by hand.</figcaption></figure>
 </div></section>
 
+<figure class="about-nature reveal"><img src="/assets/img/garden-wide.jpg" alt="A wide green garden with tall trees, a pond and tents under a dramatic sky" width="1600" height="1200" loading="lazy" decoding="async"><figcaption><span class="mk-eyebrow">Inspired by nature</span><span class="about-nature__line">Created with care, in harmony with the earth.</span></figcaption></figure>
+
 <section class="stripes stripes--band"><div class="wrap"><div class="mk-band reveal">
   <span class="mk-band__bee" aria-hidden="true">${BEE}</span>
   <div class="mk-band__text"><h2 class="mk-h3">From our mother’s recipe to your daily ritual</h2><p>Functional Elixirs — Nature’s Daily Elixir.</p></div>
