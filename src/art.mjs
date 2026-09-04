@@ -26,11 +26,14 @@ import { readdirSync, existsSync } from "node:fs";
 const PHOTO_DIR = new URL("../assets/img/product/", import.meta.url);
 const VARIANTS_ORDER = ["hero", "front", "open", "cup"];
 export const PHOTOS = {};
+const WIDTHS = {};   /* <name>-400 / <name>-800 responsive variants */
 try {
   if (existsSync(PHOTO_DIR)) {
     for (const f of readdirSync(PHOTO_DIR)) {
       const m = /^(.*?)\.(jpe?g|png|webp|avif)$/i.exec(f); if (!m) continue;
-      PHOTOS[m[1].toLowerCase()] = `/assets/img/product/${f}`;
+      const key = m[1].toLowerCase();
+      if (/-(400|800)$/.test(key)) { WIDTHS[key] = `/assets/img/product/${f}`; continue; }
+      PHOTOS[key] = `/assets/img/product/${f}`;
     }
   }
 } catch {}
@@ -292,7 +295,14 @@ const VARIANTS = {
 let n = 0;
 export function art(variant, p, { alt, anim = false, className = "", slot } = {}) {
   const src = slot ? PHOTOS[slot] : findPhoto(p?.id || "brand", variant);
-  if (src) return `<img src="${src}" alt="${esc(alt)}" class="${className}" width="1000" height="${variant === "hero" ? 1200 : 1250}" loading="${anim ? "eager" : "lazy"}" ${anim ? 'fetchpriority="high"' : ""} decoding="async" style="width:100%;height:100%;object-fit:cover">`;
+  if (src) {
+    const stem = src.replace(/^.*\/(.*)\.[a-z]+$/i, "$1").toLowerCase();
+    const set = [400, 800].filter((w) => WIDTHS[`${stem}-${w}`]).map((w) => `${WIDTHS[`${stem}-${w}`]} ${w}w`);
+    set.push(`${src} 1000w`);
+    /* sizes: cards sit in a 2/3/4-up grid, the hero is roughly half the page */
+    const sizes = anim ? "(min-width: 56em) 46vw, 100vw" : "(min-width: 64em) 22vw, (min-width: 40em) 30vw, 45vw";
+    return `<img src="${src}" ${set.length > 1 ? `srcset="${set.join(", ")}" sizes="${sizes}"` : ""} alt="${esc(alt)}" class="${className}" width="1000" height="${variant === "hero" ? 1200 : 1250}" loading="${anim ? "eager" : "lazy"}" ${anim ? 'fetchpriority="high"' : ""} decoding="async" style="width:100%;height:100%;object-fit:cover">`;
+  }
   const id = `a${(n++).toString(36)}`; const fn = VARIANTS[variant] || VARIANTS.front;
   const H = variant === "hero" ? 1200 : 1250;
   return `<svg class="${className} scene" viewBox="0 0 1000 ${H}" role="img" aria-labelledby="${id}-t" preserveAspectRatio="xMidYMid slice"><title id="${id}-t">${esc(alt)}</title>${fn(id, p, anim)}</svg>`;
