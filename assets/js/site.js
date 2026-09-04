@@ -321,7 +321,7 @@
   document.addEventListener("submit", (e) => {
     const f = e.target;
     if (f.matches("[data-promo-form]")) { e.preventDefault(); const r = Promo.apply($("input", f).value); const m = $(".promo-msg", f); m.textContent = r.msg; m.toggleAttribute("data-ok", r.ok); m.toggleAttribute("data-err", !r.ok); }
-    if (f.matches("[data-news-form]")) { e.preventDefault(); const em = $('input[type="email"]', f); if (!em.checkValidity()) { em.reportValidity(); return; } f.innerHTML = `<p class="small" role="status">Welcome in. Your first note arrives with the next batch — and code <strong>FIRSTJAR</strong> takes 15% off your first order, up to $5.</p>`; /* Real: POST to Klaviyo / Mailchimp / your API */ }
+    if (f.matches("[data-news-form]")) { e.preventDefault(); const em = $('input[type="email"]', f); if (!em.checkValidity()) { em.reportValidity(); return; } f.innerHTML = `<p class="small" role="status">Welcome in. Your first note arrives with the next batch.</p>`; /* Real: POST to Klaviyo / Mailchimp / your API */ }
   });
 
   /* ---------- 6. Form validation helper (WCAG: error text is tied via aria-describedby) ---------- */
@@ -705,8 +705,7 @@
       if (!em.checkValidity()) { em.reportValidity(); return; }
       store.set("sw_capture", { at: Date.now(), state: "joined" });
       /* REAL: POST to Klaviyo / Mailchimp here, then issue a single-use code. */
-      $("[data-capture-body]", el).innerHTML = `<h2>You’re on the list.</h2><p>Thanks for joining — welcome to the kitchen.</p><p><span class="capture__code">FIRSTJAR</span></p><p style="margin-top:1.25rem"><a class="btn btn--primary btn--block" href="${U('/shop/honey-with-fresh-ginger/')}">Shop the 15 oz jar</a></p>`;
-      Promo.apply("FIRSTJAR");
+      $("[data-capture-body]", el).innerHTML = `<h2>You’re on the list.</h2><p>Thanks for joining — welcome to the kitchen.</p><p style="margin-top:1.25rem"><a class="btn btn--primary btn--block" href="${U('/shop/honey-with-fresh-ginger/')}">Shop the 15 oz jar</a></p>`;
     });
   }
 
