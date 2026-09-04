@@ -6,8 +6,8 @@ import { art, altFor, photo } from "../art.mjs";
 const head = (crumb, eyebrow, h1, lede, center = false) => `${breadcrumbs([{ name: crumb, href: "" }])}<div class="wrap page-head ${center ? "page-head--center" : ""}"><p class="eyebrow">${eyebrow}</p><h1>${h1}</h1><p class="lede ${center ? "measure mx-auto" : "measure--wide"}">${lede}</p></div>`;
 
 function story() {
-  const path = "/our-story/";
-  const body = `${head("Our story", "Our story", "It started with our mom.", "Functional Elixirs began with our mother and a simple ritual she created for her own wellness.")}
+  const path = "/about-us/";
+  const body = `${head("About us", "About us", "It started with our mom.", "Functional Elixirs began with our mother and a simple ritual she created for her own wellness.")}
 <section class="section--tight"><div class="wrap split">
   <div class="marquee-photo reveal">${photo("jars")}</div>
   <div class="prose reveal">
@@ -34,7 +34,7 @@ function story() {
   <div class="stat reveal"><strong>15 oz</strong><span>about six weeks of the ritual</span></div>
 </div></div></section>
 ${ctaBand("Try the jar that started it.", `Honey with Fresh Ginger, 15 oz — ${money(HERO.price)}. Free shipping over $${CFG.freeShipOver}.`)}`;
-  return { path, html: page({ title: "Our Story — It Started With Our Mom", description: "Functional Elixirs began with our mother’s daily ritual of honey and fresh ginger. Two ingredients, a family tradition, and a jar we believed was worth sharing.", path, body, breadcrumbs: [{ name: "Our story", href: path }] }) };
+  return { path, html: page({ title: "About Us — It Started With Our Mom", description: "Functional Elixirs began with our mother’s daily ritual of honey and fresh ginger. Two ingredients, a family tradition, and a jar we believed was worth sharing.", path, body, breadcrumbs: [{ name: "About us", href: path }] }) };
 }
 
 function ritual() {

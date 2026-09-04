@@ -1,4 +1,5 @@
 /* Home · Shop · Product (all SKUs) · Collections · Cart · Checkout · Confirmation · Track */
+import { BEE, LINE } from "../site.mjs";
 import { page, jsonld, breadcrumbs, productCard, applePayButton, faqList, ctaBand, stars, ICONS, esc, money, BRAND, CFG, abs, HERO_URL, bundleTiers, valueBullets, guaranteeBlock, REVIEWS_VERIFIED } from "../layout.mjs";
 import { PRODUCTS, HERO, COLLECTIONS, byId } from "../products.mjs";
 import { art, altFor, photo } from "../art.mjs";
@@ -29,112 +30,45 @@ const USES = [
 /* ---------------- HOME ---------------- */
 function home() {
   const p = HERO;
-  const featured = ["hg-15", "hg-duo", "hg-trio"].map((id) => PRODUCTS.find((x) => x.id === id));
+  const gallery = [
+    ["/assets/img/ritual-teapot-window-light.jpg", "A ceramic teapot and cup on a linen-covered table in soft window light"],
+    ["/assets/img/garden-terraces-green.jpg", "Green garden terraces and tall trees under a wide sky"],
+    ["/assets/img/tea-table-garden-morning.jpg", "A teapot and two cups of tea set out on a garden table on a bright morning"],
+    ["/assets/img/tea-table-garden-book.jpg", "Teapot, two cups and a book on a table overlooking the garden"],
+  ];
+  const features = [
+    [LINE.leaf, "Natural ingredients", "Pure, simple, and sustainably sourced."],
+    [LINE.honeycomb, "Functional benefits", "Thoughtfully crafted to support your well-being."],
+    [LINE.cup, "Mindful moments", "Rituals that bring balance to your day."],
+    [BEE, "Inspired by nature", "Created with care in harmony with the earth."],
+  ];
+  const trust = [[LINE.no, "No preservatives"], [LINE.drop, "No additives"], [LINE.jar, "Made in small batches"], [LINE.heart, "Made with love"]];
   const body = `
-<section class="hero"><div class="wrap hero__grid">
-  <div class="hero__copy">
-    <p class="eyebrow">Raw honey · fresh ginger · nothing else</p>
-    <h1>Sweet first. Then the warmth.</h1>
-    <p class="lede">The two-ingredient jar our mother made every morning for herself. One spoon in warm water — and the day starts differently.</p>
-    <div class="hero__proof">${REVIEWS_VERIFIED ? `${stars(p.rating)}<span><strong>${p.rating}</strong> · <a href="#reviews">${p.reviews} reviews</a></span><span aria-hidden="true">·</span>` : `<span>${ICONS.leaf} Two ingredients · nothing else</span><span aria-hidden="true">·</span>`}<span class="stock" data-tier-stock data-stock="${p.id}">In stock</span></div>
-    <div class="hero__ctas" style="max-width:28rem" data-buy-anchor>
-      ${bundleTiers(["hg-15", "hg-duo", "hg-trio"], { selected: 0 })}
-      <div class="express" style="margin-top:var(--s-4)">
-        <button class="btn btn--primary btn--block" type="button" data-add="${p.id}" data-tier-add style="min-height:3.25rem">Add to cart — <span data-tier-label>${money(p.price)}</span></button>
-        ${applePayButton(`data-express-buy="${p.id}" data-tier-express aria-label="Buy now with Apple Pay"`)}
-      </div>
-      <p class="offer-nudge" style="margin-top:var(--s-4)">First jar? Code <code>FIRSTJAR</code> takes <strong>15% off</strong> (up to $5) — ${money(p.price - Math.min(5, p.price * 0.15))} today.</p>
-      <p class="urgency" style="margin-top:var(--s-4)" data-dispatch><strong>Ships today</strong> if you order before 1pm PT</p>
-      <p class="small muted" data-tier-ship style="margin-top:var(--s-2)"></p>
-    </div>
-    <div class="hero__meta"><span>${ICONS.truck} Free shipping over $${CFG.freeShipOver}</span><span>${ICONS.refresh} 30-day guarantee</span><span>${ICONS.leaf} Made in the USA</span></div>
-    <a class="scroll-cue" href="#reviews"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 5v14M6 13l6 6 6-6"/></svg>How it's made</a>
+<section class="mk-hero"><div class="wrap mk-hero__in">
+  <div class="mk-hero__copy reveal">
+    <p class="mk-eyebrow">Nature’s Daily Elixir</p>
+    <h1 class="mk-h1">Honey.<br>Ginger.<br>Wellness.</h1>
+    <span class="mk-rule" aria-hidden="true"></span>
+    <p class="mk-lede">A wholesome blend of raw honey and real ginger — crafted to nourish your body and elevate your every day.</p>
+    <a class="btn btn--gold" href="/shop/">Shop now</a>
   </div>
-  <div class="hero__art vt-hero">${art("hero", p, { alt: altFor(p, "hero"), anim: true, className: "scene--live" })}<div class="hero__tag"><strong>${esc(p.name)}</strong><span>15 oz (425 g) · ${money(p.price)}</span></div></div>
+  <div class="mk-hero__photo reveal">${art("hero", p, { alt: altFor(p, "hero"), anim: true })}</div>
 </div></section>
 
-<section class="proof"><div class="wrap proof__in">
-  ${REVIEWS_VERIFIED
-    ? `<div class="proof__item">${stars(5)}<strong>${p.rating}</strong><span>${p.reviews} REVIEWS</span></div>`
-    : `<div class="proof__item"><strong>2</strong><span>INGREDIENTS, THAT'S ALL</span></div>`}
-  <div class="proof__item"><strong>15 oz</strong><span>ABOUT SIX WEEKS</span></div>
-  <div class="proof__item"><strong>30</strong><span>DAY GUARANTEE, OPENED JAR TOO</span></div>
-  <div class="proof__item"><strong>1PM PT</strong><span>ORDER BY, SHIPS TODAY</span></div>
+<section class="mk-nature"><div class="wrap">
+  <div class="mk-title reveal"><h2 class="mk-h2">Inspired by nature. Made for you.</h2><span class="mk-rule mk-rule--center" aria-hidden="true"></span></div>
+  <div class="mk-gallery">${gallery.map(([src, alt], i) => `<figure class="reveal" style="--d:${i * 90}ms"><img src="${src}" alt="${esc(alt)}" width="1400" height="1050" loading="lazy" decoding="async"></figure>`).join("")}</div>
+  <div class="mk-features">${features.map(([ic, t, d], i) => `<div class="mk-feature reveal" style="--d:${i * 90}ms"><span class="mk-feature__icon">${ic}</span><h3>${t}</h3><p>${d}</p></div>`).join("")}</div>
 </div></section>
 
-<div class="ribbon" aria-hidden="true"><div class="ribbon__track">${"<span>Raw honey</span><span>Fresh ginger</span><span>Nothing else</span><span>Scoop</span><span>Stir</span><span>Sip</span><span>Small batch</span><span>Made in the USA</span>".repeat(2)}</div></div>
-
-<section class="section"><div class="wrap split">
-  <div class="marquee-photo reveal">${photo("jars")}</div>
-  <div class="stack reveal" style="--flow:var(--s-4)">
-    <p class="eyebrow">Our story</p>
-    <h2>It started with our mom.</h2>
-    <p class="lede">Looking for natural ways to support how she felt, she began stirring honey and fresh ginger together every morning. She told us how much better her days felt. Naturally, we wanted to try it too.</p>
-    <p>We fell in love with more than the taste. It became a daily ritual that leaves us energized yet calm — a sense of balance that simply feels good. What began in her kitchen became something we believed was worth sharing.</p>
-    <p><a class="btn btn--ghost" href="/our-story/">Read the whole story</a></p>
-  </div>
-</div></section>
-
-<section class="section section--well"><div class="wrap">
-  <div class="section-head center"><p class="eyebrow">The jar</p><h2>One jar, two, or three.</h2><p class="lede mx-auto measure">The same honey either way. The sets ship free and cost less per jar — $23.99, $22.50, $21.00.</p></div>
-  <div class="products products--featured">${featured.map(productCard).join("")}</div>
-  <p class="center" style="margin-top:var(--s-6)"><a class="btn btn--ghost" href="/shop/">Shop everything</a></p>
-</div></section>
-
-<section class="section"><div class="wrap">
-  <div class="section-head"><p class="eyebrow">The ritual</p><h2>Scoop. Stir. Sip.</h2><p class="lede measure">Ninety seconds, one spoon, warm water. The whole practice — and the reason a jar lives on the counter, not in the pantry.</p></div>
-  <ol class="ritual-steps" style="list-style:none;padding:0">
-    <li class="ritual-step reveal"><h3>Scoop</h3><p>One teaspoon from the jar. Dry spoon, or the beechwood dipper.</p></li>
-    <li class="ritual-step reveal"><h3>Stir</h3><p>Into 8 oz of warm — not boiling — water until the spoon comes up clean.</p></li>
-    <li class="ritual-step reveal"><h3>Sip</h3><p>Sweet first. Then the ginger’s slow warmth. Take the minute.</p></li>
-    <li class="ritual-step reveal"><h3>Make it yours</h3><p>Lemon, tea, oatmeal, a glaze. <a href="/ritual/">Eight ways to enjoy it →</a></p></li>
-  </ol>
-</div></section>
-
-<section class="section section--sage"><div class="wrap">
-  <div class="section-head center"><p class="eyebrow">How to enjoy it</p><h2>Spoon it. Stir it. Drizzle it. Make it yours.</h2></div>
-  <div class="grid grid--4">${USES.map(([t, d, i]) => `<div class="fact reveal">${i}<div><strong>${t}</strong><span>${d}</span></div></div>`).join("")}</div>
-</div></section>
-
-<section class="section"><div class="wrap split split--reverse">
-  <div class="hero__art reveal" style="aspect-ratio:4/5;box-shadow:var(--shadow-2)">${art("open", p, { alt: altFor(p, "open") })}</div>
-  <div class="stack reveal" style="--flow:var(--s-5)">
-    <div><p class="eyebrow">Two timeless ingredients</p><h2>Naturally powerful. Nothing added.</h2></div>
-    <div class="fact-list">
-      <div class="fact">${ICONS.root}<div><strong>Ginger — a root with a long tradition</strong><span>Used in food and traditional wellness practices for centuries. Fresh root, never powder or extract — you can see the threads in the jar.</span></div></div>
-      <div class="fact">${ICONS.drop}<div><strong>Honey — nature’s golden sweetener</strong><span>Rich, raw and unfiltered. A treasured food across cultures for generations, and the reason the jar tastes the way it does.</span></div></div>
-      <div class="fact">${ICONS.leaf}<div><strong>Better together</strong><span>Sweet, warming and slightly spicy — a combination that makes everyday wellness feel less like a routine and more like a ritual.</span></div></div>
-    </div>
-    <p><a class="btn btn--ghost" href="/sourcing/">Ingredients &amp; sourcing</a></p>
-  </div>
-</div></section>
-
-<section class="section section--well" id="reviews"><div class="wrap">
-  ${REVIEWS_VERIFIED ? `
-  <div class="section-head center"><p class="eyebrow">From the counter</p><h2>What happens after the first jar</h2><div class="rating" style="justify-content:center;margin-top:var(--s-3)">${stars(5)}<span><strong>${p.rating}</strong> out of 5 · ${p.reviews} verified reviews</span></div></div>
-  <div class="grid grid--3">${REVIEWS.map(reviewCard).join("")}</div>` : `
-  <div class="wrap--narrow center stack" style="--flow:var(--s-4)">
-    <p class="eyebrow">The guarantee</p>
-    <h2>If the first jar isn’t for you, we’ll make it right.</h2>
-    <p class="lede">We’re a family business with one product, so we would rather hear that it wasn’t for you than have you keep a jar you don’t reach for. Thirty days, opened or not — write to us and we’ll refund it. We won’t ask you to ship it back.</p>
-    <p class="serif" style="color:var(--ink-soft)">— the family behind Functional Elixirs</p>
-  </div>`}
-  <div class="center" style="margin-top:var(--s-7)"><a class="btn btn--primary" href="${HERO_URL}">Try it — ${money(p.price)}, guaranteed 30 days</a><p class="small muted" style="margin-top:var(--s-3)">Free shipping over $${CFG.freeShipOver} · ships in 1–2 business days · <a href="/contact/">questions first? write to us</a></p></div>
-</div></section>
-
-<section class="section--tight"><div class="wrap"><div class="split">
-  <div class="stack reveal" style="--flow:var(--s-4)"><p class="eyebrow">Giving one</p><h2>It’s the gift people actually finish.</h2><p class="lede">The signature 15 oz jar, a turned beechwood dipper, an unbleached linen wrap and a printed ritual card — hand-wrapped by us, ready to hand over. Tell us what to write on the card and we’ll write it.</p><p><a class="btn btn--primary" href="/shop/honey-with-fresh-ginger-gift-box/">The Gift Box — ${money(byId["hg-gift"].price)}</a></p><p class="small muted">Ships direct with no prices in the box. <a href="/gift-guide/">More gift ideas →</a></p></div>
-  <div class="hero__art reveal" style="aspect-ratio:4/5;box-shadow:var(--shadow-2)">${art("hero", byId["hg-gift"], { alt: altFor(byId["hg-gift"], "hero") })}</div>
+<section class="stripes stripes--band"><div class="wrap"><div class="mk-band reveal">
+  <span class="mk-band__bee" aria-hidden="true">${BEE}</span>
+  <div class="mk-band__text"><h2 class="mk-h3">Bring Nature’s Daily Elixir into your life</h2><p>Wellness never tasted so good.</p></div>
+  <a class="btn btn--gold" href="/shop/">Shop now</a>
 </div></div></section>
 
-<section class="section"><div class="wrap">
-  <div class="section-head" style="display:flex;justify-content:space-between;align-items:baseline;gap:var(--s-4);flex-wrap:wrap"><div><p class="eyebrow">Journal</p><h2>Notes from the kitchen</h2></div><a class="btn btn--link" href="/journal/">All posts →</a></div>
-  <div class="grid grid--3">${ARTICLES.slice(0, 3).map((a) => `<article class="acard reveal"><div class="acard__media">${a.photo ? photo(a.photo) : art(a.art, p, { alt: a.title })}</div><span class="meta">${a.tag} · ${a.readTime} min read</span><h3><a href="${a.url}">${esc(a.title)}</a></h3><p>${esc(a.excerpt)}</p></article>`).join("")}</div>
-</div></section>
-${ctaBand()}
-
-<div class="buybar" id="buybar"><div class="buybar__info"><strong>${esc(p.name)}</strong><span data-tier-sub>${esc(p.size)} · ${money(p.price)}</span></div><div class="cluster" style="flex-wrap:nowrap"><button class="btn btn--apple-pay btn--sm" type="button" data-express-buy="${p.id}" data-tier-express aria-label="Buy now with Apple Pay">${ICONS.apple} Pay</button><button class="btn btn--primary btn--sm" type="button" data-add="${p.id}" data-tier-add>Add — <span data-tier-label>${money(p.price)}</span></button></div></div>`;
-  return { path: "/", html: page({ title: `Raw Honey with Fresh Ginger — 15 oz, ${money(p.price)} | ${BRAND.name}`, description: `Raw honey infused with real fresh ginger root — you can see the threads in the jar. Sweet first, then a slow warmth. 15 oz for ${money(p.price)}, two jars for ${money(byId["hg-duo"].price)} with free US shipping. 30-day guarantee.`, path: "/", body, jsonld: [jsonld.product(p)] }) };
+<section class="mk-trust"><div class="wrap mk-trust__in">${trust.map(([ic, t]) => `<span>${ic}${t}</span>`).join("")}</div></section>`;
+  return { path: "/", html: page({ title: `${BRAND.name} — Honey + Fresh Ginger | Nature’s Daily Elixir`, description: "A wholesome blend of raw honey and real fresh ginger, crafted from family tradition. Nature’s Daily Elixir — a 15 oz jar made in small batches in the USA.", path: "/", body, jsonld: [jsonld.product(p)] }) };
 }
 
 /* ---------------- SHOP ---------------- */
@@ -223,7 +157,7 @@ function product(p) {
 </section>
 
 <section class="section"><div class="wrap split">
-  <div class="stack reveal" style="--flow:var(--s-4)"><p class="eyebrow">Why this jar</p><h2>${p.type === "Accessory" ? "Made for the wide mouth." : "From our mother’s counter."}</h2><p class="lede">${esc(p.story)}</p><p><a href="/our-story/">Our story →</a></p></div>
+  <div class="stack reveal" style="--flow:var(--s-4)"><p class="eyebrow">Why this jar</p><h2>${p.type === "Accessory" ? "Made for the wide mouth." : "From our mother’s counter."}</h2><p class="lede">${esc(p.story)}</p><p><a href="/about-us/">Our story →</a></p></div>
   <div class="marquee-photo reveal">${photo(p.type === "Accessory" ? "ritual" : "jars")}</div>
 </div></section>
 

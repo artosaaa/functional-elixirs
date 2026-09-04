@@ -901,3 +901,137 @@ h1, h2 { letter-spacing: -0.018em; }
 .btn--primary:hover { background: #0F181D; }
 .btn--ghost { border-color: rgb(23 36 43 / .35); }
 .btn--ghost:hover { background: #17242B; border-color: #17242B; }
+
+/* ==========================================================================
+   22. Client mockup — bright white, gold, striped masthead, Cinzel display
+   ========================================================================== */
+:root {
+  --stripe: #E9C84B;          /* label yellow */
+  --gold-btn: #C9A227;        /* buttons, rules, icons (decorative) */
+  --gold-text: #8F6E14;       /* gold used as text — 5:1 on white */
+  --gold: var(--gold-text);
+  --gold-2: var(--gold-btn);
+  --cream:   #FFFFFF;
+  --cream-2: #FFFFFF;
+  --cream-3: #ECE7DD;
+  --well:    #F8F6F1;
+  --ink:     #1C1B19;
+  --ink-soft:#4A463F;
+  --display: "Cinzel", "Trajan Pro", "Iowan Old Style", Georgia, serif;
+  --serif:   "Cormorant Garamond", "Iowan Old Style", Georgia, serif;
+  --header-h: 3.5rem;
+}
+body { background: #fff; }
+.section--well { background: var(--well); }
+.eyebrow { color: var(--gold-text); }
+
+/* --- Stripes: alternating label-yellow and white bars --- */
+.stripes { background: repeating-linear-gradient(90deg, var(--stripe) 0 3.25rem, #fff 3.25rem 6.5rem); }
+@media (max-width: 40em) { .stripes { background: repeating-linear-gradient(90deg, var(--stripe) 0 1.75rem, #fff 1.75rem 3.5rem); } }
+
+/* --- Masthead: stripes with a white centre panel holding the lockup --- */
+.masthead { padding: 0; }
+.masthead__panel { background: #fff; width: min(100%, 54rem); margin-inline: auto; padding: clamp(1.25rem, 3vw, 2rem) clamp(1rem, 4vw, 3rem); text-align: center; }
+@media (max-width: 40em) { .masthead__panel { width: min(100%, 22rem); } }
+.lockup { display: inline-grid; justify-items: center; gap: .35rem; text-decoration: none; color: var(--ink); }
+.lockup__bee { width: 2.25rem; height: 2.25rem; color: var(--gold-btn); display: block; }
+.lockup__bee svg { width: 100%; height: 100%; }
+.lockup__name { font: 700 clamp(1.35rem, 3.2vw, 2rem)/1.05 var(--display); letter-spacing: .06em; text-transform: uppercase; color: #141311; }
+.lockup__sub { font: 500 clamp(.62rem, 1.4vw, .8rem)/1 var(--sans); letter-spacing: .32em; text-transform: uppercase; color: #2A2824; margin-top: .25rem; }
+.lockup__tag { font: 500 clamp(.55rem, 1.1vw, .66rem)/1 var(--sans); letter-spacing: .26em; text-transform: uppercase; color: #5A554C; margin-top: .55rem; }
+
+/* --- Nav row --- */
+.header--nav { position: sticky; top: 0; z-index: 50; background: rgb(255 255 255 / .96); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); border-top: 1px solid var(--cream-3); border-bottom: 1px solid var(--cream-3); }
+.navbar__in { display: grid; grid-template-columns: auto 1fr auto; align-items: center; min-height: var(--header-h); gap: var(--s-4); }
+.header--nav .nav { display: none; justify-content: center; gap: clamp(1.25rem, 3.4vw, 3rem); }
+@media (min-width: 56em) { .header--nav .nav { display: flex; } .header--nav .menu-btn { visibility: hidden; } }
+.header--nav .nav a { font: 500 .74rem/1 var(--sans); letter-spacing: .18em; text-transform: uppercase; color: #1C1B19; padding: 1.1rem 0; position: relative; text-decoration: none; }
+.header--nav .nav a::after { content: ""; position: absolute; left: 0; right: 0; bottom: .75rem; height: 2px; background: var(--gold-btn); transform: scaleX(0); transform-origin: center; transition: transform var(--dur) var(--ease); }
+.header--nav .nav a:hover::after, .header--nav .nav a[aria-current="page"]::after { transform: scaleX(1); }
+.header--nav .header__tools .icon-btn { color: var(--gold-btn); }
+.header--nav .header__tools .icon-btn:hover { color: #1C1B19; }
+
+/* --- Type used by the mockup sections --- */
+.mk-eyebrow { font: 500 .74rem/1 var(--sans); letter-spacing: .26em; text-transform: uppercase; color: var(--gold-text); }
+.mk-h1 { font: 700 clamp(2.1rem, 5.2vw, 3.9rem)/1.08 var(--display); letter-spacing: .02em; text-transform: uppercase; color: #141311; margin-top: var(--s-4); }
+.mk-h1--page { font-size: clamp(1.9rem, 4.2vw, 3rem); margin-top: var(--s-3); }
+.mk-h2 { font: 400 clamp(1.15rem, 2.4vw, 1.7rem)/1.25 var(--display); letter-spacing: .08em; text-transform: uppercase; color: #141311; text-align: center; }
+.mk-h3 { font: 600 clamp(1.05rem, 2vw, 1.35rem)/1.25 var(--display); letter-spacing: .06em; text-transform: uppercase; color: #141311; }
+.mk-rule { display: block; width: 3.25rem; height: 2px; background: var(--gold-btn); margin-top: var(--s-4); }
+.mk-rule--center { margin-inline: auto; }
+.mk-lede { font: 500 clamp(1.1rem, 1.6vw, 1.3rem)/1.5 var(--serif); color: #3C3934; max-width: 30ch; margin-top: var(--s-4); }
+.btn--gold { background: var(--gold-btn); color: #141311; font: 700 .76rem/1 var(--sans); letter-spacing: .18em; text-transform: uppercase; padding: 1.05em 2.3em; border-radius: 3px; min-height: 0; }
+.btn--gold:hover { background: #B8921F; color: #141311; }
+.mk-hero__copy .btn--gold { margin-top: var(--s-6); }
+
+/* --- Hero --- */
+.mk-hero { background: #fff; padding-block: clamp(1.5rem, 4vw, 3rem) clamp(2rem, 5vw, 4rem); }
+.mk-hero__in { display: grid; gap: var(--s-6); align-items: center; }
+@media (min-width: 56em) { .mk-hero__in { grid-template-columns: minmax(0, 5fr) minmax(0, 7fr); gap: clamp(2rem, 5vw, 4.5rem); } }
+.mk-hero__photo { aspect-ratio: 1 / 1; overflow: hidden; border-radius: 6px; background: #F4F1EA; box-shadow: 0 18px 44px rgb(20 19 17 / .10); }
+.mk-hero__photo img, .mk-hero__photo svg { width: 100%; height: 100%; object-fit: cover; object-position: center 42%; display: block; }
+@media (min-width: 56em) { .mk-hero__photo { aspect-ratio: 5 / 4; } .mk-hero__photo img { object-position: center 45%; } }
+
+/* --- Inspired by nature --- */
+.mk-nature { background: var(--well); padding-block: clamp(2.5rem, 6vw, 4.5rem); }
+.mk-title { display: grid; justify-items: center; }
+.mk-gallery { display: grid; grid-template-columns: repeat(2, 1fr); gap: var(--s-4); margin-top: clamp(1.75rem, 4vw, 2.75rem); }
+@media (min-width: 48em) { .mk-gallery { grid-template-columns: repeat(4, 1fr); gap: var(--s-4); } }
+.mk-gallery figure { margin: 0; aspect-ratio: 1 / 1; overflow: hidden; border-radius: 4px; background: #E9E4D9; }
+.mk-gallery img { width: 100%; height: 100%; object-fit: cover; display: block; transition: transform .8s var(--ease); }
+.mk-gallery figure:hover img { transform: scale(1.04); }
+.mk-features { display: grid; grid-template-columns: repeat(2, 1fr); gap: var(--s-6) var(--s-4); margin-top: clamp(2.25rem, 5vw, 3.5rem); text-align: center; }
+@media (min-width: 48em) { .mk-features { grid-template-columns: repeat(4, 1fr); gap: 0; } .mk-feature + .mk-feature { border-left: 1px solid #DDD6C8; } }
+.mk-feature { padding-inline: var(--s-4); display: grid; justify-items: center; gap: .55rem; }
+.mk-feature__icon { width: 2.9rem; height: 2.9rem; color: var(--gold-btn); display: block; }
+.mk-feature__icon svg { width: 100%; height: 100%; }
+.mk-feature h3 { font: 600 .74rem/1.2 var(--sans); letter-spacing: .2em; text-transform: uppercase; color: #1C1B19; margin-top: .25rem; }
+.mk-feature p { font: 500 1.05rem/1.4 var(--serif); color: #4A463F; max-width: 20ch; }
+
+/* --- Striped CTA band --- */
+.stripes--band { padding-block: clamp(1.5rem, 4vw, 2.5rem); }
+.mk-band { background: #fff; width: min(100%, 60rem); margin-inline: auto; padding: clamp(1.25rem, 3vw, 2rem) clamp(1.25rem, 4vw, 2.75rem); display: grid; gap: var(--s-4); align-items: center; justify-items: center; text-align: center; }
+@media (min-width: 48em) { .mk-band { grid-template-columns: auto 1fr auto; text-align: left; justify-items: start; gap: var(--s-5); } }
+.mk-band__bee { width: 3.4rem; height: 3.4rem; color: var(--gold-btn); display: block; }
+.mk-band__bee svg { width: 100%; height: 100%; }
+.mk-band__text p { font: 500 1.15rem/1.4 var(--serif); color: #3C3934; margin-top: .35rem; }
+
+/* --- Trust strip --- */
+.mk-trust { background: #fff; border-top: 1px solid var(--cream-3); }
+.mk-trust__in { display: flex; flex-wrap: wrap; justify-content: center; gap: var(--s-3) 0; padding-block: var(--s-5); }
+.mk-trust__in span { display: inline-flex; align-items: center; gap: .6rem; font: 500 .68rem/1 var(--sans); letter-spacing: .2em; text-transform: uppercase; color: #1C1B19; padding-inline: clamp(.9rem, 2.5vw, 1.75rem); }
+.mk-trust__in span + span { border-left: 1px solid #DDD6C8; }
+.mk-trust__in svg { width: 1.25rem; height: 1.25rem; color: #1C1B19; }
+@media (max-width: 40em) { .mk-trust__in span { width: 50%; justify-content: center; border-left: 0 !important; padding-block: .25rem; } }
+
+/* --- Recipes page --- */
+.recipes { display: grid; gap: var(--s-5); margin-block: var(--s-6) var(--s-8); }
+@media (min-width: 48em) { .recipes { grid-template-columns: repeat(2, 1fr); } }
+@media (min-width: 72em) { .recipes { grid-template-columns: repeat(3, 1fr); } }
+.recipe { background: #fff; border: 1px solid var(--cream-3); border-radius: 6px; padding: clamp(1.25rem, 3vw, 1.75rem); display: grid; gap: var(--s-4); align-content: start; }
+.recipe__head { display: flex; gap: var(--s-4); align-items: center; }
+.recipe__icon { width: 2.6rem; height: 2.6rem; color: var(--gold-btn); flex: none; }
+.recipe__icon svg { width: 100%; height: 100%; }
+.recipe__meta { font: 500 .66rem/1 var(--sans); letter-spacing: .2em; text-transform: uppercase; color: var(--gold-text); }
+.recipe h2 { font: 600 1.15rem/1.2 var(--display); letter-spacing: .04em; text-transform: uppercase; color: #141311; margin-top: .4rem; }
+.recipe__lede { font: 500 1.1rem/1.45 var(--serif); color: #3C3934; }
+.recipe__body { display: grid; gap: var(--s-4); }
+.recipe__body h3 { font: 600 .66rem/1 var(--sans); letter-spacing: .2em; text-transform: uppercase; color: #1C1B19; margin-bottom: .5rem; }
+.recipe__body ul, .recipe__body ol { padding-left: 1.1rem; font: 400 1rem/1.5 var(--serif); color: #3C3934; display: grid; gap: .25rem; }
+
+/* --- Global chrome tuned to the new look --- */
+.page-head h1 { font-family: var(--serif); }
+.footer { background: #141311; }
+.cookie { border-radius: 6px; }
+.btn--primary { background: #141311; }
+.btn--primary:hover { background: #000; }
+/* the old hero animations targeted .hero__* — keep the photo still and calm here */
+.mk-hero__photo .scene--live { animation: none; }
+
+/* 22b. Mockup fidelity fixes */
+.masthead__panel { width: min(100%, 40rem); }                             /* more stripe either side, like the comp */
+@media (min-width: 56em) { .mk-hero__in { grid-template-columns: minmax(0, 6fr) minmax(0, 6fr); } .mk-hero__photo { aspect-ratio: 1 / 1; } .mk-hero__photo img { object-position: center 36%; } }
+.mk-hero__photo img { object-position: center 36%; }                      /* lid and label both in frame */
+.stripes--band { padding-block: 0; }                                      /* stripes show only at the sides */
+.mk-band { width: 100%; padding-block: clamp(1.5rem, 3.5vw, 2.25rem); }
+.mk-feature p { max-width: 24ch; }

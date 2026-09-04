@@ -190,7 +190,7 @@ function sitemap() {
   const body = `${head("Sitemap", path, "Index", "Sitemap", "Every page on the site. Search engines: see <a href='/sitemap.xml'>/sitemap.xml</a>.")}
 <section class="section--tight"><div class="wrap grid grid--3">
   ${group("Shop", [["All products", "/shop/"], ...PRODUCTS.map((p) => [`${p.name} — ${p.size}`, p.url]), ...Object.entries(COLLECTIONS).map(([s, c]) => [c.title, `/collections/${s}/`]), ["Cart", "/cart/"], ["Checkout", "/checkout/"], ["Track order", "/track-order/"]])}
-  ${group("Functional Elixirs", [["Home", "/"], ["Our story", "/our-story/"], ["The ritual", "/ritual/"], ["Ingredients & sourcing", "/sourcing/"], ["Sustainability", "/sustainability/"], ["Gift guide", "/gift-guide/"], ["Journal", "/journal/"], ...ARTICLES.map((a) => [a.title, a.url])])}
+  ${group("Functional Elixirs", [["Home", "/"], ["About us", "/about-us/"], ["The ritual", "/ritual/"], ["Ingredients & sourcing", "/sourcing/"], ["Sustainability", "/sustainability/"], ["Gift guide", "/gift-guide/"], ["Journal", "/journal/"], ...ARTICLES.map((a) => [a.title, a.url])])}
   ${group("Help & account", [["FAQ", "/faq/"], ["Contact", "/contact/"], ["Shipping & delivery", "/shipping/"], ["Returns & exchanges", "/returns/"], ["Privacy", "/privacy/"], ["Terms", "/terms/"], ["Cookies", "/cookies/"], ["Sign up", "/account/signup/"], ["Log in", "/account/login/"], ["Forgot password", "/account/forgot-password/"], ["Account", "/account/"], ["Addresses", "/account/addresses/"], ["Wishlist", "/account/wishlist/"]])}
 </div></section>`;
   return { path, html: page({ title: "Sitemap", description: "All pages on functionalelixirs.com — shop, story, ritual, journal, help and account.", path, body, breadcrumbs: [{ name: "Sitemap", href: path }] }) };

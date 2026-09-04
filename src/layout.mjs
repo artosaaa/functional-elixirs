@@ -1,5 +1,5 @@
 /* Page shell: <head> with SEO + JSON-LD, header, footer, cart drawer, cookie notice, runtime catalog */
-import { BRAND, CFG, NAV, FOOTER, SITE_URL, HERO_URL, esc, money, abs, ICONS, stars, logoMark, REVIEWS_VERIFIED } from "./site.mjs";
+import { BRAND, CFG, NAV, FOOTER, SITE_URL, HERO_URL, esc, money, abs, ICONS, stars, logoMark, REVIEWS_VERIFIED, BEE } from "./site.mjs";
 import { PRODUCTS, catalogJSON } from "./products.mjs";
 import { readFileSync } from "node:fs";
 import { createHash } from "node:crypto";
@@ -58,21 +58,29 @@ export const applePayButton = (extra = "") => `<button class="btn btn--apple-pay
 export const faqList = (items) => `<div class="faq-list">${items.map(([q, a]) => `<details><summary>${esc(q)}</summary><div class="faq-a">${a}</div></details>`).join("")}</div>`;
 export const ctaBand = (h = "One jar lasts about six weeks. Start tomorrow morning.", p = `Honey with Fresh Ginger, 15 oz — $23.99. Two jars $44.99 and shipping is on us. Thirty days to change your mind, opened jar included.`) => `<section class="section--tight"><div class="wrap"><div class="cta-band reveal"><div><h2>${h}</h2><p style="margin-top:.75rem">${p}</p></div><div class="cta-band__actions cluster"><a class="btn btn--on-dark" href="${HERO_URL}">Get the jar — $23.99</a><a class="btn btn--ghost" style="color:var(--cream);border-color:rgb(246 240 230 / .4)" href="/ritual/">The ritual</a></div></div></div></section>`;
 
-function header() {
+function header(path = "/") {
+  const cur = (h) => ((h === "/" ? path === "/" : path.startsWith(h)) ? ' aria-current="page"' : "");
+  const links = NAV.map((n) => `<a href="${n.href}"${cur(n.href)}>${n.label}</a>`).join("");
   return `<a class="skip" href="#main">Skip to content</a>
-<p class="announce"><strong>15% off your first jar</strong> with code <strong>FIRSTJAR</strong> · Free US shipping over $${CFG.freeShipOver} · <a href="${HERO_URL}">Shop the 15 oz jar — $23.99</a></p>
-<header class="header"><div class="wrap header__in">
-  <a class="logo" href="/" aria-label="${BRAND.name} — home">${logoMark({ size: 40 })}</a>
-  <nav class="nav" aria-label="Primary">${NAV.map((n) => `<a href="${n.href}">${n.label}</a>`).join("")}</nav>
+<div class="masthead stripes stripes--head"><div class="masthead__panel">
+  <a class="lockup" href="/" aria-label="${BRAND.name} — home">
+    <span class="lockup__bee">${BEE}</span>
+    <span class="lockup__name">Functional Elixirs</span>
+    <span class="lockup__sub">Honey + Fresh Ginger</span>
+    <span class="lockup__tag">Nature’s Daily Elixir</span>
+  </a>
+</div></div>
+<header class="header header--nav"><div class="wrap navbar__in">
+  <button class="icon-btn menu-btn" type="button" data-menu-open aria-label="Open menu" aria-controls="mobile-nav">${ICONS.menu}</button>
+  <nav class="nav" aria-label="Primary">${links}</nav>
   <div class="header__tools">
     <a class="icon-btn" href="/account/" aria-label="Account">${ICONS.user}</a>
     <button class="icon-btn" type="button" data-cart-open aria-label="Open cart" aria-controls="cart-drawer">${ICONS.cart}<span class="cart-count" data-cart-count aria-live="polite"></span></button>
-    <button class="icon-btn menu-btn" type="button" data-menu-open aria-label="Open menu" aria-controls="mobile-nav">${ICONS.menu}</button>
   </div></div></header>
 <div class="mobile-nav" id="mobile-nav" aria-hidden="true" role="dialog" aria-label="Menu">
   <div class="mobile-nav__top"><a class="logo" href="/">${logoMark({ size: 40 })}</a><button class="icon-btn" type="button" data-menu-close aria-label="Close menu">${ICONS.close}</button></div>
-  <nav aria-label="Mobile">${NAV.map((n) => `<a href="${n.href}">${n.label}</a>`).join("")}<a href="/gift-guide/">Gift guide</a><a href="/account/">Account</a></nav>
-  <div class="mobile-nav__foot"><a href="/faq/">FAQ</a><a href="/shipping/">Shipping &amp; delivery</a><a href="/contact/">Contact</a></div>
+  <nav aria-label="Mobile">${links}<a href="/account/">Account</a></nav>
+  <div class="mobile-nav__foot"><a href="/journal/">Journal</a><a href="/faq/">FAQ</a><a href="/shipping/">Shipping &amp; delivery</a></div>
 </div>`;
 }
 
@@ -83,30 +91,14 @@ function drawer() {
   <div class="drawer__body" data-drawer-lines></div>
   <div class="drawer__foot" data-drawer-foot hidden></div>
 </aside>
-<div class="capture-backdrop"></div>
-<div class="capture" id="capture" role="dialog" aria-modal="true" aria-hidden="true" aria-labelledby="capture-title">
-  <button class="icon-btn capture__close" type="button" data-capture-close aria-label="Close">${ICONS.close}</button>
-  <div data-capture-body>
-    <img class="fe-mark" src="/assets/img/logo.png" width="48" height="48" alt="" decoding="async">
-    <h2 id="capture-title">Take 15% off your first jar</h2>
-    <p>One letter a month from the kitchen — new batches, recipes, and the occasional early jar. Your code arrives the moment you join.</p>
-    <form novalidate>
-      <label class="sr-only" for="capture-email">Email address</label>
-      <input class="input" id="capture-email" type="email" name="email" placeholder="you@example.com" autocomplete="email" required>
-      <button class="btn btn--primary btn--block" type="submit">Send my 15% code</button>
-      <button class="btn btn--link tiny mx-auto" type="button" data-capture-close>No thanks, I'll pay full price</button>
-    </form>
-    <p class="tiny" style="margin-top:1rem">No spam, ever. Unsubscribe in one tap. <a href="/privacy/">Privacy</a>.</p>
-  </div>
-</div>
 <div class="cookie" id="cookie" role="region" aria-label="Cookie notice"><p>Essential cookies only, unless you say otherwise. <a href="/cookies/">Details</a></p><div class="cluster"><button class="btn btn--primary btn--sm" type="button" data-cookie="all">Accept all</button><button class="btn btn--ghost btn--sm" type="button" data-cookie="essential">Essential only</button></div></div>`;
 }
 
 function footer() {
   const col = (t, items) => `<div><h3>${t}</h3><ul>${items.map(([l, h]) => `<li><a href="${h}">${l}</a></li>`).join("")}</ul></div>`;
   return `<footer class="footer"><div class="wrap">
-  <div class="footer__news"><div><h2>Notes from the kitchen</h2><p>One letter a month: new batches, recipes, and the occasional early jar. 15% off your first order (up to $5) when you join.</p></div>
-    <form class="news-form" data-news-form novalidate><label class="sr-only" for="news-email">Email address</label><input class="input" id="news-email" type="email" name="email" placeholder="you@example.com" autocomplete="email" required><button class="btn btn--on-dark" type="submit">Send my code</button><p class="small">No spam, ever. Unsubscribe in one tap. <a href="/privacy/">Privacy</a>.</p></form></div>
+  <div class="footer__news"><div><h2>Notes from the kitchen</h2><p>One letter a month: new batches, recipes, and the occasional early jar.</p></div>
+    <form class="news-form" data-news-form novalidate><label class="sr-only" for="news-email">Email address</label><input class="input" id="news-email" type="email" name="email" placeholder="you@example.com" autocomplete="email" required><button class="btn btn--on-dark" type="submit">Subscribe</button><p class="small">No spam, ever. Unsubscribe in one tap. <a href="/privacy/">Privacy</a>.</p></form></div>
   <div class="footer__grid">
     <div class="footer__brand"><a class="logo" href="/">${logoMark({ size: 40 })}</a><p>${BRAND.positioning}</p>
       <div class="footer__promise"><div>${ICONS.truck}<span>Free US shipping over $${CFG.freeShipOver} · ships in 1–2 business days</span></div><div>${ICONS.refresh}<span>30-day happiness guarantee — if a jar isn’t for you, we’ll make it right</span></div><div>${ICONS.leaf}<span>Raw honey + fresh ginger · small batches · nothing else</span></div></div></div>
@@ -135,7 +127,10 @@ export function page({ title, description, path, body, type = "website", image =
 <meta name="description" content="${esc(description)}">
 <link rel="canonical" href="${url}">
 ${noindex ? `<meta name="robots" content="noindex, nofollow">` : `<meta name="robots" content="index, follow, max-image-preview:large">`}
-<meta name="theme-color" content="#F6F0E6">
+<meta name="theme-color" content="#FFFFFF">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400&display=swap">
 <meta name="color-scheme" content="light">
 <link rel="icon" href="/assets/img/favicon-32.png" sizes="32x32" type="image/png">
 <link rel="icon" href="/assets/img/favicon-64.png" sizes="64x64" type="image/png">
@@ -160,7 +155,7 @@ ${published ? `<meta property="article:published_time" content="${published}">` 
 ${extraHead}
 </head>
 <body class="${bodyClass}">
-${header()}
+${header(path)}
 <main id="main" tabindex="-1">
 ${body}
 </main>

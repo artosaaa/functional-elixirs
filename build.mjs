@@ -12,6 +12,7 @@ import account from "./src/pages/account.mjs";
 import brand from "./src/pages/brand.mjs";
 import journal from "./src/pages/journal.mjs";
 import support from "./src/pages/support.mjs";
+import recipes from "./src/pages/recipes.mjs";
 
 const ROOT = new URL(".", import.meta.url).pathname;
 const out = (rel, content) => { const f = join(ROOT, rel); mkdirSync(dirname(f), { recursive: true }); writeFileSync(f, content); return f; };
@@ -31,7 +32,10 @@ const withBase = (html) => {
     .replace(/<body([^>]*)>/, `<body$1><script>window.__BASE__=${JSON.stringify(BASE)}</script>`);
 };
 
-const pages = [...core(), ...account(), ...brand(), ...journal(), ...support()];
+const pages = [...core(), ...account(), ...brand(), ...journal(), ...support(), ...recipes()];
+/* old URL kept alive: /our-story/ moved to /about-us/ */
+const redirect = (to) => `<!doctype html><html lang="en"><meta charset="utf-8"><title>Redirecting…</title><meta name="robots" content="noindex"><meta http-equiv="refresh" content="0; url=${to}"><link rel="canonical" href="${SITE_URL}${to}"><p>This page has moved to <a href="${to}">${to}</a>.</p></html>`;
+pages.push({ path: "/our-story/", html: redirect("/about-us/"), noindex: true });
 const seen = new Set();
 for (const { path, html } of pages) {
   if (seen.has(path)) throw new Error("Duplicate path " + path); seen.add(path);
@@ -45,7 +49,7 @@ out("assets/img/og-default.svg", ogImage(null));
 for (const p of PRODUCTS) out(`assets/img/og-${p.slug}.svg`, ogImage(p));
 
 // Sitemap (indexable pages only), robots, RSS
-const noindex = new Set(["/cart/", "/checkout/", "/order-confirmation/", "/account/", "/account/addresses/", "/account/wishlist/", "/account/signup/", "/account/login/", "/account/forgot-password/", "/404.html"]);
+const noindex = new Set(["/our-story/", "/cart/", "/checkout/", "/order-confirmation/", "/account/", "/account/addresses/", "/account/wishlist/", "/account/signup/", "/account/login/", "/account/forgot-password/", "/404.html"]);
 const today = new Date().toISOString().slice(0, 10);
 const prio = (p) => p === "/" ? "1.0" : p.startsWith("/shop/honey-with-fresh-ginger/") ? "0.9" : p.startsWith("/shop") || p.startsWith("/collections") ? "0.8" : p.startsWith("/journal/") && p !== "/journal/" ? "0.6" : ["/privacy/", "/terms/", "/cookies/", "/sitemap/"].includes(p) ? "0.3" : "0.7";
 const urls = pages.map((p) => p.path).filter((p) => !noindex.has(p));

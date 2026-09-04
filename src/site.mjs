@@ -26,10 +26,11 @@ export const CFG = { freeShipOver: 40, lowStockAt: 10, returnsDays: 30 };
 export const REVIEWS_VERIFIED = false;
 
 export const NAV = [
+  { label: "Home", href: "/" },
+  { label: "About Us", href: "/about-us/" },
   { label: "Shop", href: "/shop/" },
-  { label: "The Ritual", href: "/ritual/" },
-  { label: "Journal", href: "/journal/" },
-  { label: "Our Story", href: "/our-story/" },
+  { label: "Recipe", href: "/recipes/" },
+  { label: "Contact", href: "/contact/" },
 ];
 
 export const HERO_URL = "/shop/honey-with-fresh-ginger/";
@@ -40,7 +41,7 @@ export const FOOTER = {
     ["Gifts under $30", "/collections/gifts-under-30/"], ["New here? Start here", "/collections/for-beginners/"], ["Gift guide", "/gift-guide/"],
   ],
   about: [
-    ["Our story", "/our-story/"], ["The ritual", "/ritual/"], ["Ingredients & sourcing", "/sourcing/"], ["Sustainability", "/sustainability/"], ["Journal", "/journal/"],
+    ["About us", "/about-us/"], ["Recipes", "/recipes/"], ["The ritual", "/ritual/"], ["Ingredients & sourcing", "/sourcing/"], ["Sustainability", "/sustainability/"], ["Journal", "/journal/"],
   ],
   help: [
     ["FAQ", "/faq/"], ["Contact", "/contact/"], ["Shipping & delivery", "/shipping/"], ["Returns & exchanges", "/returns/"], ["Track an order", "/track-order/"], ["Account", "/account/"],
@@ -115,3 +116,17 @@ export const ICONS = {
   apple: `<svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" focusable="false"><path d="M16.4 12.7c0-2.3 1.9-3.4 2-3.5-1.1-1.6-2.8-1.8-3.4-1.8-1.4-.1-2.8.9-3.5.9s-1.8-.8-3-.8C6.1 7.5 4 9.5 4 13.2c0 1.2.2 2.4.6 3.6.6 1.6 2.6 5.4 4.7 5.3 1.1 0 1.8-.7 3.2-.7s2 .7 3.2.7c2.1 0 3.9-3.5 4.5-5.1-2.8-1.3-3.8-3.4-3.8-4.3zM13.9 5.6c.7-.8 1.1-1.9 1-3-1 0-2.1.7-2.8 1.5-.6.7-1.2 1.8-1 2.9 1.1.1 2.1-.6 2.8-1.4z"/></svg>`,
 };
 export const stars = (n = 5) => `<span class="stars" aria-hidden="true">${ICONS.star.repeat(Math.round(n))}</span>`;
+
+
+/* ---------- Line icons for the mockup home page (64-unit grid, stroke = currentColor) ---------- */
+const L = (d, extra = "") => `<svg viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false" ${extra}>${d}</svg>`;
+export const BEE = L('<ellipse cx="32" cy="40" rx="11" ry="15"/><path d="M22 35h20M21 41h22M23 47h18M32 55v4"/><circle cx="32" cy="20" r="6"/><path d="M29 15l-4-7M35 15l4-7"/><path d="M21 33c-9-4-16-2-17 3s6 9 16 5M43 33c9-4 16-2 17 3s-6 9-16 5"/>');
+export const LINE = {
+  leaf: L('<path d="M52 12C30 12 14 26 14 48c22 0 38-14 38-36z"/><path d="M14 48c8-12 18-22 30-30"/>'),
+  honeycomb: L('<path d="M32 6l10 6v12l-10 6-10-6V12z"/><path d="M20 26l10 6v12l-10 6-10-6V32z"/><path d="M44 26l10 6v12l-10 6-10-6V32z"/>'),
+  cup: L('<path d="M10 24h34v14a12 12 0 0 1-12 12H22a12 12 0 0 1-12-12z"/><path d="M44 28h5a6 6 0 0 1 0 12h-5"/><path d="M8 56h40"/><path d="M22 10c0 4-4 4-4 8M31 8c0 4-4 4-4 8M40 10c0 4-4 4-4 8"/>'),
+  no: L('<circle cx="32" cy="32" r="20"/><path d="M18 18l28 28"/><path d="M24 40c4-8 8-12 16-16"/>'),
+  jar: L('<path d="M20 18h24v4a4 4 0 0 1-4 4H24a4 4 0 0 1-4-4z"/><path d="M18 26h28l2 26a4 4 0 0 1-4 4H20a4 4 0 0 1-4-4z"/><path d="M22 36h20"/>'),
+  drop: L('<path d="M32 8c-10 14-16 22-16 30a16 16 0 0 0 32 0c0-8-6-16-16-30z"/><path d="M24 40a8 8 0 0 0 6 8"/>'),
+  heart: L('<path d="M32 54S8 40 8 24a12 12 0 0 1 24-4 12 12 0 0 1 24 4c0 16-24 30-24 30z"/>'),
+};
