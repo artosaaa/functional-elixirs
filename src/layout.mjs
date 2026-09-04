@@ -1,6 +1,17 @@
 /* Page shell: <head> with SEO + JSON-LD, header, footer, cart drawer, cookie notice, runtime catalog */
 import { BRAND, CFG, NAV, FOOTER, SITE_URL, HERO_URL, esc, money, abs, ICONS, stars, logoMark, REVIEWS_VERIFIED } from "./site.mjs";
 import { PRODUCTS, catalogJSON } from "./products.mjs";
+import { readFileSync } from "node:fs";
+import { createHash } from "node:crypto";
+
+/* Short content hash appended to the CSS/JS URLs. A redeploy changes the hash,
+   so browsers fetch the new file instead of serving a cached one. */
+const assetHash = (rel) => {
+  try { return createHash("sha1").update(readFileSync(new URL(`../${rel}`, import.meta.url))).digest("hex").slice(0, 8); }
+  catch { return "0"; }
+};
+const CSS_V = assetHash("assets/css/site.css");
+const JS_V = assetHash("assets/js/site.js");
 import { art, altFor } from "./art.mjs";
 
 export const OG_DEFAULT = abs("/assets/img/og-default.svg");
@@ -129,8 +140,8 @@ ${noindex ? `<meta name="robots" content="noindex, nofollow">` : `<meta name="ro
 <link rel="icon" href="/assets/img/favicon-32.png" sizes="32x32" type="image/png">
 <link rel="icon" href="/assets/img/favicon-64.png" sizes="64x64" type="image/png">
 <link rel="apple-touch-icon" href="/assets/img/apple-touch-icon.png">
-<link rel="preload" href="/assets/css/site.css" as="style">
-<link rel="stylesheet" href="/assets/css/site.css">
+<link rel="preload" href="/assets/css/site.css?v=${CSS_V}" as="style">
+<link rel="stylesheet" href="/assets/css/site.css?v=${CSS_V}">
 <meta property="og:type" content="${type === "product" ? "product" : type === "article" ? "article" : "website"}">
 <meta property="og:site_name" content="${BRAND.name}">
 <meta property="og:locale" content="en_US">
@@ -156,7 +167,7 @@ ${body}
 ${footer()}
 ${drawer()}
 <script type="application/json" id="sw-catalog">${catalogJSON()}</script>
-<script src="/assets/js/site.js" defer></script>
+<script src="/assets/js/site.js?v=${JS_V}" defer></script>
 </body>
 </html>`;
 }
