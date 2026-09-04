@@ -196,3 +196,5 @@ Copy is written from your two brand documents. These items were **not** in them 
 - Allergen/facility statement in `/sourcing/`
 
 Health language is deliberately conservative (no treatment claims; FDA disclaimer in the footer and on story/sourcing pages) per the note in your product document.
+
+<!-- deploy test 2026-09-04T18:32:08Z -->
