@@ -1,4 +1,5 @@
 /* Our story · The ritual · Ingredients & sourcing · Sustainability · Gift guide */
+import { BEE } from "../site.mjs";
 import { page, jsonld, breadcrumbs, productCard, faqList, ctaBand, ICONS, esc, money, BRAND, CFG, HERO_URL } from "../layout.mjs";
 import { PRODUCTS, HERO, byId } from "../products.mjs";
 import { art, altFor, photo } from "../art.mjs";
@@ -7,34 +8,33 @@ const head = (crumb, eyebrow, h1, lede, center = false) => `${breadcrumbs([{ nam
 
 function story() {
   const path = "/about-us/";
-  const body = `${head("About us", "About us", "It started with our mom.", "Functional Elixirs began with our mother and a simple ritual she created for her own wellness.")}
-<section class="section--tight"><div class="wrap split">
-  <div class="marquee-photo reveal">${photo("jars")}</div>
-  <div class="prose reveal">
-    <p>She began combining honey and fresh ginger as part of her daily routine, looking for natural ways to support how she felt. Over time she told us how much she looked forward to it — and naturally, we wanted to try it ourselves.</p>
+  const body = `${breadcrumbs([{ name: "About us", href: path }])}
+<section class="about-hero"><div class="wrap about-hero__in">
+  <div class="about-hero__copy reveal">
+    <p class="mk-eyebrow">Our story</p>
+    <h1 class="mk-h1 mk-h1--page">It started<br>with our mom.</h1>
+    <span class="mk-rule" aria-hidden="true"></span>
+    <p class="mk-lede">Functional Elixirs began with our mother and a simple ritual she created for her own wellness.</p>
+  </div>
+  <figure class="about-hero__photo reveal"><img src="/assets/img/about-kitchen-jar.jpg" alt="A jar of Functional Elixirs Honey with Fresh Ginger on the kitchen counter at home" width="750" height="1000" fetchpriority="high" decoding="async"></figure>
+</div></section>
+
+<section class="about-story"><div class="wrap about-story__in">
+  <div class="about-story__text reveal">
+    <p>She began combining honey and fresh ginger as part of her daily routine, looking for natural ways to support how she felt. Over time, she told us how much better she felt — and naturally, we wanted to try it ourselves.</p>
     <p>We fell in love with more than the taste. For us, it became a daily ritual that leaves us feeling energized yet calm — a sense of balance that simply feels good.</p>
     <p>What began in our mother’s kitchen became something we genuinely believed was worth sharing.</p>
+    <p>Just two natural ingredients: honey and fresh ginger. Nothing complicated. Delicious, versatile, and rooted in a family tradition we still enjoy today.</p>
   </div>
+  <figure class="about-story__photo reveal"><img src="/assets/img/honey-ginger-jars-kitchen.jpg" alt="Jars of Functional Elixirs Honey with Fresh Ginger stacked on the kitchen counter, ready to ship" width="1200" height="1200" loading="lazy" decoding="async"><figcaption>Every batch is still jarred by hand.</figcaption></figure>
 </div></section>
-<section class="section"><div class="wrap--prose prose">
-  <h2>Just two ingredients</h2>
-  <p>Honey and fresh ginger. Nothing complicated. Delicious, versatile, and rooted in a family tradition we still enjoy today. We didn’t add a third ingredient because the recipe never asked for one — and because the whole point was a jar you could read the back of without a dictionary.</p>
-  <h2>Why the jar looks the way it does</h2>
-  <p>Real glass, so you can see the ginger threads hanging in the honey. A wooden lid, because our mother’s jar had one and because it feels right in the hand at seven in the morning. A label with the plaque and the olive branch — a small nod to a tradition older than any of us.</p>
-  <blockquote>From our mother’s recipe to your daily ritual.</blockquote>
-  <h2>How we make it</h2>
-  <p>In small batches. Raw honey is gently combined with fresh ginger root — never powder, never extract — and left until the two taste like one thing. Then it’s jarred by hand, lidded, labelled and packed. When a batch sells out, the next one takes as long as it takes. <a href="/sourcing/">More on the ingredients →</a></p>
-  <h2>What we hope</h2>
-  <p>That the jar finds a spot on your counter, that the spoon becomes a habit, and that somewhere in the first six weeks you have the morning our mother described to us — energized, calm, and quietly, entirely yours.</p>
-  <p class="small muted">${BRAND.disclaimer}</p>
-</div></section>
-<section class="section section--well"><div class="wrap"><div class="grid grid--3">
-  <div class="stat reveal"><strong>2</strong><span>ingredients, and only two</span></div>
-  <div class="stat reveal"><strong>1</strong><span>teaspoon, every morning</span></div>
-  <div class="stat reveal"><strong>15 oz</strong><span>about six weeks of the ritual</span></div>
-</div></div></section>
-${ctaBand("Try the jar that started it.", `Honey with Fresh Ginger, 15 oz — ${money(HERO.price)}. Free shipping over $${CFG.freeShipOver}.`)}`;
-  return { path, html: page({ title: "About Us — It Started With Our Mom", description: "Functional Elixirs began with our mother’s daily ritual of honey and fresh ginger. Two ingredients, a family tradition, and a jar we believed was worth sharing.", path, body, breadcrumbs: [{ name: "About us", href: path }] }) };
+
+<section class="stripes stripes--band"><div class="wrap"><div class="mk-band reveal">
+  <span class="mk-band__bee" aria-hidden="true">${BEE}</span>
+  <div class="mk-band__text"><h2 class="mk-h3">From our mother’s recipe to your daily ritual</h2><p>Functional Elixirs — Nature’s Daily Elixir.</p></div>
+  <a class="btn btn--gold" href="/shop/">Shop now</a>
+</div></div></section>`;
+  return { path, html: page({ title: "About Us — It Started With Our Mom | Functional Elixirs", description: "Functional Elixirs began with our mother’s daily ritual of honey and fresh ginger. Two natural ingredients, a family tradition, and a jar we believed was worth sharing.", path, body, breadcrumbs: [{ name: "About us", href: path }] }) };
 }
 
 function ritual() {

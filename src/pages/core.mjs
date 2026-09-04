@@ -52,7 +52,7 @@ function home() {
     <p class="mk-lede">A wholesome blend of raw honey and real ginger — crafted to nourish your body and elevate your every day.</p>
     <a class="btn btn--gold" href="/shop/">Shop now</a>
   </div>
-  <div class="mk-hero__photo reveal">${art("hero", p, { alt: altFor(p, "hero"), anim: true })}</div>
+  <div class="mk-hero__photo reveal"><img src="/assets/img/home-hero.jpg" alt="Functional Elixirs Honey with Fresh Ginger jar beside the F·E plaque, fresh ginger root and white blossom on marble" width="1400" height="1129" fetchpriority="high" decoding="async"></div>
 </div></section>
 
 <section class="mk-nature"><div class="wrap">

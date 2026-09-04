@@ -1035,3 +1035,26 @@ body { background: #fff; }
 .stripes--band { padding-block: 0; }                                      /* stripes show only at the sides */
 .mk-band { width: 100%; padding-block: clamp(1.5rem, 3.5vw, 2.25rem); }
 .mk-feature p { max-width: 24ch; }
+
+/* 22c. Product imagery on pure white; comp hero; About Us layout */
+.mk-hero__photo { background: #fff; aspect-ratio: 1400 / 1129; box-shadow: none; }
+@media (min-width: 56em) { .mk-hero__photo { aspect-ratio: 1400 / 1129; } }
+.mk-hero__photo img { object-fit: cover; object-position: center; }
+.pcard__media, .acard__media, .gallery__main, .gallery__thumbs button, .line__media, .deskbar__thumb, .mini-jar { background: #fff !important; box-shadow: none; }
+.pcard__media { border: 1px solid var(--cream-3); }
+.gallery__main { border: 1px solid var(--cream-3); }
+.pcard__media img, .gallery__main img { object-fit: contain; background: #fff; }
+
+.about-hero { background: #fff; padding-block: clamp(1.5rem, 4vw, 3rem) clamp(1.5rem, 4vw, 3rem); }
+.about-hero__in { display: grid; gap: var(--s-6); align-items: center; }
+@media (min-width: 56em) { .about-hero__in { grid-template-columns: minmax(0, 6fr) minmax(0, 5fr); gap: clamp(2rem, 5vw, 4.5rem); } }
+.about-hero__photo { margin: 0; aspect-ratio: 3 / 4; overflow: hidden; border-radius: 6px; background: #F4F1EA; }
+.about-hero__photo img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.about-story { background: var(--well); padding-block: clamp(2.5rem, 6vw, 4.5rem); }
+.about-story__in { display: grid; gap: var(--s-6); align-items: center; }
+@media (min-width: 56em) { .about-story__in { grid-template-columns: minmax(0, 5fr) minmax(0, 6fr); gap: clamp(2rem, 5vw, 4.5rem); } }
+.about-story__text p { font: 500 clamp(1.1rem, 1.5vw, 1.25rem)/1.55 var(--serif); color: #3C3934; }
+.about-story__text p + p { margin-top: 1.1em; }
+.about-story__photo { margin: 0; }
+.about-story__photo img { width: 100%; height: auto; display: block; border-radius: 6px; }
+.about-story__photo figcaption { margin-top: .6rem; font: 500 .7rem/1 var(--sans); letter-spacing: .18em; text-transform: uppercase; color: var(--gold-text); }
