@@ -865,3 +865,39 @@ body:has(.capture[data-open]) .capture-backdrop { opacity: 1; visibility: visibl
   .offer-nudge { animation: nudgeGlow 5s ease-in-out infinite; }
 }
 @media (prefers-reduced-motion: reduce) { .label-sheen { opacity: 0; } }
+
+/* ==========================================================================
+   21. Brightness + confidence pass
+   The warm-beige grounds read dim next to real product photography. Lift the
+   surfaces toward clean cream/white, sharpen the type contrast, and let the
+   photograph carry the warmth instead of the background.
+   ========================================================================== */
+:root {
+  --cream:   #FBF8F3;   /* page — was #F6F0E6 */
+  --cream-2: #FFFFFF;   /* raised surfaces — clean white */
+  --cream-3: #EDE7DD;   /* dividers */
+  --linen:   #E2DACE;
+  --ink:      #1F1B17;  /* body text, slightly deeper for crispness */
+  --ink-soft: #565049;
+}
+/* Cards and panels lift off the page instead of blending into it */
+.pcard__media, .acard__media { background: #F4EFE7; }
+.form-card, .panel, .summary, .gift-tier, .review, .tier { box-shadow: 0 1px 2px rgb(31 27 23 / .04), 0 6px 20px rgb(31 27 23 / .05); }
+.section--well { background: #F6F2EB; }
+.section--sage { background: #EEF3EB; }
+.proof { background: #FFFFFF; border-color: var(--cream-3); }
+.header { background: rgb(251 248 243 / .88); }
+.buybar, .deskbar { background: rgb(255 255 255 / .97); }
+.cookie { background: rgb(255 255 255 / .97); }
+/* Photography gets a crisp, neutral mount rather than a beige one */
+.hero__art, .gallery__main, .article-hero, .marquee-photo, .pcard__media, .acard__media { background: #F4EFE7; box-shadow: 0 2px 6px rgb(31 27 23 / .06), 0 18px 44px rgb(31 27 23 / .10); }
+.hero__art img, .gallery__main img { object-fit: cover; }
+/* Type: a touch more contrast and a tighter, more assured headline */
+h1, h2 { letter-spacing: -0.018em; }
+.lede { color: #4A443D; }
+.eyebrow { color: #8A6518; }
+/* Buttons read a little more decisive */
+.btn--primary { background: #17242B; }
+.btn--primary:hover { background: #0F181D; }
+.btn--ghost { border-color: rgb(23 36 43 / .35); }
+.btn--ghost:hover { background: #17242B; border-color: #17242B; }

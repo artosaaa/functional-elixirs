@@ -135,6 +135,26 @@ Optional per-size overrides beat the generic ones: `hg-15-hero.jpg`, `hg-8-front
 
 Until photos land, the site uses generated SVG scenes of the jar (`src/art.mjs`) — chosen by a three-way design panel and scored against your own jar photos. The rejected alternates are kept in `src/art-candidates/` for reference.
 
+## 6a. Product photography currently in use
+
+`assets/img/product/` holds crops of **your own phone photos** (IMG_0117 / IMG_0118 / IMG_0079),
+brightened and sharpened. They are real product shots and they beat the illustrations — but the
+originals are only **640 x 640**, so they are upscaled and soft at large sizes.
+
+**Reshoot when you can**, at 2000 px or more: jar straight on, label square to camera, on the same
+marble, window light from the side. Then just overwrite these filenames — no code changes:
+
+| File | Shows |
+|---|---|
+| `hero.jpg` | single jar, portrait — home hero + product page |
+| `front.jpg` | single jar, tighter — product cards |
+| `cup.jpg` | alternate angle |
+| `hg-duo-front.jpg`, `hg-trio-front.jpg` | several jars together — the set SKUs |
+| `hg-gift-hero.jpg` | the Gift Box (currently a single jar; **replace with an actual gift-box shot** — jar, dipper, linen wrap) |
+
+Still missing: an open jar with the dipper, and a cup of tea with a spoonful going in. Both would
+earn their place on the product page.
+
 ## 6b. The logo
 
 The client's real artwork drives the site. `assets/img/logo.png` is `LOGO-2.jpg` with the white
