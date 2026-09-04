@@ -1,7 +1,8 @@
 {
   "$schema": "https://openapi.vercel.sh/vercel.json",
-  "buildCommand": "node build.mjs",
-  "outputDirectory": ".",
+  "installCommand": "echo no-install",
+  "buildCommand": "SITE_URL=\"https://${VERCEL_PROJECT_PRODUCTION_URL}\" node build.mjs && node tools/pack.mjs",
+  "outputDirectory": "dist",
   "cleanUrls": true,
   "trailingSlash": true,
   "headers": [
