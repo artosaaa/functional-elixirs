@@ -20,11 +20,22 @@ const out = (rel, content) => { const f = join(ROOT, rel); mkdirSync(dirname(f),
 const KEEP = new Set(["src", "assets", "node_modules", ".git", ".vercel", "build.mjs", "package.json", "vercel.json", "README.md", ".gitignore", "LICENSE"]);
 for (const name of readdirSync(ROOT)) { if (KEEP.has(name)) continue; const p = join(ROOT, name); if (statSync(p).isDirectory() || /\.(html|xml|txt)$/.test(name)) rmSync(p, { recursive: true, force: true }); }
 
+/* BASE lets the same build serve from a subdirectory (GitHub Pages) or a domain root.
+   Root-absolute href/src/action attributes are rewritten; protocol-relative and
+   absolute URLs are left alone. The runtime reads window.__BASE__ for its own navigations. */
+const BASE = (process.env.BASE_PATH || "").replace(/\/$/, "");
+const withBase = (html) => {
+  if (!BASE) return html;
+  return html
+    .replace(/(\s(?:href|src|action)=")\/(?!\/)/g, `$1${BASE}/`)
+    .replace(/<body([^>]*)>/, `<body$1><script>window.__BASE__=${JSON.stringify(BASE)}</script>`);
+};
+
 const pages = [...core(), ...account(), ...brand(), ...journal(), ...support()];
 const seen = new Set();
 for (const { path, html } of pages) {
   if (seen.has(path)) throw new Error("Duplicate path " + path); seen.add(path);
-  out(path.endsWith(".html") ? path.slice(1) : join(path.slice(1), "index.html"), html);
+  out(path.endsWith(".html") ? path.slice(1) : join(path.slice(1), "index.html"), withBase(html));
 }
 
 // Brand assets
@@ -57,4 +68,4 @@ Sitemap: ${SITE_URL}/sitemap.xml
 const esc = (s) => String(s).replace(/[&<>]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;" }[c]));
 out("journal/feed.xml", `<?xml version="1.0" encoding="UTF-8"?>\n<rss version="2.0"><channel><title>${BRAND.name} Journal</title><link>${SITE_URL}/journal/</link><description>Notes on honey, ginger and the daily ritual.</description>${ARTICLES.map((a) => `<item><title>${esc(a.title)}</title><link>${SITE_URL}${a.url}</link><guid>${SITE_URL}${a.url}</guid><pubDate>${new Date(a.date).toUTCString()}</pubDate><description>${esc(a.description)}</description></item>`).join("")}</channel></rss>\n`);
 
-console.log(`✓ ${pages.length} pages · ${urls.length} in sitemap · ${PRODUCTS.length} products · ${ARTICLES.length} articles → ${SITE_URL}`);
+console.log(`✓ ${pages.length} pages${BASE ? ` · base ${BASE}` : ""} · ${urls.length} in sitemap · ${PRODUCTS.length} products · ${ARTICLES.length} articles → ${SITE_URL}`);

@@ -1,0 +1,42 @@
+name: Deploy to GitHub Pages
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+concurrency:
+  group: pages
+  cancel-in-progress: true
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: '20' }
+      - name: Build for the Pages subpath
+        env:
+          BASE_PATH: /functional-elixirs
+          SITE_URL: https://artosaaa.github.io/functional-elixirs
+        run: |
+          node build.mjs
+          mkdir -p _site
+          # copy the generated site, leaving the sources behind
+          rsync -a --exclude '.git' --exclude 'src' --exclude 'tools' --exclude 'node_modules' \
+                --exclude '.github' --exclude 'build.mjs' --exclude 'package.json' \
+                --exclude 'vercel.json' --exclude 'README.md' ./ _site/
+          touch _site/.nojekyll
+      - uses: actions/upload-pages-artifact@v3
+        with: { path: _site }
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v4

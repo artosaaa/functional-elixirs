@@ -34,6 +34,10 @@
   };
 
   /* ---------- 1. Tiny utils ---------- */
+  /* Base path — set by the build when the site is served from a subdirectory
+     (e.g. GitHub Pages at /functional-elixirs/). Empty at a domain root. */
+  const BASE = (window.__BASE__ || "").replace(/\/$/, "");
+  const U = (p) => (p.startsWith("/") && !p.startsWith("//") ? BASE + p : p);
   const $  = (s, r = document) => r.querySelector(s);
   const $$ = (s, r = document) => [...r.querySelectorAll(s)];
   const money = (n) => new Intl.NumberFormat("en-US", { style: "currency", currency: "USD" }).format(n);
@@ -161,7 +165,7 @@
       const u = users[email] || { name: email.split("@")[0].replace(/[._-]/g, " ").replace(/\b\w/g, (c) => c.toUpperCase()), email };
       store.set(this.key, u); return { ok: true };
     },
-    logout() { store.del(this.key); location.href = "/"; },
+    logout() { store.del(this.key); location.href = U("/"); },
   };
 
   const Orders = {
@@ -219,7 +223,7 @@
 
   const emptyHTML = `<div class="empty">
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2"><path d="M6 3h12l1 5H5l1-5zM5 8h14v10a3 3 0 0 1-3 3H8a3 3 0 0 1-3-3V8z"/><path d="M9 12c0 2 1 3 3 3s3-1 3-3"/></svg>
-    <p>Your cart is empty. The spoon is waiting.</p><a class="btn btn--ghost btn--sm" href="/shop/">Shop the jar</a></div>`;
+    <p>Your cart is empty. The spoon is waiting.</p><a class="btn btn--ghost btn--sm" href="${U('/shop/')}">Shop the jar</a></div>`;
 
   function render() {
     const n = Cart.count();
@@ -228,7 +232,7 @@
 
     // drawer
     const dl = $("[data-drawer-lines]"); if (dl) dl.innerHTML = items.length ? items.map((i) => lineHTML(i, true)).join("") : emptyHTML;
-    const df = $("[data-drawer-foot]"); if (df) { df.hidden = !items.length; if (items.length) df.innerHTML = `${freeShipHTML()}${totalsHTML()}<a class="btn btn--primary btn--block" href="/checkout/">Checkout</a><a class="btn btn--link mx-auto small" href="/cart/">View cart &amp; add a note</a>`; }
+    const df = $("[data-drawer-foot]"); if (df) { df.hidden = !items.length; if (items.length) df.innerHTML = `${freeShipHTML()}${totalsHTML()}<a class="btn btn--primary btn--block" href="${U('/checkout/')}">Checkout</a><a class="btn btn--link mx-auto small" href="${U('/cart/')}">View cart &amp; add a note</a>`; }
 
     // cart page
     const cp = $("[data-cart-page]"); if (cp) cp.innerHTML = items.length ? items.map((i) => lineHTML(i)).join("") : emptyHTML;
@@ -295,7 +299,7 @@
       const q = parseInt($("[data-qty-input]")?.value || "1", 10) || 1;
       const items = Cart.items(); const line = items.find((i) => i.id === p.id);
       if (line) line.qty = Math.min(line.qty + q, p.stock); else items.push({ id: p.id, qty: Math.min(q, p.stock) });
-      store.set(Cart.key, items); t.setAttribute("aria-busy", "true"); location.href = "/checkout/?express=apple-pay";
+      store.set(Cart.key, items); t.setAttribute("aria-busy", "true"); location.href = U("/checkout/?express=apple-pay");
     }
     else if (t.dataset.cartOpen !== undefined) { e.preventDefault(); Drawer.open(); }
     else if (t.dataset.wish !== undefined) Wish.toggle(t.dataset.wish);
@@ -490,7 +494,7 @@
       if (fd.get("create_account") && !u && fd.get("email")) Auth.signup({ name: order.name, email: fd.get("email"), password: fd.get("new_password") || "" });
       if (fd.get("save_address") && u) { const a = store.get("sw_addresses", []); a.push({ id: uid("A"), label: "Home", name: order.name, ...order.address, default: !a.length }); store.set("sw_addresses", a); }
       Cart.clear(); Promo.clear();
-      location.href = `/order-confirmation/?order=${order.id}`;
+      location.href = U(`/order-confirmation/?order=${order.id}`);
     },
   };
 
@@ -498,7 +502,7 @@
   function initConfirmation() {
     const box = $("[data-confirmation]"); if (!box) return;
     const id = new URLSearchParams(location.search).get("order"); const o = Orders.find(id) || Orders.all()[0];
-    if (!o) { box.innerHTML = `<div class="empty"><p>We couldn’t find that order in this browser.</p><a class="btn btn--ghost btn--sm" href="/track-order/">Track an order</a></div>`; return; }
+    if (!o) { box.innerHTML = `<div class="empty"><p>We couldn’t find that order in this browser.</p><a class="btn btn--ghost btn--sm" href="${U('/track-order/')}">Track an order</a></div>`; return; }
     const eta = new Date(o.placed + (o.shipping.days[1] + 1) * 864e5).toLocaleDateString("en-US", { weekday: "long", month: "long", day: "numeric" });
     box.innerHTML = `
       <div class="confirm-hero">
@@ -517,8 +521,8 @@
           ${o.items.map((i) => `<div class="order-row"><span>${esc(i.name)} <span class="muted">× ${i.qty}</span></span><span>${money(i.price * i.qty)}</span></div>`).join("")}
           <div class="totals" style="margin-top:1rem"><div><span>Subtotal</span><span>${money(o.subtotal)}</span></div>${o.discount ? `<div class="discount"><span>${esc(o.promo)}</span><span>−${money(o.discount)}</span></div>` : ""}<div><span>Shipping</span><span>${o.shipping.price ? money(o.shipping.price) : "Free"}</span></div>${o.tax ? `<div><span>Tax</span><span>${money(o.tax)}</span></div>` : ""}<div class="grand"><span>Total</span><span>${money(o.total)}</span></div></div></div>
       </div>
-      <div class="center" style="margin-top:3rem"><div class="cluster" style="justify-content:center"><a class="btn btn--primary" href="/track-order/?q=${o.id}">Track this order</a>${o.guest ? `<a class="btn btn--ghost" href="/account/signup/">Create an account to save it</a>` : `<a class="btn btn--ghost" href="/account/">View in your account</a>`}</div>
-        <p class="small muted" style="margin-top:1.5rem">While you wait: <a href="/ritual/">read the ritual</a> or <a href="/journal/how-to-store-honey-and-why-it-crystallizes/">learn how to keep honey at its best</a>.</p></div>`;
+      <div class="center" style="margin-top:3rem"><div class="cluster" style="justify-content:center"><a class="btn btn--primary" href="/track-order/?q=${o.id}">Track this order</a>${o.guest ? `<a class="btn btn--ghost" href="${U('/account/signup/')}">Create an account to save it</a>` : `<a class="btn btn--ghost" href="${U('/account/')}">View in your account</a>`}</div>
+        <p class="small muted" style="margin-top:1.5rem">While you wait: <a href="${U('/ritual/')}">read the ritual</a> or <a href="${U('/journal/how-to-store-honey-and-why-it-crystallizes/')}">learn how to keep honey at its best</a>.</p></div>`;
   }
 
   /* Tracking */
@@ -542,7 +546,7 @@
       out.innerHTML = `<div class="panel"><div class="panel__head"><h2>${o ? esc(o.id) : esc(q)}</h2><span class="pill ${nowIdx >= 5 ? "" : "pill--gold"}">${esc(steps[nowIdx][0])}</span></div>
         <p class="small muted">Placed ${new Date(placed).toLocaleDateString("en-US", { month: "long", day: "numeric" })}${o ? ` · ${esc(o.shipping.name)}` : ""}${nowIdx < 5 ? ` · estimated delivery ${new Date(placed + (days[1] + 1) * 864e5).toLocaleDateString("en-US", { weekday: "short", month: "short", day: "numeric" })}` : ""}</p>
         <ol class="track-line" style="list-style:none;padding-left:2rem">${steps.map((s, i) => `<li class="track-step" ${i < nowIdx ? "data-done" : i === nowIdx ? "data-now" : ""}><strong>${s[0]}</strong><span>${s[1]}</span></li>`).join("")}</ol>
-        <p class="tiny muted">Something look off? <a href="/contact/">Write to us</a> — a human answers within one business day.</p></div>`;
+        <p class="tiny muted">Something look off? <a href="${U('/contact/')}">Write to us</a> — a human answers within one business day.</p></div>`;
     };
     f.addEventListener("submit", (e) => { e.preventDefault(); draw($("input", f).value); });
     if (q0) draw(q0);
@@ -551,7 +555,7 @@
   /* Auth forms */
   function initAuth() {
     const su = $("#signup-form");
-    su?.addEventListener("submit", (e) => { e.preventDefault(); if (!validate(su)) return; const fd = new FormData(su); const r = Auth.signup({ name: fd.get("name"), email: fd.get("email"), password: fd.get("password") }); const m = $(".form-msg", su); if (!r.ok) { m.textContent = r.msg; m.className = "form-msg form-msg--err"; m.setAttribute("data-show", ""); return; } location.href = "/account/"; });
+    su?.addEventListener("submit", (e) => { e.preventDefault(); if (!validate(su)) return; const fd = new FormData(su); const r = Auth.signup({ name: fd.get("name"), email: fd.get("email"), password: fd.get("password") }); const m = $(".form-msg", su); if (!r.ok) { m.textContent = r.msg; m.className = "form-msg form-msg--err"; m.setAttribute("data-show", ""); return; } location.href = U("/account/"); });
     const li = $("#login-form");
     li?.addEventListener("submit", (e) => { e.preventDefault(); if (!validate(li)) return; const fd = new FormData(li); Auth.login({ email: fd.get("email"), password: fd.get("password") }); location.href = new URLSearchParams(location.search).get("next") || "/account/"; });
     const fp = $("#forgot-form");
@@ -562,13 +566,13 @@
   function initAccount() {
     const root = $("[data-account]"); if (!root) return;
     const u = Auth.user();
-    if (!u) { root.innerHTML = `<div class="gated"><h2 class="serif">Please log in</h2><p class="muted">Your orders, addresses and wishlist live behind your account.</p><div class="cluster"><a class="btn btn--primary" href="/account/login/?next=${encodeURIComponent(location.pathname)}">Log in</a><a class="btn btn--ghost" href="/account/signup/">Create account</a></div></div>`; return; }
+    if (!u) { root.innerHTML = `<div class="gated"><h2 class="serif">Please log in</h2><p class="muted">Your orders, addresses and wishlist live behind your account.</p><div class="cluster"><a class="btn btn--primary" href="/account/login/?next=${encodeURIComponent(location.pathname)}">Log in</a><a class="btn btn--ghost" href="${U('/account/signup/')}">Create account</a></div></div>`; return; }
     const view = root.dataset.account;
     if (view === "orders") {
       const os = Orders.all();
       root.innerHTML = `<div class="panel"><div class="panel__head"><h2>Welcome back, ${esc(u.name.split(" ")[0])}</h2><span class="small muted">${esc(u.email)}</span></div><p class="small muted">Your orders, addresses and saved jars — everything in one quiet place.</p></div>
         <div class="panel"><div class="panel__head"><h2>Orders</h2>${os.length ? `<span class="small muted">${os.length} total</span>` : ""}</div>
-        ${os.length ? os.map((o) => `<div class="order-row"><div><strong>${esc(o.id)}</strong><br><span class="muted">${new Date(o.placed).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" })} · ${o.items.reduce((n, i) => n + i.qty, 0)} item${o.items.length > 1 ? "s" : ""} · ${money(o.total)}</span></div><div style="text-align:right"><span class="pill">${esc(o.status)}</span><br><a class="tiny" href="/track-order/?q=${o.id}">Track</a></div></div>`).join("") : `<p class="small muted">No orders yet. <a href="/shop/honey-with-fresh-ginger/">Start with the 15 oz jar</a> — it’s the one that started everything.</p>`}</div>`;
+        ${os.length ? os.map((o) => `<div class="order-row"><div><strong>${esc(o.id)}</strong><br><span class="muted">${new Date(o.placed).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" })} · ${o.items.reduce((n, i) => n + i.qty, 0)} item${o.items.length > 1 ? "s" : ""} · ${money(o.total)}</span></div><div style="text-align:right"><span class="pill">${esc(o.status)}</span><br><a class="tiny" href="/track-order/?q=${o.id}">Track</a></div></div>`).join("") : `<p class="small muted">No orders yet. <a href="${U('/shop/honey-with-fresh-ginger/')}">Start with the 15 oz jar</a> — it’s the one that started everything.</p>`}</div>`;
     }
     if (view === "addresses") {
       const draw = () => {
@@ -593,7 +597,7 @@
       const draw = () => {
         const w = Wish.items().map(product).filter(Boolean);
         root.innerHTML = `<div class="panel"><div class="panel__head"><h2>Wishlist</h2><span class="small muted">${w.length} saved</span></div>
-          ${w.length ? `<div class="addr">${w.map((p) => `<div class="addr__card" style="grid-template-columns:4rem 1fr;display:grid;gap:1rem;align-items:center"><div class="line__media">${miniJar(p)}</div><div><a class="line__title" href="${p.url}">${esc(p.name)}</a><div class="line__meta">${esc(p.sub)} · ${money(p.price)}</div><div class="cluster" style="margin-top:.5rem"><button class="btn btn--primary btn--sm" data-add="${p.id}" ${p.stock <= 0 ? "disabled" : ""}>${p.stock <= 0 ? "Sold out" : "Add to cart"}</button><button class="btn btn--link tiny" data-wish="${p.id}">Remove</button></div></div></div>`).join("")}</div>` : `<p class="small muted">Nothing saved yet. Tap the heart on any product to keep it here.</p><p style="margin-top:1rem"><a class="btn btn--ghost btn--sm" href="/shop/">Shop</a></p>`}</div>`;
+          ${w.length ? `<div class="addr">${w.map((p) => `<div class="addr__card" style="grid-template-columns:4rem 1fr;display:grid;gap:1rem;align-items:center"><div class="line__media">${miniJar(p)}</div><div><a class="line__title" href="${p.url}">${esc(p.name)}</a><div class="line__meta">${esc(p.sub)} · ${money(p.price)}</div><div class="cluster" style="margin-top:.5rem"><button class="btn btn--primary btn--sm" data-add="${p.id}" ${p.stock <= 0 ? "disabled" : ""}>${p.stock <= 0 ? "Sold out" : "Add to cart"}</button><button class="btn btn--link tiny" data-wish="${p.id}">Remove</button></div></div></div>`).join("")}</div>` : `<p class="small muted">Nothing saved yet. Tap the heart on any product to keep it here.</p><p style="margin-top:1rem"><a class="btn btn--ghost btn--sm" href="${U('/shop/')}">Shop</a></p>`}</div>`;
       };
       draw(); document.addEventListener("click", (e) => { if (e.target.closest("[data-wish]") && root.contains(e.target)) setTimeout(draw, 0); });
     }
@@ -679,7 +683,7 @@
   /* First-order email capture: once per 14 days, never on cart/checkout, never if already joined. */
   function initCapture() {
     const el = $("#capture"); if (!el) return;
-    if (/^\/(cart|checkout|order-confirmation|account)\//.test(location.pathname)) return;
+    if (/\/(cart|checkout|order-confirmation|account)\//.test(location.pathname)) return;
     const seen = store.get("sw_capture", null);
     if (seen && (Date.now() - seen.at) < 14 * 864e5) return;
     let opened = false;
@@ -701,7 +705,7 @@
       if (!em.checkValidity()) { em.reportValidity(); return; }
       store.set("sw_capture", { at: Date.now(), state: "joined" });
       /* REAL: POST to Klaviyo / Mailchimp here, then issue a single-use code. */
-      $("[data-capture-body]", el).innerHTML = `<h2>Here's your code.</h2><p>15% off your first jar — it's already waiting in your cart at checkout.</p><p><span class="capture__code">FIRSTJAR</span></p><p style="margin-top:1.25rem"><a class="btn btn--primary btn--block" href="/shop/honey-with-fresh-ginger/">Shop the 15 oz jar</a></p>`;
+      $("[data-capture-body]", el).innerHTML = `<h2>Here's your code.</h2><p>15% off your first jar — it's already waiting in your cart at checkout.</p><p><span class="capture__code">FIRSTJAR</span></p><p style="margin-top:1.25rem"><a class="btn btn--primary btn--block" href="${U('/shop/honey-with-fresh-ginger/')}">Shop the 15 oz jar</a></p>`;
       Promo.apply("FIRSTJAR");
     });
   }
