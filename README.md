@@ -112,6 +112,15 @@ The checkout already runs the real browser flows where they exist and falls back
 
 ---
 
+## Deploying
+
+**Vercel (production):** the GitHub repo is connected to the Vercel project, so every push to
+`main` deploys automatically. `vercel.json` builds with `node build.mjs`, packs the output into
+`dist/` via `tools/pack.mjs`, and serves that. Canonical URLs follow the Vercel production domain.
+
+**GitHub Pages (mirror):** `.github/workflows/pages.yml` builds with `BASE_PATH=/functional-elixirs`
+on every push and publishes to https://artosaaa.github.io/functional-elixirs/.
+
 ## 6. Swapping in real photos — just drop files in a folder
 
 **No code changes.** Put your photos in `assets/img/product/` and run `node build.mjs`.
@@ -197,4 +206,3 @@ Copy is written from your two brand documents. These items were **not** in them 
 
 Health language is deliberately conservative (no treatment claims; FDA disclaimer in the footer and on story/sourcing pages) per the note in your product document.
 
-<!-- deploy test 2026-09-04T18:32:08Z -->
