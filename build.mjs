@@ -29,6 +29,7 @@ const withBase = (html) => {
   if (!BASE) return html;
   return html
     .replace(/(\s(?:href|src|action)=")\/(?!\/)/g, `$1${BASE}/`)
+    .replace(/\ssrcset="([^"]*)"/g, (m, v) => ` srcset="${v.replace(/(^|,\s*)\/(?!\/)/g, `$1${BASE}/`)}"`)
     .replace(/<body([^>]*)>/, `<body$1><script>window.__BASE__=${JSON.stringify(BASE)}</script>`);
 };
 

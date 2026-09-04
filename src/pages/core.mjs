@@ -57,7 +57,7 @@ function home() {
 
 <section class="mk-nature"><div class="wrap">
   <div class="mk-title reveal"><h2 class="mk-h2">Inspired by nature. Made for you.</h2><span class="mk-rule mk-rule--center" aria-hidden="true"></span></div>
-  <div class="mk-gallery">${gallery.map(([src, alt], i) => `<figure class="reveal" style="--d:${i * 90}ms"><img src="${src}" alt="${esc(alt)}" width="1400" height="1050" loading="lazy" decoding="async"></figure>`).join("")}</div>
+  <div class="mk-gallery">${gallery.map(([src, alt], i) => `<figure class="reveal" style="--d:${i * 90}ms"><img src="${src}" alt="${esc(alt)}" width="900" height="900" loading="lazy" decoding="async"></figure>`).join("")}</div>
   <div class="mk-features">${features.map(([ic, t, d], i) => `<div class="mk-feature reveal" style="--d:${i * 90}ms"><span class="mk-feature__icon">${ic}</span><h3>${t}</h3><p>${d}</p></div>`).join("")}</div>
 </div></section>
 

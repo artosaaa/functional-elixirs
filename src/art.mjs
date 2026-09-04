@@ -296,6 +296,12 @@ let n = 0;
 export function art(variant, p, { alt, anim = false, className = "", slot } = {}) {
   const src = slot ? PHOTOS[slot] : findPhoto(p?.id || "brand", variant);
   if (src) {
+    /* the illustration alts describe a scene that no longer exists — describe the photograph */
+    const jar = `${p?.name || "Functional Elixirs Honey with Fresh Ginger"}${p?.size ? `, ${p.size}` : ""}`;
+    alt = variant === "hero" || variant === "front" ? `${jar} — glass jar with a bamboo lid on a marble counter`
+        : variant === "cup" ? `${jar} — the jar photographed from a slightly wider angle on a marble counter`
+        : variant === "open" ? `${jar} — jar on a marble counter` : alt;
+    if (/hg-(duo|trio)/.test(src)) alt = `${jar} — several jars of Honey with Fresh Ginger stacked on a kitchen counter`;
     const stem = src.replace(/^.*\/(.*)\.[a-z]+$/i, "$1").toLowerCase();
     const set = [400, 800].filter((w) => WIDTHS[`${stem}-${w}`]).map((w) => `${WIDTHS[`${stem}-${w}`]} ${w}w`);
     set.push(`${src} 1000w`);
