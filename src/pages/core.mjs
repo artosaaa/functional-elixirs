@@ -1,5 +1,5 @@
 /* Home · Shop · Product (all SKUs) · Collections · Cart · Checkout · Confirmation · Track */
-import { BEE, LINE } from "../site.mjs";
+import { BEE, BEE_FLY, bees, LINE } from "../site.mjs";
 import { page, jsonld, breadcrumbs, productCard, applePayButton, faqList, ctaBand, stars, ICONS, esc, money, BRAND, CFG, abs, HERO_URL, bundleTiers, valueBullets, guaranteeBlock, REVIEWS_VERIFIED } from "../layout.mjs";
 import { PRODUCTS, HERO, COLLECTIONS, byId } from "../products.mjs";
 import { art, altFor, photo } from "../art.mjs";
@@ -30,11 +30,11 @@ const USES = [
 /* ---------------- HOME ---------------- */
 function home() {
   const p = HERO;
+  /* three, not four — the two garden-table frames were near-duplicates of each other */
   const gallery = [
     ["/assets/img/ritual-teapot-window-light.jpg", "A ceramic teapot and cup on a linen-covered table in soft window light"],
     ["/assets/img/garden-terraces-green.jpg", "Green garden terraces and tall trees under a wide sky"],
     ["/assets/img/tea-table-garden-morning.jpg", "A teapot and two cups of tea set out on a garden table on a bright morning"],
-    ["/assets/img/tea-table-garden-book.jpg", "Teapot, two cups and a book on a table overlooking the garden"],
   ];
   const features = [
     [LINE.leaf, "Natural ingredients", "Pure, simple, and sustainably sourced."],
@@ -44,7 +44,10 @@ function home() {
   ];
   const trust = [[LINE.no, "No preservatives"], [LINE.drop, "No additives"], [LINE.jar, "Made in small batches"], [LINE.heart, "Made with love"]];
   const body = `
-<section class="mk-hero"><div class="wrap mk-hero__in">
+<section class="mk-hero">${bees([
+  { top: "14%", from: "-8vw", to: "104vw", dur: 34, delay: 0, size: 1.5, tilt: 9, bob: 1.4 },
+  { top: "62%", from: "106vw", to: "-10vw", dur: 46, delay: 6, size: 1.05, tilt: -7, bob: 1 },
+])}<div class="wrap mk-hero__in">
   <div class="mk-hero__copy reveal">
     <p class="mk-eyebrow">Nature’s Daily Elixir</p>
     <h1 class="mk-h1">Honey.<br>Ginger.<br>Wellness.</h1>
@@ -55,6 +58,23 @@ function home() {
   <div class="mk-hero__photo reveal"><img src="/assets/img/home-hero.jpg" alt="Functional Elixirs Honey with Fresh Ginger jar beside the F·E plaque, fresh ginger root and white blossom on marble" width="1400" height="1129" fetchpriority="high" decoding="async"></div>
 </div></section>
 
+<section class="mk-signature"><div class="wrap mk-signature__in">
+  <figure class="mk-signature__photo reveal"><img src="/assets/img/product/hero-800.jpg" srcset="/assets/img/product/hero-400.jpg 400w, /assets/img/product/hero-800.jpg 800w, /assets/img/product/hero.jpg 1000w" sizes="(min-width: 56em) 34vw, 74vw" alt="The 15 oz Functional Elixirs Honey with Fresh Ginger jar, bamboo lid on, photographed on white" width="1000" height="1250" loading="lazy" decoding="async"></figure>
+  <div class="mk-signature__copy reveal">
+    <p class="mk-eyebrow">The signature jar</p>
+    <h2 class="mk-h2 mk-h2--left">${esc(p.name)}</h2>
+    <span class="mk-rule" aria-hidden="true"></span>
+    <p class="mk-lede">${esc(p.short)}</p>
+    <ul class="mk-notes">${p.notes.map((n) => `<li>${esc(n)}</li>`).join("")}</ul>
+    <p class="mk-price"><span class="mk-price__num">${money(p.price)}</span><span class="mk-price__sub">${esc(p.sub)}</span></p>
+    <div class="mk-signature__acts">
+      <button class="btn btn--gold" type="button" data-add="${p.id}">Add to cart</button>
+      <a class="btn btn--link" href="${p.url}">Read the full story</a>
+    </div>
+    <p class="mk-signature__note">${ICONS.truck} Free US shipping over $${CFG.freeShipOver} · ships in 1–2 business days</p>
+  </div>
+</div></section>
+
 <section class="mk-nature"><div class="wrap">
   <div class="mk-title reveal"><h2 class="mk-h2">Inspired by nature. Made for you.</h2><span class="mk-rule mk-rule--center" aria-hidden="true"></span></div>
   <div class="mk-gallery">${gallery.map(([src, alt], i) => `<figure class="reveal" style="--d:${i * 90}ms"><img src="${src}" alt="${esc(alt)}" width="900" height="900" loading="lazy" decoding="async"></figure>`).join("")}</div>
@@ -62,7 +82,7 @@ function home() {
 </div></section>
 
 <section class="stripes stripes--band"><div class="wrap"><div class="mk-band reveal">
-  <span class="mk-band__bee" aria-hidden="true">${BEE}</span>
+  <span class="mk-band__bee" aria-hidden="true">${BEE_FLY}</span>
   <div class="mk-band__text"><h2 class="mk-h3">Bring Nature’s Daily Elixir into your life</h2><p>Wellness never tasted so good.</p></div>
   <a class="btn btn--gold" href="/shop/">Shop now</a>
 </div></div></section>
@@ -95,7 +115,8 @@ function collection(slug) {
 
 /* ---------------- PRODUCT ---------------- */
 function product(p) {
-  const variants = p.type === "Accessory" ? ["cup", "front", "open", "hero"] : p.art === "hero" ? ["hero", "front", "open", "cup"] : [p.art, ...["hero", "front", "open", "cup"].filter((v) => v !== p.art)];
+  /* the dipper renders one drawn scene, so it gets one frame rather than four identical thumbs */
+  const variants = p.id === "dipper" ? ["dipper"] : p.type === "Accessory" ? ["cup", "front", "open", "hero"] : p.art === "hero" ? ["hero", "front", "open", "cup"] : [p.art, ...["hero", "front", "open", "cup"].filter((v) => v !== p.art)];
   const faq = p.type === "Accessory" ? [
     ["Does it fit the jar?", "Yes — the dipper was chosen for the jar’s wide mouth and is short enough to rest inside with the lid off."],
     ["How do I clean it?", "Rinse in warm water and dry upright. No dishwasher. A drop of food-safe mineral oil once a year keeps the wood happy."],
@@ -120,7 +141,7 @@ function product(p) {
     ${REVIEWS_VERIFIED ? `<div class="rating">${stars(p.rating)}<span>${p.rating} · <a href="#reviews">${p.reviews} reviews</a></span></div>` : ""}
     <div class="pdp__price"><span class="price">${money(p.price)}${p.compareAt ? `<s>${money(p.compareAt)}</s>` : ""}</span><span class="stock" data-stock="${p.id}">In stock</span></div>
     <p class="muted">${esc(p.short)}</p>
-    <div class="notes">${p.notes.map((n, i) => `<div><small>${["Taste", "Then", "Finish"][i] || "Note"}</small><strong>${esc(n)}</strong></div>`).join("")}</div>
+    <div class="notes">${p.notes.map((n, i) => `<div><small>${(p.type === "Accessory" ? ["Material", "Why", "Fit"] : ["Taste", "Then", "Finish"])[i] || "Note"}</small><strong>${esc(n)}</strong></div>`).join("")}</div>
     ${p.id === "hg-15" ? bundleTiers(["hg-15", "hg-duo", "hg-trio"], { selected: 0 }) : ""}
     <div class="pdp__actions" data-buy-anchor>
       ${p.id === "hg-15" ? "" : `<div class="qty" role="group" aria-label="Quantity"><button type="button" data-dec aria-label="Decrease quantity">−</button><input type="number" data-qty-input inputmode="numeric" min="1" max="${Math.max(1, p.stock)}" value="1" aria-label="Quantity"></div>`}
@@ -146,7 +167,9 @@ function product(p) {
     ${guaranteeBlock()}
     <div class="acc">
       <details open><summary>How to enjoy it</summary><div class="acc__body">
-        <div class="brew"><div><strong>${esc(p.use.spoon)}</strong><small>Scoop</small></div><div><strong>${esc(p.use.water)}</strong><small>Stir into</small></div><div><strong>${esc(p.use.when)}</strong><small>When</small></div><div><strong style="font-size:var(--fs-base)">${esc(p.use.also)}</strong><small>Also</small></div></div>
+        ${p.type === "Accessory"
+          ? `<div class="brew"><div><strong>${esc(p.size)}</strong><small>Length</small></div><div><strong>Beechwood</strong><small>Material</small></div><div><strong>${esc(p.use.also)}</strong><small>Care</small></div></div>`
+          : `<div class="brew"><div><strong>${esc(p.use.spoon)}</strong><small>Scoop</small></div><div><strong>${esc(p.use.water)}</strong><small>Stir into</small></div><div><strong>${esc(p.use.when)}</strong><small>When</small></div><div><strong style="font-size:var(--fs-base)">${esc(p.use.also)}</strong><small>Also</small></div></div>`}
         <p>${p.type === "Accessory" ? "Twist the dipper in the jar, lift, and let the honey spiral off the end into your cup. Rest it on a small dish between uses." : `Sweet first, then the ginger’s slow warmth. Warm — not boiling — water keeps the fresh ginger bright. <a href="/ritual/">The full ritual, and eight ways to use the jar →</a>`}</p></div></details>
       <details><summary>Ingredients</summary><div class="acc__body"><p>${esc(p.ingredients)}</p><p>${esc(p.origin)}. No added sugar, colours, flavours or preservatives. Naturally gluten-free. Not suitable for infants under 12 months.</p></div></details>
       <details><summary>Storage</summary><div class="acc__body"><p>Room temperature, lid closed, dry spoon. Raw honey may crystallize over time — that’s natural. Warm the closed jar in a bowl of warm water to restore. <a href="/journal/how-to-store-honey-and-why-it-crystallizes/">Storage guide →</a></p></div></details>

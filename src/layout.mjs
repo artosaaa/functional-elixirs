@@ -100,7 +100,7 @@ function footer() {
   <div class="footer__news"><div><h2>Notes from the kitchen</h2><p>One letter a month: new batches, recipes, and the occasional early jar.</p></div>
     <form class="news-form" data-news-form novalidate><label class="sr-only" for="news-email">Email address</label><input class="input" id="news-email" type="email" name="email" placeholder="you@example.com" autocomplete="email" required><button class="btn btn--on-dark" type="submit">Subscribe</button><p class="small">No spam, ever. Unsubscribe in one tap. <a href="/privacy/">Privacy</a>.</p></form></div>
   <div class="footer__grid">
-    <div class="footer__brand"><a class="logo" href="/">${logoMark({ size: 40 })}</a><p>${BRAND.positioning}</p>
+    <div class="footer__brand"><a class="logo logo--dark" href="/"><span class="logo__bee">${BEE}</span><span class="logo__word"><span>Functional</span><span>Elixirs</span></span></a><p>${BRAND.positioning}</p>
       <div class="footer__promise"><div>${ICONS.truck}<span>Free US shipping over $${CFG.freeShipOver} · ships in 1–2 business days</span></div><div>${ICONS.refresh}<span>30-day happiness guarantee — if a jar isn’t for you, we’ll make it right</span></div><div>${ICONS.leaf}<span>Raw honey + fresh ginger · small batches · nothing else</span></div></div></div>
     ${col("Shop", FOOTER.shop)}${col("Functional Elixirs", FOOTER.about)}${col("Help", FOOTER.help)}
   </div>
