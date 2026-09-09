@@ -1167,3 +1167,16 @@ main:has(> :last-child.cta-band) + .footer { margin-top: 0; }
 .pcard { display: flex; flex-direction: column; }
 .pcard__body { flex: 1; display: flex; flex-direction: column; gap: .2rem; }
 .pcard__row { margin-top: auto; padding-top: var(--s-3); }
+
+/* 23f. Cormorant defaults to old-style figures, so prices came out with digits
+   at different heights. Numbers that state a quantity get lining figures;
+   anything in a column gets tabular ones so they align down the page. */
+.mk-price, .mk-price__num, .mk-price__sub, .price, .pcard__price, .money,
+.summary, .totals, .line__price, .brew strong, .stat strong, .qty__val {
+  font-variant-numeric: lining-nums;
+}
+.summary, .totals, .line__price, .qty__val { font-variant-numeric: lining-nums tabular-nums; }
+
+/* the signature lede was set to the hero's narrow measure and broke into four
+   short lines in a column twice that wide */
+.mk-signature .mk-lede { max-width: 42ch; }
