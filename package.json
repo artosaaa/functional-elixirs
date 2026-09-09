@@ -1,7 +1,7 @@
 {
-  "name": "steepwell",
+  "name": "functional-elixirs",
   "version": "1.0.0",
-  "description": "Steepwell — small-batch loose-leaf tea. Static, dependency-free luxury storefront.",
+  "description": "Functional Elixirs — honey with fresh ginger. Static, dependency-free storefront.",
   "type": "module",
   "private": true,
   "scripts": {

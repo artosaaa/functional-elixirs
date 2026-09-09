@@ -1064,3 +1064,106 @@ body { background: #fff; }
 .about-nature figcaption { position: absolute; left: 0; right: 0; bottom: 0; padding: clamp(1.25rem, 4vw, 2.5rem) var(--gutter); display: grid; gap: .4rem; justify-items: center; text-align: center; background: linear-gradient(to top, rgb(0 0 0 / .55), rgb(0 0 0 / 0)); }
 .about-nature .mk-eyebrow { color: var(--stripe); }
 .about-nature__line { font: 500 clamp(1.15rem, 2.4vw, 1.6rem)/1.3 var(--serif); color: #fff; }
+
+/* =========================================================================
+   23. Polish pass — bees, the signature block, calmer stripes, tighter rhythm
+   ========================================================================= */
+
+/* --- 23a. Bees ------------------------------------------------------------
+   A decorative layer only: it never takes pointer events, never affects layout,
+   and every animation is transform/opacity so it stays off the main thread.
+   The wings hinge at (32,20) in the SVG's own view-box coordinates. */
+.bees { position: absolute; inset: 0; overflow: hidden; pointer-events: none; z-index: 2; }
+.bee-drift {
+  position: absolute; top: var(--top); left: 0; display: block;
+  width: var(--size, 1.3rem); color: var(--gold-btn); opacity: 0;
+  animation: bee-cross var(--dur, 34s) linear var(--delay, 0s) infinite;
+  will-change: transform, opacity;
+}
+.bee-drift .bee { display: block; width: 100%; height: auto; animation: bee-bob calc(var(--dur, 34s) / 9) ease-in-out var(--delay, 0s) infinite alternate; }
+.bee__wing { transform-box: view-box; transform-origin: 32px 20px; animation: bee-wing .17s ease-in-out infinite alternate; }
+.bee__wing--r { animation-delay: .085s; }
+
+@keyframes bee-wing { from { transform: rotate(0) scaleY(1); } to { transform: rotate(-14deg) scaleY(.68); } }
+@keyframes bee-bob { from { transform: translateY(calc(var(--bob, 1.1rem) * -.5)) rotate(calc(var(--tilt, 8deg) * -1)); }
+                     to   { transform: translateY(calc(var(--bob, 1.1rem) * .5)) rotate(var(--tilt, 8deg)); } }
+/* fade in and out at the edges so a bee is never seen popping into existence */
+@keyframes bee-cross {
+  0%   { transform: translateX(var(--from)); opacity: 0; }
+  8%   { opacity: .9; }
+  92%  { opacity: .9; }
+  100% { transform: translateX(var(--to)); opacity: 0; }
+}
+
+/* the CTA band's bee sits still and simply flutters */
+.mk-band__bee .bee { width: 100%; height: 100%; }
+.mk-band__bee .bee { animation: bee-hover 4.5s ease-in-out infinite alternate; }
+@keyframes bee-hover { from { transform: translateY(-.18rem) rotate(-3deg); } to { transform: translateY(.18rem) rotate(3deg); } }
+
+/* the masthead and “inspired by nature” bees wake up on hover/focus only */
+.lockup:hover .lockup__bee svg, .lockup:focus-visible .lockup__bee svg { animation: bee-hover 2.4s ease-in-out infinite alternate; }
+
+@media (prefers-reduced-motion: reduce) {
+  .bees { display: none; }
+  .bee__wing, .mk-band__bee .bee, .bee-drift, .bee-drift .bee, .lockup:hover .lockup__bee svg { animation: none !important; }
+}
+
+/* --- 23b. Signature jar — the product, on the home page ------------------- */
+.mk-signature { background: #fff; padding-block: clamp(2.5rem, 6vw, 4.5rem); border-top: 1px solid var(--cream-3); }
+.mk-signature__in { display: grid; gap: clamp(1.75rem, 4vw, 3rem); align-items: center; }
+@media (min-width: 56em) { .mk-signature__in { grid-template-columns: minmax(0, 5fr) minmax(0, 6fr); gap: clamp(2.5rem, 6vw, 5rem); } }
+.mk-signature__photo { margin: 0; background: #fff; border: 1px solid var(--cream-3); border-radius: 4px; overflow: hidden; aspect-ratio: 4 / 5; }
+.mk-signature__photo img { width: 100%; height: 100%; object-fit: contain; display: block; transition: transform .9s var(--ease); }
+.mk-signature__photo:hover img { transform: scale(1.03); }
+.mk-h2--left { text-align: left; }
+.mk-notes { display: flex; flex-wrap: wrap; gap: .5rem; margin-top: var(--s-5); padding: 0; list-style: none; }
+.mk-notes li { font: 500 .66rem/1 var(--sans); letter-spacing: .18em; text-transform: uppercase; color: #4A463F; border: 1px solid var(--cream-3); border-radius: 999px; padding: .55rem .85rem; }
+.mk-price { display: flex; align-items: baseline; gap: .75rem; flex-wrap: wrap; margin-top: var(--s-5); }
+.mk-price__num { font: 500 clamp(1.5rem, 2.6vw, 1.9rem)/1 var(--serif); color: #141311; }
+.mk-price__sub { font: 400 .95rem/1 var(--serif); color: #5A554C; }
+.mk-signature__acts { display: flex; flex-wrap: wrap; align-items: center; gap: var(--s-4) var(--s-5); margin-top: var(--s-5); }
+.mk-signature__note { display: flex; align-items: center; gap: .55rem; margin-top: var(--s-5); font: 500 .7rem/1.3 var(--sans); letter-spacing: .12em; text-transform: uppercase; color: #5A554C; }
+.mk-signature__note svg { width: 1.1rem; height: 1.1rem; flex: none; color: var(--gold-btn); }
+
+/* --- 23c. Calmer stripes -------------------------------------------------
+   The packaging pattern was running at full label-yellow across the full width,
+   which reads as deck chairs rather than as the label it comes from. Same
+   pattern, lower contrast and a narrower bar. */
+.stripes { background: repeating-linear-gradient(90deg, color-mix(in srgb, var(--stripe) 55%, #fff) 0 2.5rem, #fff 2.5rem 5rem); }
+@media (max-width: 40em) { .stripes { background: repeating-linear-gradient(90deg, color-mix(in srgb, var(--stripe) 55%, #fff) 0 1.4rem, #fff 1.4rem 2.8rem); } }
+@supports not (background: color-mix(in srgb, red 50%, #fff)) {
+  .stripes { background: repeating-linear-gradient(90deg, #F2E4AE 0 2.5rem, #fff 2.5rem 5rem); }
+}
+.masthead__panel { box-shadow: 0 0 0 1px rgb(20 19 17 / .04); }
+
+/* --- 23d. Rhythm: the home page ended on a large patch of nothing --------- */
+.mk-hero { position: relative; overflow: hidden; }
+.mk-nature { padding-block: clamp(2.5rem, 6vw, 4.5rem) clamp(2.5rem, 6vw, 4rem); }
+.mk-gallery { grid-template-columns: repeat(2, 1fr); }
+@media (min-width: 48em) { .mk-gallery { grid-template-columns: repeat(3, 1fr); } }
+@media (max-width: 47.99em) { .mk-gallery figure:first-child { grid-column: 1 / -1; aspect-ratio: 16 / 10; } }
+.mk-gallery figure { aspect-ratio: 4 / 3; }
+.mk-trust { border-bottom: 1px solid var(--cream-3); }
+/* the footer's own top margin stacked on top of the last section's padding — a
+   full-bleed closing band (the trust strip, a CTA band) should meet it flush */
+.footer { margin-top: clamp(1.5rem, 4vw, 2.5rem); }
+main:has(> :last-child.mk-trust) + .footer,
+main:has(> :last-child.stripes) + .footer,
+main:has(> :last-child.cta-band) + .footer { margin-top: 0; }
+
+/* 23e. The lifestyle set was three unrelated snapshots; a shared grade and a
+   consistent focal point make them read as one commissioned series. */
+.mk-gallery figure { position: relative; }
+.mk-gallery img { filter: saturate(.82) contrast(1.03) sepia(.08); }
+.mk-gallery figure::after { content: ""; position: absolute; inset: 0; box-shadow: inset 0 0 0 1px rgb(20 19 17 / .06); pointer-events: none; }
+.mk-gallery figure:nth-child(1) img { object-position: center 62%; }
+.mk-gallery figure:nth-child(2) img { object-position: center 70%; }
+.mk-gallery figure:nth-child(3) img { object-position: 40% 60%; }
+
+/* the signature frame read as an empty placeholder box; let the jar sit on white */
+.mk-signature__photo { border: 0; background: transparent; }
+
+/* the shop grid let long two-line descriptions push prices out of alignment */
+.pcard { display: flex; flex-direction: column; }
+.pcard__body { flex: 1; display: flex; flex-direction: column; gap: .2rem; }
+.pcard__row { margin-top: auto; padding-top: var(--s-3); }

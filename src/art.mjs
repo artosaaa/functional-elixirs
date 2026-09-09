@@ -281,6 +281,15 @@ const VARIANTS = {
       ${lidFlat(id, 790, 1075, 1.02)}
       ${finish(id, W, H)}`;
   },
+  /* the accessory has no photography of its own — draw it, rather than fall back to a jar photo */
+  dipper(id, p, anim) {
+    const W = 1000, H = 1250, T = 455;
+    return `${defs(id, p)}${wall(id, H)}${bokeh(id, anim)}${table(id, T, H)}
+      <g filter="url(#${id}-dof)" opacity=".5">${ground(id, 752, 812, 240, .78)}${jar(id, p, 752, 812, .78)}</g>
+      ${shadow(id, 455, 906, 260, 32, .2, "", "softer")}${shadow(id, 452, 900, 150, 13, .36, "", "contact")}
+      ${dipper(id, 452, 872, -24, 2.1, p?.honey || "#7A3E0F")}
+      ${finish(id, W, H)}`;
+  },
   cup(id, p, anim) {
     const W = 1000, H = 1250, T = 585;
     return `${defs(id, p)}${wall(id, H)}${bokeh(id, anim)}${table(id, T, H)}
@@ -294,7 +303,10 @@ const VARIANTS = {
 
 let n = 0;
 export function art(variant, p, { alt, anim = false, className = "", slot } = {}) {
-  const src = slot ? PHOTOS[slot] : findPhoto(p?.id || "brand", variant);
+  /* the dipper has no photograph; findPhoto() would hand back a honey jar, so draw it instead */
+  const drawn = p?.id === "dipper";
+  if (drawn) variant = "dipper";
+  const src = drawn ? null : slot ? PHOTOS[slot] : findPhoto(p?.id || "brand", variant);
   if (src) {
     /* the illustration alts describe a scene that no longer exists — describe the photograph */
     const jar = `${p?.name || "Functional Elixirs Honey with Fresh Ginger"}${p?.size ? `, ${p.size}` : ""}`;
@@ -325,6 +337,7 @@ export const altFor = (p, variant) => ({
   front: `Glass jar of Functional Elixirs ${p.name} (${p.size}) with a blonde bamboo lid and cream striped label on a pale wooden table${p.id === "dipper" ? ", the beechwood dipper lying in front" : " next to a knob of fresh ginger"}`,
   open: `Open jar of Functional Elixirs ${p.name}, the bamboo lid resting flat on the table beside it and a beechwood dipper standing in the jar with a thread of dark amber honey`,
   cup: `Stoneware cup of warm tea with steam rising, a lemon half beside it, and the Functional Elixirs ${p.name} jar softly out of focus behind`,
+  dipper: `A turned beechwood honey dipper resting on a pale wooden table, dark amber honey-ginger clinging to its grooves, the Functional Elixirs jar softly out of focus behind`,
 }[variant]);
 
 export const photo = (key, { className = "" } = {}) => { const r = REAL[key]; return `<img src="${r.src}" alt="${esc(r.alt)}" width="${r.w}" height="${r.h}" loading="lazy" decoding="async" class="${className}">`; };
