@@ -167,6 +167,7 @@ ${body}
 ${footer()}
 ${drawer()}
 <script type="application/json" id="sw-catalog">${catalogJSON()}</script>
+<script>window.__BRAND_EMAIL__=${JSON.stringify(BRAND.email)}</script>
 <script src="/assets/js/site.js?v=${JS_V}" defer></script>
 </body>
 </html>`;
