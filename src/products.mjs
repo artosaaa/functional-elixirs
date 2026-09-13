@@ -1,7 +1,10 @@
 /* Catalog — one product, several formats. All SKUs are formats of the real Honey with Fresh Ginger jar
    (plus the wooden dipper). Prices other than the 15 oz jar are suggested placeholders — edit freely.
    Inventory is static; the runtime clamps qty to `stock`, shows “Only X left” at <= 10, sold-out at 0. */
-const P = (o) => ({ url: `/shop/${o.slug}/`, currency: "USD", rating: 4.9, reviews: 96, type: "Infused honey", ...o });
+/* rating/reviews are null until real verified figures exist. Everything that would
+   render them — the PDP rating line and the JSON-LD aggregateRating — is gated on
+   them being truthy, so invented numbers cannot reach a search result. */
+const P = (o) => ({ url: `/shop/${o.slug}/`, currency: "USD", rating: null, reviews: 0, type: "Infused honey", ...o });
 
 const BASE_INGREDIENTS = "Raw honey, fresh ginger root. That’s the whole list.";
 const BASE_SHORT = "Rich raw honey infused with real fresh ginger. Sweet, warming, slightly spicy — by the spoon, in tea, over breakfast.";
@@ -10,7 +13,7 @@ export const PRODUCTS = [
   P({
     id: "hg-15", slug: "honey-with-fresh-ginger", sku: "FE-HG-15",
     name: "Honey with Fresh Ginger", sub: "15 oz (425 g) glass jar", label: ["HONEY", "with fresh", "GINGER"], size: "15 oz",
-    price: 23.99, stock: 240, badge: "Signature", rating: 4.9, reviews: 214,
+    price: 23.99, stock: 240, badge: "Signature", rating: null, reviews: 0,
     honey: "#7A3E0F", art: "hero",
     notes: ["Warm honey", "Fresh ginger", "Gentle heat"],
     use: { spoon: "1 tsp", water: "8 oz warm", when: "Morning", also: "Tea · oats · glazes" },

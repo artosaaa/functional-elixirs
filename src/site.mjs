@@ -28,7 +28,11 @@ export const CFG = { freeShipOver: 50, lowStockAt: 10 };
 /* Star ratings, review counts and testimonials on this site are SAMPLES, not real customer data.
    While this is false the site shows no numeric rating and emits no aggregateRating in JSON-LD —
    publishing invented ratings is an FTC problem and a Google structured-data violation.
-   Flip to true only once REVIEWS/rating/reviews in products.mjs hold real verified data. */
+   Flip to true only once REVIEWS in core.mjs and rating/reviews in products.mjs hold
+   real verified data from real buyers. The review card prints a name, a city and a
+   "Verified buyer" badge; publishing invented ones is a representation about people
+   who do not exist. Both the section and the JSON-LD aggregateRating check for real
+   data as well as this flag, so flipping it alone changes nothing. */
 export const REVIEWS_VERIFIED = false;
 
 export const NAV = [
