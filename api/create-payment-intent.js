@@ -64,7 +64,12 @@ export async function POST(request) {
   const payload = {
     amount: quote.amount,
     currency: quote.currency,
-    receipt_email: email,
+    /* Deliberately NOT receipt_email. In live mode — but not in test mode, so you
+       would not catch it while testing — Stripe emails its own receipt to that
+       address if "Successful payments" is on under Settings > Customer emails. The
+       customer would get two emails seconds apart: Stripe's, and the branded one the
+       webhook sends. The address is on the intent as metadata.email either way, so
+       the dashboard still shows who ordered. Want both? Put receipt_email back. */
     description: `Functional Elixirs — ${quote.lines.map((l) => `${l.name} x${l.qty}`).join(", ")}`.slice(0, 350),
     shipping: { name, address },
     metadata,

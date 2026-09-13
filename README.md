@@ -119,6 +119,20 @@ not just a settings save.
 - On submit the browser POSTs product **ids and quantities** to `/api/create-payment-intent`. It never sends an amount. The server re-prices from `src/commerce.mjs` and that is what Stripe charges, so a tampered cart buys nothing cheaper.
 - `stripe.confirmPayment()` redirects to `/order-confirmation/`, which asks Stripe whether the intent actually succeeded before claiming anything.
 - **Receipts are sent from `/api/stripe-webhook`, not the browser**, so a shopper who closes the tab still gets one. The webhook verifies Stripe's signature against the raw body and rejects replays older than five minutes.
+- **Two emails go out per order:** the customer's receipt, and a picking slip to `ORDERS_EMAIL`.
+  The webhook reports which ones it sent in its `200` body, and Stripe shows that body in the
+  endpoint's **Attempts** tab — so `{"emailed":["jane@…","shop@…"],"shopNotified":true}` answers
+  "did my copy go out?" without opening a log. `shopNotified: false` means `ORDERS_EMAIL` is unset.
+- **To test email without placing an order:** press **Send test webhook** in the Stripe dashboard.
+  That event carries no customer details, so instead of doing nothing the webhook emails
+  `ORDERS_EMAIL` to confirm the whole path works — Stripe reached the endpoint, the signature
+  verified, and Resend delivered. It can only ever send to `ORDERS_EMAIL`, never to an address
+  taken from the event.
+- **The PaymentIntent deliberately does not set `receipt_email`.** In live mode — but *not* in test
+  mode, so you would not catch it while testing — Stripe sends its own receipt to that address when
+  "Successful payments" is enabled under Settings → Customer emails. The customer would get two
+  emails seconds apart. The address is still on the intent as `metadata.email`. Want both? Put
+  `receipt_email` back in `api/create-payment-intent.js`.
 
 ### Still approximate
 
