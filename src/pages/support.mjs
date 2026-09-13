@@ -19,7 +19,7 @@ const FAQ = [
   ["Can I return it?", `An unopened jar, yes — any time, for a full refund, with return postage paid by you. An opened jar we can’t take back: honey is food. <a href="/returns/">Returns policy</a>.`],
   ["Do you offer Apple Pay?", "Yes — Apple Pay, Google Pay and Shop Pay on the product page, in the cart and at checkout, plus all major cards. Guest checkout is always available."],
   ["Do you ship internationally?", "Not at the moment — we ship within the United States only."],
-  ["Can I send it as a gift?", `Yes. Enter their address, add a note at checkout (we hand-write it and never include prices), or choose the <a href="/shop/honey-with-fresh-ginger-gift-box/">Gift Box</a>.`],
+  ["Can I send it as a gift?", `Yes. Enter their address and add a note at checkout — we hand-write it and never include prices in the parcel.`],
   ["Is there a subscription?", "Not yet. The two-jar set is our low-tech version — it covers about three months of mornings."],
 ];
 
@@ -96,7 +96,7 @@ const returns = () => policy({
 <h2>Damaged or wrong items</h2>
 <p>Photograph the box and the jar and send them to us within 7 days of delivery. We’ll ship a replacement immediately — no return, no charge. If you’d rather a refund, say so.</p>
 <h2>Gifts</h2>
-<p>Gift recipients can exchange an unopened jar or take store credit using the order number or the recipient email; refunds go to the purchaser’s original payment method. We never include prices in gift boxes.</p>
+<p>Gift recipients can exchange an unopened jar or take store credit using the order number or the recipient email; refunds go to the purchaser’s original payment method. We never include prices in a parcel sent as a gift.</p>
 <h2>Exchanges</h2>
 <p>Want a different size or set? Email us. Send the unopened original back at your own cost; once it arrives we’ll ship the replacement and settle any price difference.</p>
 <h2>Not covered</h2>
@@ -177,6 +177,53 @@ const cookies = () => policy({
 <p>More in the <a href="/privacy/">Privacy policy</a>.</p>`,
 });
 
+/* Written against an actual audit of the built pages, not aspiration: every claim
+   below was measured, and the shortfalls are listed because a statement that
+   overclaims is worse than none — it is a written representation that one
+   automated scan can disprove. */
+const accessibility = () => policy({
+  path: "/accessibility/", crumb: "Accessibility", title: "Accessibility — Our Commitment and Where We Fall Short",
+  description: "How Functional Elixirs approaches web accessibility: the standard we aim for, what the site does today, where it still falls short, and how to ask us for help or report a barrier.",
+  h1: "Accessibility",
+  lede: "We want anyone to be able to read about the jar and buy one. Here is what the site does today, where it still falls short, and how to reach a person if it gets in your way.",
+  body: `
+<h2>The standard we aim for</h2>
+<p>We aim to meet <a href="https://www.w3.org/WAI/WCAG21/quickref/" rel="noopener">WCAG 2.1 Level AA</a>, the benchmark generally used for the Americans with Disabilities Act and, in California, the Unruh Civil Rights Act. We say <em>aim</em> deliberately. This site has not been audited by an independent accessibility firm and we hold no certification or VPAT, so we are not going to tell you it is fully conformant. We would rather describe what we have actually checked.</p>
+
+<h2>What the site does today</h2>
+<p>Each of these was tested on every page of the site, most recently on ${new Date().toLocaleDateString("en-US", { month: "long", day: "numeric", year: "numeric" })}:</p>
+<ul>
+  <li><strong>It works without a mouse.</strong> Every link, button, form field and the cart panel can be reached and operated by keyboard, and a "Skip to content" link is the first thing you reach on each page.</li>
+  <li><strong>Focus is always visible.</strong> Whatever the keyboard is on gets a clear ring — we never remove the focus indicator.</li>
+  <li><strong>Text meets AA contrast.</strong> Every piece of text on the site was measured against the surface behind it at the size it actually renders.</li>
+  <li><strong>Structure is real, not visual.</strong> Proper headings in order, landmark regions, and lists that are lists — so a screen reader can skim the page the way sighted readers do.</li>
+  <li><strong>Images carry text alternatives</strong>, and images that are purely decorative are marked so screen readers skip them rather than reading a filename aloud.</li>
+  <li><strong>Every form field has a visible label</strong> tied to it, and errors are described in words rather than by turning a box red.</li>
+  <li><strong>Motion is optional.</strong> If your device is set to Reduce Motion, the drifting bees and all other animation stop. Nothing on this site conveys information by movement alone, and nothing flashes.</li>
+  <li><strong>It survives zoom and small screens.</strong> The layout reflows down to a 400-pixel-wide window and at 200% browser zoom without cutting text off or forcing you to scroll sideways.</li>
+  <li><strong>Payment happens in Stripe's own checkout field</strong>, which Stripe builds and tests for accessibility — see their <a href="https://stripe.com/legal/accessibility" rel="noopener">accessibility statement</a>.</li>
+</ul>
+
+<h2>Where we know we fall short</h2>
+<ul>
+  <li><strong>No independent audit.</strong> Everything above is our own testing, automated and by keyboard. It is not the same as a professional review, and automated checks catch perhaps a third of real barriers.</li>
+  <li><strong>Limited screen-reader testing.</strong> We have not tested with every combination of JAWS, NVDA and VoiceOver across every browser.</li>
+  <li><strong>Third-party content.</strong> The payment field is Stripe's and the fonts come from Google. We chose them and we are still responsible for your experience, but we cannot change their code.</li>
+  <li><strong>Photographs of the product</strong> are described briefly. If you want a fuller description of what a jar looks like, ask and we will write one for you.</li>
+</ul>
+
+<h2>If something is in your way, tell us</h2>
+<p>This is the part that matters most. If any page, or any step of ordering, is difficult or impossible for you to use, email <a href="mailto:${BRAND.email}">${BRAND.email}</a> with "Accessibility" in the subject. If you can, tell us the page, what you were trying to do, and what happened — and what you use to browse, if you are comfortable saying. Any detail helps; none is required.</p>
+<p><strong>We reply within one business day</strong>, and we will tell you honestly whether we can fix it and roughly when.</p>
+
+<h2>Ordering another way</h2>
+<p>You never have to fight the website to buy a jar. Email <a href="mailto:${BRAND.email}">${BRAND.email}</a> and we will take your order by hand and send a secure payment link, or arrange it however suits you better. It costs the same and there is no need to explain why.</p>
+
+<h2>Keeping this honest</h2>
+<p>We re-test accessibility whenever we change the site, and we update this page when something on it stops being true. If you find a claim here that does not match your experience, that itself is a bug worth telling us about.</p>
+<p class="small muted">Last reviewed ${new Date().toLocaleDateString("en-US", { month: "long", day: "numeric", year: "numeric" })}.</p>`,
+});
+
 function sitemap() {
   const path = "/sitemap/";
   const group = (t, items) => `<div><h2 style="font-size:var(--fs-md);margin-bottom:var(--s-3)">${t}</h2><ul class="stack small" style="list-style:none;padding:0;--flow:.4rem">${items.map(([l, h]) => `<li><a href="${h}">${esc(l)}</a></li>`).join("")}</ul></div>`;
@@ -191,4 +238,4 @@ function sitemap() {
 
 const notFound = () => ({ path: "/404.html", html: page({ title: "Page not found", description: "That page isn’t here.", path: "/404/", noindex: true, body: `<section class="auth"><div class="wrap center stack" style="--flow:var(--s-5)"><p class="eyebrow">404</p><h1>That page isn’t here.</h1><p class="lede mx-auto measure">The jar, however, is. Try the shop, the ritual, or the journal.</p><div class="cluster" style="justify-content:center"><a class="btn btn--primary" href="${HERO_URL}">The 15 oz jar</a><a class="btn btn--ghost" href="/">Home</a><a class="btn btn--ghost" href="/sitemap/">Sitemap</a></div></div></section>` }) });
 
-export default () => [faq(), contact(), shipping(), returns(), privacy(), terms(), cookies(), sitemap(), notFound()];
+export default () => [faq(), contact(), shipping(), returns(), privacy(), terms(), cookies(), accessibility(), sitemap(), notFound()];

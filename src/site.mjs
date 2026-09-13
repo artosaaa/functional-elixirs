@@ -1,6 +1,12 @@
 /* Brand config + shared helpers used by every page template.
    ⚠ VERIFY before launch: email, governing state, founding year, social handles (see README → "Facts to confirm"). */
-export const SITE_URL = (process.env.SITE_URL || "https://functional-elixirs-iskakanmarketingvercel.vercel.app").replace(/\/$/, "");
+/* Build time gets SITE_URL from vercel.json. Serverless functions do not run that
+   build command, so without the VERCEL_PROJECT_PRODUCTION_URL fallback the order
+   emails would footer a stale placeholder domain at runtime. */
+export const SITE_URL = (
+  process.env.SITE_URL ||
+  (process.env.VERCEL_PROJECT_PRODUCTION_URL ? `https://${process.env.VERCEL_PROJECT_PRODUCTION_URL}` : "https://functional-elixirs-iskakanmarketingvercel.vercel.app")
+).replace(/\/$/, "");
 
 export const BRAND = {
   name: "Functional Elixirs",
@@ -42,7 +48,7 @@ export const FOOTER = {
   help: [
     ["FAQ", "/faq/"], ["Contact", "/contact/"], ["Shipping & delivery", "/shipping/"], ["Returns & exchanges", "/returns/"], ["Track an order", "/track-order/"],
   ],
-  legal: [["Privacy", "/privacy/"], ["Terms", "/terms/"], ["Cookies", "/cookies/"], ["Sitemap", "/sitemap/"]],
+  legal: [["Privacy", "/privacy/"], ["Terms", "/terms/"], ["Cookies", "/cookies/"], ["Accessibility", "/accessibility/"], ["Sitemap", "/sitemap/"]],
 };
 
 export const esc = (s) => String(s ?? "").replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
