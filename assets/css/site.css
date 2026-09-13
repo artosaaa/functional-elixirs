@@ -1238,3 +1238,34 @@ main:has(> :last-child.cta-band) + .footer { margin-top: 0; }
 .about-hero__prose { display: grid; gap: 1.1em; margin-top: var(--s-4); }
 .about-hero__prose p { font: 400 clamp(1rem, 1.3vw, 1.12rem)/1.6 var(--serif); color: #3C3934; max-width: 46ch; }
 .about-hero__prose .mk-lede { font-weight: 500; font-size: clamp(1.1rem, 1.5vw, 1.28rem); color: #2A2824; max-width: 34ch; margin-top: 0; }
+
+/* 23j. Shop with a single product -------------------------------------------
+   A lone card in a four-column grid strands itself top-left against a large
+   void. With one SKU the jar is presented instead of tiled. */
+.shop-single { display: grid; gap: clamp(1.75rem, 4vw, 3rem); align-items: center; margin-block: clamp(1rem, 3vw, 2rem) clamp(2rem, 5vw, 3.5rem); }
+@media (min-width: 56em) { .shop-single { grid-template-columns: minmax(0, 5fr) minmax(0, 6fr); gap: clamp(2.5rem, 6vw, 5rem); } }
+.shop-single__photo { margin: 0; background: #fff; border-radius: 6px; overflow: hidden; aspect-ratio: 1 / 1; }
+/* the source jpeg carries its own white margin; a centre crop trims that rather
+   than the jar, so the product reads larger without a taller frame */
+.shop-single__photo img { width: 100%; height: 100%; object-fit: cover; object-position: center; display: block; transition: transform .9s var(--ease); }
+.shop-single__photo:hover img { transform: scale(1.03); }
+.shop-single__name { font: 400 clamp(1.6rem, 3.2vw, 2.3rem)/1.15 var(--serif); color: #141311; margin-top: .35rem; }
+.shop-single__sub { font-size: var(--fs-sm); color: var(--ink-soft); margin-top: .35rem; }
+.shop-single__lede { font: 400 clamp(1.02rem, 1.4vw, 1.15rem)/1.55 var(--serif); color: #3C3934; max-width: 44ch; margin-top: var(--s-4); }
+.shop-single__acts { display: flex; flex-wrap: wrap; align-items: center; gap: var(--s-3); margin-top: var(--s-5); }
+.shop-single__acts .btn { min-height: 3.25rem; flex: 1 1 14rem; }
+.shop-single__more { margin-top: var(--s-4); font-size: var(--fs-sm); }
+.shop-single__promise { display: grid; gap: .6rem; margin-top: var(--s-6); padding-top: var(--s-5); border-top: 1px solid var(--cream-3); }
+.shop-single__promise div { display: flex; align-items: flex-start; gap: .6rem; font-size: var(--fs-sm); color: var(--ink-soft); }
+.shop-single__promise svg { width: 1.1rem; height: 1.1rem; flex: none; color: var(--gold-btn); margin-top: .15rem; }
+
+/* 23k. Trailing polish ------------------------------------------------------
+   The footer grid still reserved four columns after the Shop column was
+   removed, leaving a dead quarter on the right. */
+@media (min-width: 52em) { .footer__grid { grid-template-columns: 1.5fr repeat(2, 1fr); gap: clamp(2rem, 6vw, 5rem); } }
+
+/* The shop page head's bottom padding stacked on the feature block's top
+   margin, opening a gap under the heading wide enough to read as a mistake. */
+.page-head + .section--tight { padding-top: var(--s-4); }
+.page-head + .section--tight .shop-single { margin-top: 0; }
+.shop-single__sub { margin-top: .4rem; font-size: var(--fs-md); color: var(--ink); }

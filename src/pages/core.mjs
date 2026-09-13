@@ -2,7 +2,7 @@
 import { BEE, BEE_FLY, bees, LINE } from "../site.mjs";
 import { page, jsonld, breadcrumbs, productCard, applePayButton, faqList, ctaBand, stars, ICONS, esc, money, BRAND, CFG, abs, HERO_URL, valueBullets, guaranteeBlock, REVIEWS_VERIFIED } from "../layout.mjs";
 import { PRODUCTS, HERO, byId } from "../products.mjs";
-import { art, altFor, photo } from "../art.mjs";
+import { art, altFor, photo, resolvedPhoto } from "../art.mjs";
 
 /* PLACEHOLDER testimonials — replace with real verified reviews before launch (README §7). */
 const REVIEWS = [
@@ -96,9 +96,32 @@ function home() {
 
 /* ---------------- SHOP ---------------- */
 function shop() {
+  const p = HERO;
+  /* One SKU doesn't belong in a four-up grid — it lands as a single stranded tile.
+     Present it instead; the grid comes back on its own if more products are added. */
+  const single = PRODUCTS.length === 1;
   const body = `${breadcrumbs([{ name: "Shop", href: "/shop/" }])}
 <div class="wrap page-head"><p class="eyebrow">Shop</p><h1>Honey with Fresh Ginger.</h1></div>
-<section class="section--tight"><div class="wrap"><div class="products">${PRODUCTS.map(productCard).join("")}</div></div></section>
+${single ? `<section class="section--tight"><div class="wrap shop-single">
+  <figure class="shop-single__photo reveal"><img src="/assets/img/product/hero-800.jpg" srcset="/assets/img/product/hero-400.jpg 400w, /assets/img/product/hero-800.jpg 800w, /assets/img/product/hero.jpg 1000w" sizes="(min-width: 56em) 42vw, 88vw" alt="${esc(altFor(p, "hero"))}" width="1000" height="1250" fetchpriority="high" decoding="async"></figure>
+  <div class="shop-single__copy reveal">
+    <p class="eyebrow">${esc(p.badge || p.type)}</p>
+    <p class="shop-single__sub">${esc(p.sub)}</p>
+    <p class="shop-single__lede">${esc(p.short)}</p>
+    <ul class="mk-notes">${p.notes.map((n) => `<li>${esc(n)}</li>`).join("")}</ul>
+    <p class="mk-price"><span class="mk-price__num">${money(p.price)}</span><span class="mk-price__sub" data-stock="${p.id}">In stock</span></p>
+    <div class="shop-single__acts">
+      <div class="qty" role="group" aria-label="Quantity"><button type="button" data-dec aria-label="Decrease quantity">−</button><input type="number" data-qty-input inputmode="numeric" min="1" max="${Math.max(1, p.stock)}" value="1" aria-label="Quantity"></div>
+      <button class="btn btn--primary" type="button" data-add="${p.id}">Add to cart — ${money(p.price)}</button>
+    </div>
+    <p class="shop-single__more"><a href="${p.url}">Ingredients, storage and the full story →</a></p>
+    <div class="shop-single__promise">
+      <div>${ICONS.truck}<span>Free US shipping over $${CFG.freeShipOver}</span></div>
+      <div>${ICONS.refresh}<span>Unopened jars returnable for a full refund</span></div>
+      <div>${ICONS.check}<span>Raw honey and fresh ginger root — nothing else</span></div>
+    </div>
+  </div>
+</div></section>` : `<section class="section--tight"><div class="wrap"><div class="products">${PRODUCTS.map(productCard).join("")}</div></div></section>`}
 `;
   return { path: "/shop/", html: page({ title: "Shop Honey with Fresh Ginger — 15 oz Jar", description: "Shop Functional Elixirs Honey with Fresh Ginger: the 15 oz signature jar, $23.99. Raw honey and fresh ginger root, nothing else. Free US shipping over $50.", path: "/shop/", body, breadcrumbs: [{ name: "Shop", href: "/shop/" }] }) };
 }
@@ -106,7 +129,11 @@ function shop() {
 /* ---------------- PRODUCT ---------------- */
 function product(p) {
   /* the dipper renders one drawn scene, so it gets one frame rather than four identical thumbs */
-  const variants = p.id === "dipper" ? ["dipper"] : p.type === "Accessory" ? ["cup", "front", "open", "hero"] : p.art === "hero" ? ["hero", "front", "open", "cup"] : [p.art, ...["hero", "front", "open", "cup"].filter((v) => v !== p.art)];
+  const allVariants = p.id === "dipper" ? ["dipper"] : p.type === "Accessory" ? ["cup", "front", "open", "hero"] : p.art === "hero" ? ["hero", "front", "open", "cup"] : [p.art, ...["hero", "front", "open", "cup"].filter((v) => v !== p.art)];
+  /* several variants can resolve to the same photograph — showing the same jar twice in
+     a four-thumbnail strip reads as a mistake, so keep one frame per distinct image */
+  const seenSrc = new Set();
+  const variants = allVariants.filter((v) => { const src = resolvedPhoto(p, v); if (!src) return true; if (seenSrc.has(src)) return false; seenSrc.add(src); return true; });
   const faq = p.type === "Accessory" ? [
     ["Does it fit the jar?", "Yes — the dipper was chosen for the jar’s wide mouth and is short enough to rest inside with the lid off."],
     ["How do I clean it?", "Rinse in warm water and dry upright. No dishwasher. A drop of food-safe mineral oil once a year keeps the wood happy."],
@@ -170,7 +197,7 @@ function product(p) {
 
 <section class="section section--well" id="reviews"><div class="wrap">${REVIEWS_VERIFIED
   ? `<div class="section-head center"><p class="eyebrow">Reviews</p><h2>${p.rating} out of 5</h2><p class="muted">${p.reviews} verified reviews</p></div><div class="grid grid--3">${REVIEWS.slice(0, 3).map(reviewCard).join("")}</div>`
-  : `<div class="wrap--narrow center stack" style="--flow:var(--s-4)"><p class="eyebrow">Returns</p><h2>Still sealed? Send it back any time.</h2><p class="lede">Return an unopened jar and we’ll refund it in full, with no deadline; you cover the return postage. An opened jar we can’t accept — honey is food, and a broken seal can’t be resold.</p><p><a class="btn btn--ghost" href="/contact/">Questions first? Write to us</a></p></div>`}</div></section>
+  : `<div class="wrap--narrow center stack" style="--flow:var(--s-4)"><p class="eyebrow">Questions</p><h2>Anything you want to ask, ask.</h2><p class="lede">Ingredients, storage, gifting, an order that hasn’t turned up — a person reads every message and replies within one business day.</p><p><a class="btn btn--ghost" href="/contact/">Write to us</a></p></div>`}</div></section>
 
 <section class="section"><div class="wrap--narrow"><h2 class="center" style="margin-bottom:var(--s-5)">Questions</h2>${faqList(faq)}</div></section>
 

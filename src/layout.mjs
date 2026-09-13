@@ -167,7 +167,7 @@ ${drawer()}
 export const valueBullets = () => `<div class="value-bullets">
   <div>${ICONS.check}<span><strong>Two ingredients.</strong> Raw honey and fresh ginger root — never powder, never extract.</span></div>
   <div>${ICONS.check}<span><strong>No added sugar</strong>, colours, flavourings or preservatives.</span></div>
-  <div>${ICONS.refresh}<span><strong>Unopened jars are returnable.</strong> Full refund, no time limit; return postage is yours.</span></div>
+  <div>${ICONS.check}<span><strong>Raw, not heated.</strong> It may crystallize over time — that is what raw honey does.</span></div>
 </div>`;
 
 export { stars, PRODUCTS, ICONS, esc, money, BRAND, CFG, abs, SITE_URL, HERO_URL, logoMark, REVIEWS_VERIFIED };

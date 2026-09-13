@@ -249,7 +249,7 @@
       el.classList.remove("stock--low", "stock--out");
       if (p.stock <= 0) { el.textContent = "Sold out — next batch in about 3 weeks"; el.classList.add("stock--out"); }
       else if (p.stock <= CFG.lowStockAt) { el.textContent = `Only ${p.stock} left in this batch`; el.classList.add("stock--low"); }
-      else el.textContent = "In stock — ships in 1–2 days";
+      else el.textContent = "In stock";
     });
     $$("[data-add]").forEach((b) => { const p = product(b.dataset.add); if (p && p.stock <= 0) { b.disabled = true; b.textContent = "Sold out"; } });
     $$("[data-express-buy]").forEach((b) => { const p = product(b.dataset.expressBuy); if (p && p.stock <= 0) b.disabled = true; });
