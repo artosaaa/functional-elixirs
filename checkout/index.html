@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Checkout | Functional Elixirs</title>
-<meta name="description" content="Secure checkout — Apple Pay, Google Pay, Shop Pay or card. Guest checkout with live shipping rates.">
+<meta name="description" content="Secure checkout — card, Apple Pay, Google Pay or Link. Guest checkout with live shipping rates.">
 <link rel="canonical" href="https://functional-elixirs-iskakanmarketingvercel.vercel.app/checkout/">
 <meta name="robots" content="noindex, nofollow">
 <meta name="theme-color" content="#FFFFFF">
@@ -15,24 +15,25 @@
 <link rel="icon" href="/assets/img/favicon-32.png" sizes="32x32" type="image/png">
 <link rel="icon" href="/assets/img/favicon-64.png" sizes="64x64" type="image/png">
 <link rel="apple-touch-icon" href="/assets/img/apple-touch-icon.png">
-<link rel="preload" href="/assets/css/site.css?v=5f35bf13" as="style">
-<link rel="stylesheet" href="/assets/css/site.css?v=5f35bf13">
+<link rel="preload" href="/assets/css/site.css?v=73d9442b" as="style">
+<link rel="stylesheet" href="/assets/css/site.css?v=73d9442b">
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="Functional Elixirs">
 <meta property="og:locale" content="en_US">
 <meta property="og:title" content="Checkout | Functional Elixirs">
-<meta property="og:description" content="Secure checkout — Apple Pay, Google Pay, Shop Pay or card. Guest checkout with live shipping rates.">
+<meta property="og:description" content="Secure checkout — card, Apple Pay, Google Pay or Link. Guest checkout with live shipping rates.">
 <meta property="og:url" content="https://functional-elixirs-iskakanmarketingvercel.vercel.app/checkout/">
 <meta property="og:image" content="https://functional-elixirs-iskakanmarketingvercel.vercel.app/assets/img/og-default.svg">
 <meta property="og:image:width" content="1200"><meta property="og:image:height" content="630">
-<meta property="og:image:alt" content="Secure checkout — Apple Pay, Google Pay, Shop Pay or card. Guest checkout with live shipping rates.">
+<meta property="og:image:alt" content="Secure checkout — card, Apple Pay, Google Pay or Link. Guest checkout with live shipping rates.">
 
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="Checkout | Functional Elixirs">
-<meta name="twitter:description" content="Secure checkout — Apple Pay, Google Pay, Shop Pay or card. Guest checkout with live shipping rates.">
+<meta name="twitter:description" content="Secure checkout — card, Apple Pay, Google Pay or Link. Guest checkout with live shipping rates.">
 <meta name="twitter:image" content="https://functional-elixirs-iskakanmarketingvercel.vercel.app/assets/img/og-default.svg">
 <script type="application/ld+json">[{"@context":"https://schema.org","@type":"Organization","@id":"https://functional-elixirs-iskakanmarketingvercel.vercel.app/#organization","name":"Functional Elixirs LLC","alternateName":"Functional Elixirs","url":"https://functional-elixirs-iskakanmarketingvercel.vercel.app","logo":"https://functional-elixirs-iskakanmarketingvercel.vercel.app/assets/img/logo.png","email":"hello@functionalelixirs.com","foundingDate":"2023","slogan":"Nature’s Daily Elixir.","description":"Rich raw honey infused with real fresh ginger — two ingredients, one daily ritual, from our mother’s kitchen to yours.","address":{"@type":"PostalAddress","addressRegion":"CA","addressCountry":"US"},"sameAs":["https://instagram.com/functionalelixirs","https://facebook.com/functionalelixirs"],"contactPoint":[{"@type":"ContactPoint","contactType":"customer service","email":"hello@functionalelixirs.com","availableLanguage":"English","hoursAvailable":"Mo-Fr 09:00-17:00"}]},{"@context":"https://schema.org","@type":"WebSite","@id":"https://functional-elixirs-iskakanmarketingvercel.vercel.app/#website","url":"https://functional-elixirs-iskakanmarketingvercel.vercel.app","name":"Functional Elixirs","publisher":{"@id":"https://functional-elixirs-iskakanmarketingvercel.vercel.app/#organization"}}]</script>
-
+<script src="https://js.stripe.com/v3/"></script>
+<script>window.__STRIPE_PK__=""</script>
 </head>
 <body class="">
 <a class="skip" href="#main">Skip to content</a>
@@ -64,10 +65,6 @@
   <aside class="checkout__side summary"><h2>Order summary</h2><div data-summary-lines></div><form class="promo" data-promo-form novalidate><label class="sr-only" for="promo">Promo code</label><input class="input" id="promo" name="code" placeholder="Promo code" autocomplete="off"><button class="btn btn--soft" type="submit">Apply</button></form><p class="promo-msg" aria-live="polite"></p><div data-checkout-totals></div><p class="secure"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg> Payments encrypted end-to-end. We never store card numbers.</p></aside>
   <form id="checkout-form" class="form" novalidate>
     <section class="co-section">
-      <h2>Express checkout</h2>
-      <div class="express"><button class="btn btn--apple-pay btn--block" type="button" data-apple-pay><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" focusable="false"><path d="M16.4 12.7c0-2.3 1.9-3.4 2-3.5-1.1-1.6-2.8-1.8-3.4-1.8-1.4-.1-2.8.9-3.5.9s-1.8-.8-3-.8C6.1 7.5 4 9.5 4 13.2c0 1.2.2 2.4.6 3.6.6 1.6 2.6 5.4 4.7 5.3 1.1 0 1.8-.7 3.2-.7s2 .7 3.2.7c2.1 0 3.9-3.5 4.5-5.1-2.8-1.3-3.8-3.4-3.8-4.3zM13.9 5.6c.7-.8 1.1-1.9 1-3-1 0-2.1.7-2.8 1.5-.6.7-1.2 1.8-1 2.9 1.1.1 2.1-.6 2.8-1.4z"/></svg><span>Pay</span><span class="sr-only">with Apple Pay</span></button><div class="express__secondary"><button class="btn btn--gpay" type="button" data-gpay><strong style="color:#4285F4">G</strong>&nbsp;Pay</button><button class="btn btn--shop-pay" type="button" data-shop-pay>Shop <span style="font-style:normal;font-weight:400">Pay</span></button></div><p class="express__or">or continue below</p></div>
-    </section>
-    <section class="co-section">
       <div class="co-section__head"><h2>Contact</h2><p class="small muted">We’ll email your receipt and tracking here.</p></div>
       <div class="field"><label for="email">Email</label><input class="input" id="email" name="email" type="email" autocomplete="email" required inputmode="email"><p class="error" id="email-err">Enter a valid email so we can send your receipt.</p></div>
     </section>
@@ -91,18 +88,13 @@
     </section>
     <section class="co-section">
       <h2>Payment</h2>
-      <div class="opt" role="radiogroup" aria-label="Payment method">
-        <label><input type="radio" name="pay" value="card" checked><span><span class="opt__title">Credit or debit card</span><br><span class="opt__meta">Visa, Mastercard, Amex, Discover</span></span><span class="card-icons" aria-hidden="true"><span>VISA</span><span>MC</span><span>AMEX</span></span></label>
-        <label><input type="radio" name="pay" value="paypal"><span><span class="opt__title">PayPal</span><br><span class="opt__meta">You’ll be redirected to PayPal to confirm</span></span><span></span></label>
-      </div>
-      <div class="card-fields" data-card-fields>
-        <!-- REAL: replace these three inputs with a Stripe <PaymentElement> / Elements mount (div#card-element).
-             Card data then never touches your DOM or server (PCI SAQ-A). -->
-        <div class="field"><label for="cc">Card number</label><input class="input" id="cc" name="cc" inputmode="numeric" autocomplete="cc-number" placeholder="4242 4242 4242 4242" pattern="[\d ]{15,19}" required><p class="error">Enter a valid card number.</p></div>
-        <div class="field-row"><div class="field"><label for="exp">Expiry</label><input class="input" id="exp" name="exp" inputmode="numeric" autocomplete="cc-exp" placeholder="MM / YY" pattern="\d{2}\s?/\s?\d{2}" required><p class="error">MM / YY</p></div><div class="field"><label for="cvc">Security code</label><input class="input" id="cvc" name="cvc" inputmode="numeric" autocomplete="cc-csc" placeholder="CVC" pattern="\d{3,4}" required><p class="error">3–4 digits.</p></div></div>
-        <div class="field"><label for="ccname">Name on card</label><input class="input" id="ccname" name="ccname" autocomplete="cc-name" required><p class="error">Required.</p></div>
-        <label class="check"><input type="checkbox" name="billing_same" checked> Billing address same as shipping</label>
-      </div>
+      <!-- Stripe's Payment Element. Card, Apple Pay, Google Pay and Link render here
+           according to what is enabled in the Stripe dashboard and what the shopper's
+           browser supports. Card details live inside Stripe's iframe: they never touch
+           this page's DOM or our server, which is what keeps us in PCI SAQ-A. -->
+      <div id="payment-element" data-payment-element></div>
+      <p class="field-note small muted" data-payment-status role="status" aria-live="polite">Loading secure payment…</p>
+      <label class="check"><input type="checkbox" name="billing_same" checked> Billing address same as shipping</label>
     </section>
     <section class="co-section">
       <div class="field"><label for="gift">Gift note <span class="muted">(optional — we never include prices)</span></label><textarea class="textarea" id="gift" name="gift" style="min-height:5rem"></textarea></div>
@@ -129,6 +121,6 @@
 </aside>
 <div class="cookie" id="cookie" role="region" aria-label="Cookie notice"><p>Essential cookies only, unless you say otherwise. <a href="/cookies/">Details</a></p><div class="cluster"><button class="btn btn--primary btn--sm" type="button" data-cookie="all">Accept all</button><button class="btn btn--ghost btn--sm" type="button" data-cookie="essential">Essential only</button></div></div>
 <script type="application/json" id="sw-catalog">{"hg-15":{"id":"hg-15","name":"Honey with Fresh Ginger","sub":"15 oz (425 g) glass jar","price":23.99,"stock":240,"url":"/shop/honey-with-fresh-ginger/","honey":"#7A3E0F","size":"15 oz"}}</script>
-<script src="/assets/js/site.js?v=b71c4d6d" defer></script>
+<script src="/assets/js/site.js?v=cb4bb26f" defer></script>
 </body>
 </html>

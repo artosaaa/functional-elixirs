@@ -235,7 +235,7 @@
       else el.textContent = "In stock";
     });
     $$("[data-add]").forEach((b) => { const p = product(b.dataset.add); if (p && p.stock <= 0) { b.disabled = true; b.textContent = "Sold out"; } });
-    $$("[data-express-buy]").forEach((b) => { const p = product(b.dataset.expressBuy); if (p && p.stock <= 0) b.disabled = true; });
+    $$("[data-buy-now]").forEach((b) => { const p = product(b.dataset.buyNow); if (p && p.stock <= 0) b.disabled = true; });
 
     // account header hint
     const u = Auth.user();
@@ -266,17 +266,18 @@
 
   /* ---------- 5. Global delegated events ---------- */
   document.addEventListener("click", (e) => {
-    const t = e.target.closest("[data-add],[data-express-buy],[data-cart-open],[data-wish],[data-inc],[data-dec],[data-remove],[data-menu-open],[data-menu-close],[data-promo-clear],[data-signout]");
+    const t = e.target.closest("[data-add],[data-buy-now],[data-cart-open],[data-wish],[data-inc],[data-dec],[data-remove],[data-menu-open],[data-menu-close],[data-promo-clear],[data-signout]");
     if (!t) return;
     if (t.dataset.add !== undefined) { const q = parseInt($("[data-qty-input]")?.value || "1", 10) || 1; Cart.add(t.dataset.add, q); t.setAttribute("data-added", ""); setTimeout(() => t.removeAttribute("data-added"), 900); }
-    else if (t.dataset.expressBuy !== undefined) {
-      /* Apple Pay from the product page: add the jar (qty from the selector if present), then open checkout with the
-         Apple Pay sheet armed. With Stripe you'd instead mount the Express Checkout Element right here on the PDP. */
-      e.preventDefault(); const p = product(t.dataset.expressBuy); if (!p || p.stock <= 0) return;
+    else if (t.dataset.buyNow !== undefined) {
+      /* Buy now: add the jar (qty from the selector if present) and go straight to
+         checkout, where the Payment Element offers card and whichever wallets the
+         shopper's browser and our Stripe account both support. */
+      e.preventDefault(); const p = product(t.dataset.buyNow); if (!p || p.stock <= 0) return;
       const q = parseInt($("[data-qty-input]")?.value || "1", 10) || 1;
       const items = Cart.items(); const line = items.find((i) => i.id === p.id);
       if (line) line.qty = Math.min(line.qty + q, p.stock); else items.push({ id: p.id, qty: Math.min(q, p.stock) });
-      store.set(Cart.key, items); t.setAttribute("aria-busy", "true"); location.href = U("/checkout/?express=apple-pay");
+      store.set(Cart.key, items); t.setAttribute("aria-busy", "true"); location.href = U("/checkout/");
     }
     else if (t.dataset.cartOpen !== undefined) { e.preventDefault(); Drawer.open(); }
     else if (t.dataset.wish !== undefined) Wish.toggle(t.dataset.wish);
@@ -353,8 +354,13 @@
     });
   }
 
-  /* Checkout */
+  /* Checkout — Stripe Payment Element.
+     The amount shown here is only ever a preview. /api/create-payment-intent
+     recomputes the price from the catalog and that is what gets charged, so
+     nothing the browser says about money is trusted. */
   const Checkout = {
+    stripe: null, elements: null, _intentId: null,
+
     init() {
       const form = $("#checkout-form"); if (!form) return;
       if (!Cart.items().length) { $("[data-checkout-empty]")?.removeAttribute("hidden"); form.hidden = true; return; }
@@ -377,24 +383,50 @@
       if (!zip.value && Ship.get().zip) zip.value = Ship.get().zip;
       drawRates();
 
-      // payment method toggle
-      $$('input[name="pay"]', form).forEach((r) => r.addEventListener("change", () => { $("[data-card-fields]").hidden = r.value !== "card"; }));
+      this.mountPayment();
 
-      // Express wallets
-      this.initExpress(form);
-      if (new URLSearchParams(location.search).get("express") === "apple-pay") { const ap = $("[data-apple-pay]"); ap?.scrollIntoView({ block: "center" }); setTimeout(() => ap?.click(), 350); }
-
-      // Submit (card)
-      form.addEventListener("submit", (e) => {
-        e.preventDefault(); if (!validate(form)) return;
-        const btn = $('[type="submit"]', form); btn.disabled = true; btn.textContent = "Processing…";
-        /* REAL: 1) POST cart+address to /api/checkout → server creates Stripe PaymentIntent
-                 2) stripe.confirmCardPayment(clientSecret, { payment_method: { card } })
-                 3) on success → server marks order paid → redirect to confirmation. Never send raw card data to your server. */
-        setTimeout(() => this.complete(form, "Card"), 900);
-      });
+      form.addEventListener("submit", (e) => { e.preventDefault(); this.pay(form); });
     },
+
+    status(msg, isError) {
+      const el = $("[data-payment-status]"); if (!el) return;
+      el.textContent = msg || "";
+      el.className = `field-note small ${isError ? "form-msg--err" : "muted"}`;
+    },
+
+    /* Deferred-intent Elements: the element is mounted against an amount, and the
+       PaymentIntent itself is only created when the shopper actually submits. No
+       abandoned intents piling up in the dashboard for every visitor who looks. */
+    mountPayment() {
+      const mount = $("[data-payment-element]"); if (!mount) return;
+      const pk = window.__STRIPE_PK__;
+      if (!window.Stripe || !pk) {
+        this.status("Card payment isn’t available on this page right now. Email hello@functionalelixirs.com and we’ll take your order by hand.", true);
+        $('#checkout-form [type="submit"]').disabled = true;
+        return;
+      }
+      try {
+        this.stripe = Stripe(pk);
+        this.elements = this.stripe.elements({
+          mode: "payment",
+          amount: Math.max(50, Math.round((this._total ?? Cart.subtotal()) * 100)),
+          currency: "usd",
+          appearance: {
+            theme: "flat",
+            variables: { colorPrimary: "#7A3E0F", colorBackground: "#ffffff", colorText: "#2b2620", colorDanger: "#a2361f", fontFamily: "Georgia, 'Times New Roman', serif", borderRadius: "2px", spacingUnit: "4px" },
+          },
+        });
+        const pe = this.elements.create("payment", { layout: "tabs", fields: { billingDetails: { address: "never", name: "auto", email: "never" } } });
+        pe.on("ready", () => this.status(""));
+        pe.on("loaderror", () => this.status("Payment couldn’t load. Refresh the page, or email us and we’ll take the order by hand.", true));
+        pe.mount(mount);
+      } catch (err) {
+        this.status("Payment couldn’t load. Refresh the page, or email us and we’ll take the order by hand.", true);
+      }
+    },
+
     quote() { const s = Ship.get(); return Ship.quote(s.country, s.zip, Cart.subtotal()).find((r) => r.id === s.rate); },
+
     recalc() {
       const box = $("[data-checkout-totals]"); if (!box) return;
       const s = Ship.get(); const ship = this.quote(); const sub = Cart.subtotal() - Promo.discount(Cart.subtotal());
@@ -402,101 +434,142 @@
       box.innerHTML = totalsHTML({ ship, tax });
       const total = sub + (ship?.price || 0) + tax; $$("[data-total]").forEach((el) => (el.textContent = money(total)));
       this._total = total; this._tax = tax; this._ship = ship;
+      /* Keep the element's idea of the amount in step with the summary, or Stripe
+         refuses the confirmation with a mismatch. */
+      try { this.elements?.update({ amount: Math.max(50, Math.round(total * 100)) }); } catch { /* element not mounted yet */ }
     },
-    initExpress(form) {
-      const ap = $("[data-apple-pay]"); const gp = $("[data-gpay]"); const sp = $("[data-shop-pay]");
-      /* Apple Pay availability. On Safari/iOS with a card in Wallet, ApplePaySession.canMakePayments() is true.
-         We still render the button elsewhere (as Apple's HIG allows for demo) but mark it. */
-      const hasAP = !!(window.ApplePaySession && ApplePaySession.canMakePayments());
-      if (ap) {
-        ap.dataset.native = String(hasAP);
-        ap.addEventListener("click", async () => {
-          const s = Ship.get(); const total = this._total ?? Cart.subtotal();
-          if (hasAP) {
-            /* REAL Apple Pay JS flow (merchant validation MUST happen on your server):
-               const session = new ApplePaySession(6, {
-                 countryCode: "US", currencyCode: "USD",
-                 supportedNetworks: ["visa", "masterCard", "amex", "discover"],
-                 merchantCapabilities: ["supports3DS"],
-                 requiredShippingContactFields: ["postalAddress", "email", "name"],
-                 shippingMethods: Ship.quote(...).map(r => ({ label: r.name, amount: r.price.toFixed(2), identifier: r.id, detail: Ship.daysLabel(r.days) })),
-                 total: { label: "Functional Elixirs", amount: total.toFixed(2) },
-               });
-               session.onvalidatemerchant = async (e) => {
-                 const res = await fetch("/api/apple-pay/validate", { method: "POST", body: JSON.stringify({ url: e.validationURL }) });
-                 session.completeMerchantValidation(await res.json());
-               };
-               session.onshippingcontactselected = (e) => { ...recompute rates from e.shippingContact.postalCode; session.completeShippingContactSelection(...) };
-               session.onpaymentauthorized = async (e) => {
-                 // Send e.payment.token to Stripe: stripe.confirmPayment with the Apple Pay PaymentMethod, or your PSP's decrypt endpoint
-                 const r = await fetch("/api/apple-pay/charge", { method: "POST", body: JSON.stringify({ token: e.payment.token, cart: Cart.items() }) });
-                 session.completePayment(r.ok ? ApplePaySession.STATUS_SUCCESS : ApplePaySession.STATUS_FAILURE);
-                 if (r.ok) Checkout.complete(form, "Apple Pay", e.payment.shippingContact);
-               };
-               session.begin();
-               ————— With Stripe, the simplest route is Stripe's Payment Request Button / Express Checkout Element,
-               which wraps Apple Pay + Google Pay + Link in one element and handles merchant validation for you. */
-          }
-          // Payment Request API path (Chrome/Edge/Safari): shows the browser's native sheet where supported.
-          if (window.PaymentRequest) {
-            try {
-              const methods = [{ supportedMethods: "https://apple.com/apple-pay", data: { version: 3, merchantIdentifier: "merchant.com.functionalelixirs", merchantCapabilities: ["supports3DS"], supportedNetworks: ["visa", "masterCard", "amex"], countryCode: "US" } }, { supportedMethods: "https://google.com/pay", data: { environment: "TEST", apiVersion: 2, apiVersionMinor: 0, merchantInfo: { merchantName: "Functional Elixirs" }, allowedPaymentMethods: [{ type: "CARD", parameters: { allowedAuthMethods: ["PAN_ONLY", "CRYPTOGRAM_3DS"], allowedCardNetworks: ["VISA", "MASTERCARD", "AMEX"] }, tokenizationSpecification: { type: "PAYMENT_GATEWAY", parameters: { gateway: "example", gatewayMerchantId: "exampleGatewayMerchantId" } } }] } }];
-              const details = { total: { label: "Functional Elixirs", amount: { currency: "USD", value: total.toFixed(2) } }, displayItems: Cart.items().map((i) => ({ label: `${product(i.id).name} × ${i.qty}`, amount: { currency: "USD", value: (product(i.id).price * i.qty).toFixed(2) } })) };
-              const req = new PaymentRequest(methods, details, { requestPayerEmail: true, requestShipping: false });
-              if (await req.canMakePayment()) { const resp = await req.show(); await resp.complete("success"); this.complete(form, "Apple Pay", { emailAddress: resp.payerEmail }); return; }
-            } catch (err) { /* user dismissed sheet or unsupported → fall through to demo */ if (err?.name === "AbortError") return; }
-          }
-          // Demo fallback: simulate the sheet so the flow is testable anywhere.
-          ap.disabled = true; ap.setAttribute("aria-busy", "true"); toast("Opening Apple Pay…");
-          setTimeout(() => this.complete(form, "Apple Pay"), 1100);
+
+    async pay(form) {
+      if (!validate(form)) return;
+      if (!this.stripe || !this.elements) return;
+      const btn = $('[type="submit"]', form);
+      const restore = () => { btn.disabled = false; btn.innerHTML = `Place order · <span data-total>${money(this._total ?? 0)}</span>`; };
+      btn.disabled = true; btn.textContent = "Processing…";
+      this.status("");
+
+      try {
+        const { error: invalid } = await this.elements.submit();
+        if (invalid) throw invalid;
+
+        const fd = new FormData(form);
+        const payload = {
+          items: Cart.items().map((i) => ({ id: i.id, qty: i.qty })),
+          promo: Promo.get()?.code || null,
+          intentId: this._intentId,
+          email: fd.get("email"), first: fd.get("first"), last: fd.get("last"),
+          address: fd.get("address"), address2: fd.get("address2"), city: fd.get("city"),
+          state: fd.get("state"), zip: fd.get("zip"), country: fd.get("country") || "US",
+        };
+        const res = await fetch(U("/api/create-payment-intent"), {
+          method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(payload),
         });
+        const quote = await res.json().catch(() => ({}));
+        if (!res.ok) throw new Error(quote.error || "We couldn’t start the payment. Please try again.");
+        this._intentId = quote.intentId;
+
+        /* Park the order locally before handing off, so the confirmation page can show
+           the detail after Stripe redirects back. The receipt email does not depend on
+           this — that is sent from the webhook, which runs whatever the browser does. */
+        this.park(form, quote);
+
+        const { error } = await this.stripe.confirmPayment({
+          elements: this.elements,
+          clientSecret: quote.clientSecret,
+          confirmParams: {
+            return_url: `${location.origin}${U("/order-confirmation/")}`,
+            payment_method_data: { billing_details: {
+              name: `${fd.get("first") || ""} ${fd.get("last") || ""}`.trim(),
+              email: fd.get("email"),
+              address: { line1: fd.get("address"), line2: fd.get("address2") || undefined, city: fd.get("city"), state: fd.get("state"), postal_code: fd.get("zip"), country: fd.get("country") || "US" },
+            } },
+          },
+        });
+        /* confirmPayment only returns when something went wrong — success leaves for
+           return_url, or for the bank's 3-D Secure page and back. */
+        throw error || new Error("Payment did not complete.");
+      } catch (err) {
+        this.status(err?.message || "We couldn’t take that payment. Check the card details and try again.", true);
+        restore();
       }
-      gp?.addEventListener("click", () => { toast("Opening Google Pay…"); setTimeout(() => this.complete(form, "Google Pay"), 1100); /* REAL: google.payments.api.PaymentsClient().loadPaymentData(...) */ });
-      sp?.addEventListener("click", () => { toast("Opening Shop Pay…"); setTimeout(() => this.complete(form, "Shop Pay"), 1100); /* REAL: Shop Pay button via Shopify's Web Components or Stripe's Link as the equivalent accelerated checkout */ });
     },
-    complete(form, method, contact) {
-      const fd = new FormData(form); const s = Ship.get(); const ship = this.quote(); const u = Auth.user();
-      const items = Cart.items().map((i) => ({ id: i.id, qty: i.qty, name: product(i.id).name, price: product(i.id).price }));
-      const sub = Cart.subtotal(); const disc = Promo.discount(sub);
-      const order = {
-        id: uid("FE-"), tracking: "1ZFE" + Math.floor(1e9 + Math.random() * 9e9), placed: Date.now(), method,
-        email: fd.get("email") || contact?.emailAddress || u?.email || "guest@functionalelixirs.com",
-        name: `${fd.get("first") || ""} ${fd.get("last") || ""}`.trim() || u?.name || "Guest",
+
+    /* A pending record keyed by the PaymentIntent, so /order-confirmation/ can render
+       the order after the redirect. Marked paid only once Stripe says it was. */
+    park(form, quote) {
+      const fd = new FormData(form); const s = Ship.get();
+      Orders.add({
+        id: quote.order, intentId: quote.intentId, tracking: null, placed: Date.now(), method: "Card",
+        email: fd.get("email") || "", name: `${fd.get("first") || ""} ${fd.get("last") || ""}`.trim() || "Guest",
         address: { line1: fd.get("address") || "", line2: fd.get("address2") || "", city: fd.get("city") || "", state: fd.get("state") || "", zip: fd.get("zip") || s.zip, country: fd.get("country") || s.country },
-        shipping: ship || { name: "Standard", price: 0, days: [4, 7] }, items, subtotal: sub, discount: disc, promo: Promo.get()?.code || null,
-        tax: this._tax || 0, total: this._total ?? sub, status: "confirmed", guest: !u,
-      };
-      Orders.add(order);
-      Cart.clear(); Promo.clear();
-      location.href = U(`/order-confirmation/?order=${order.id}`);
+        shipping: { ...(this.quote() || { name: "Standard", days: [4, 7] }), price: quote.shipping },
+        items: quote.lines.map((l) => ({ id: l.id, qty: l.qty, name: l.name, price: l.unit })),
+        subtotal: quote.subtotal, discount: quote.discount, promo: quote.promo,
+        tax: quote.tax, total: quote.total, status: "pending", guest: !Auth.user(),
+      });
     },
   };
 
-  /* Confirmation */
-  function initConfirmation() {
+  /* Confirmation.
+     Stripe redirects here after payment with the intent's client secret in the URL.
+     The browser's own record says what was ordered; Stripe says whether it was paid.
+     Only Stripe's answer decides what this page claims. */
+  async function initConfirmation() {
     const box = $("[data-confirmation]"); if (!box) return;
-    const id = new URLSearchParams(location.search).get("order"); const o = Orders.find(id) || Orders.all()[0];
-    if (!o) { box.innerHTML = `<div class="empty"><p>We couldn’t find that order in this browser.</p><a class="btn btn--ghost btn--sm" href="${U('/track-order/')}">Track an order</a></div>`; return; }
-    const eta = new Date(o.placed + (o.shipping.days[1] + 1) * 864e5).toLocaleDateString("en-US", { weekday: "long", month: "long", day: "numeric" });
+    const qs = new URLSearchParams(location.search);
+    const secret = qs.get("payment_intent_client_secret");
+    const intentId = qs.get("payment_intent");
+
+    const lost = (msg) => { box.innerHTML = `<div class="empty"><p>${esc(msg)}</p><a class="btn btn--ghost btn--sm" href="${U('/contact/')}">Contact us</a></div>`; };
+
+    let status = null;
+    if (secret && window.Stripe && window.__STRIPE_PK__) {
+      box.innerHTML = `<div class="empty"><p>Confirming your payment…</p></div>`;
+      try {
+        const { paymentIntent } = await Stripe(window.__STRIPE_PK__).retrievePaymentIntent(secret);
+        status = paymentIntent?.status || null;
+      } catch { status = null; }
+    }
+
+    if (status && status !== "succeeded") {
+      if (status === "processing") { lost("Your payment is still processing. We’ll email a receipt the moment it clears — no need to pay again."); return; }
+      lost("That payment didn’t go through, so nothing was charged. You can try again from the checkout.");
+      return;
+    }
+
+    const o = (intentId && Orders.all().find((x) => x.intentId === intentId)) || Orders.find(qs.get("order")) || Orders.all()[0];
+    if (!o) {
+      if (status === "succeeded") { lost("Your payment went through — thank you. This browser doesn’t have the order details (a different device, or cleared storage), but the receipt is on its way by email."); return; }
+      lost("We couldn’t find that order in this browser.");
+      return;
+    }
+
+    /* Paid: promote the parked record and empty the cart. Doing it here rather than
+       before the redirect means an abandoned or failed payment keeps the cart intact. */
+    if (status === "succeeded" && o.status !== "confirmed") {
+      o.status = "confirmed";
+      store.set(Orders.key, Orders.all().map((x) => (x.id === o.id ? o : x)));
+      Cart.clear(); Promo.clear();
+    }
+
+    const eta = new Date(o.placed + ((o.shipping?.days?.[1] ?? 7) + 1) * 864e5).toLocaleDateString("en-US", { weekday: "long", month: "long", day: "numeric" });
     box.innerHTML = `
       <div class="confirm-hero">
         <div class="check-ring" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12.5l4.5 4.5L19 7"/></svg></div>
         <p class="eyebrow">Order confirmed</p>
         <h1>Thank you, ${esc(o.name.split(" ")[0])}.</h1>
-        <p class="lede mx-auto" style="max-width:32em;margin-top:1rem">Your jar is being packed by hand. A confirmation is on its way to <strong>${esc(o.email)}</strong>.</p>
+        <p class="lede mx-auto" style="max-width:32em;margin-top:1rem">Your jar is being packed by hand. A receipt is on its way to <strong>${esc(o.email)}</strong>.</p>
         <p style="margin-top:1.25rem"><span class="order-no">${esc(o.id)}</span></p>
       </div>
       <div class="grid grid--2" style="align-items:start">
-        <div class="panel"><div class="panel__head"><h2>Delivery</h2><span class="pill">${esc(o.shipping.name)}</span></div>
-          <p class="small">${o.shipping.days[0] === 0 ? "Ready for pickup today after 2pm." : `Estimated arrival by <strong>${eta}</strong>.`}</p>
-          ${o.address.line1 ? `<address class="small muted" style="font-style:normal;margin-top:.75rem">${esc(o.address.line1)}${o.address.line2 ? "<br>" + esc(o.address.line2) : ""}<br>${esc(o.address.city)}, ${esc(o.address.state)} ${esc(o.address.zip)}</address>` : ""}
-          <p class="small" style="margin-top:1rem">Tracking: <a href="/track-order/?q=${o.tracking}"><code>${o.tracking}</code></a></p></div>
+        <div class="panel"><div class="panel__head"><h2>Delivery</h2><span class="pill">${esc(o.shipping?.name || "Standard")}</span></div>
+          <p class="small">Estimated arrival by <strong>${eta}</strong>. We’ll email tracking when it ships.</p>
+          ${o.address.line1 ? `<address class="small muted" style="font-style:normal;margin-top:.75rem">${esc(o.address.line1)}${o.address.line2 ? "<br>" + esc(o.address.line2) : ""}<br>${esc(o.address.city)}, ${esc(o.address.state)} ${esc(o.address.zip)}</address>` : ""}</div>
         <div class="panel"><div class="panel__head"><h2>Summary</h2><span class="small muted">Paid with ${esc(o.method)}</span></div>
           ${o.items.map((i) => `<div class="order-row"><span>${esc(i.name)} <span class="muted">× ${i.qty}</span></span><span>${money(i.price * i.qty)}</span></div>`).join("")}
-          <div class="totals" style="margin-top:1rem"><div><span>Subtotal</span><span>${money(o.subtotal)}</span></div>${o.discount ? `<div class="discount"><span>${esc(o.promo)}</span><span>−${money(o.discount)}</span></div>` : ""}<div><span>Shipping</span><span>${o.shipping.price ? money(o.shipping.price) : "Free"}</span></div>${o.tax ? `<div><span>Tax</span><span>${money(o.tax)}</span></div>` : ""}<div class="grand"><span>Total</span><span>${money(o.total)}</span></div></div></div>
+          <div class="totals" style="margin-top:1rem"><div><span>Subtotal</span><span>${money(o.subtotal)}</span></div>${o.discount ? `<div class="discount"><span>${esc(o.promo)}</span><span>−${money(o.discount)}</span></div>` : ""}<div><span>Shipping</span><span>${o.shipping?.price ? money(o.shipping.price) : "Free"}</span></div>${o.tax ? `<div><span>Tax</span><span>${money(o.tax)}</span></div>` : ""}<div class="grand"><span>Total</span><span>${money(o.total)}</span></div></div></div>
       </div>
-      <div class="center" style="margin-top:3rem"><div class="cluster" style="justify-content:center"><a class="btn btn--primary" href="/track-order/?q=${o.id}">Track this order</a>${o.guest ? `<a class="btn btn--ghost" href="${U('/account/signup/')}">Create an account to save it</a>` : `<a class="btn btn--ghost" href="${U('/account/')}">View in your account</a>`}</div>
-        <p class="small muted" style="margin-top:1.5rem">While you wait: <a href="${U('/ritual/')}">read the ritual</a> or <a href="${U('/journal/how-to-store-honey-and-why-it-crystallizes/')}">learn how to keep honey at its best</a>.</p></div>`;
+      <div class="center" style="margin-top:3rem"><div class="cluster" style="justify-content:center"><a class="btn btn--primary" href="${U('/track-order/')}?q=${encodeURIComponent(o.id)}">Track this order</a><a class="btn btn--ghost" href="${U('/shop/')}">Back to the shop</a></div>
+        <p class="small muted" style="margin-top:1.5rem">While you wait: <a href="${U('/recipes/')}">a few ways to use it</a>, or <a href="${U('/faq/')}">how to keep honey at its best</a>.</p></div>`;
   }
 
   /* Tracking */
@@ -580,7 +653,30 @@
   /* Contact form */
   function initContact() {
     const f = $("#contact-form"); if (!f) return;
-    f.addEventListener("submit", (e) => { e.preventDefault(); if (!validate(f)) return; const m = $(".form-msg", f); m.textContent = "Thank you — we read every note and reply within one business day (Mon–Fri, 9–5 PT)."; m.className = "form-msg form-msg--ok"; m.setAttribute("data-show", ""); f.querySelector('[type="submit"]').disabled = true; /* Real: POST /api/contact or a form service (Formspree, Basin) */ });
+    f.addEventListener("submit", async (e) => {
+      e.preventDefault(); if (!validate(f)) return;
+      const m = $(".form-msg", f); const btn = f.querySelector('[type="submit"]');
+      const say = (text, ok) => { m.textContent = text; m.className = `form-msg form-msg--${ok ? "ok" : "err"}`; m.setAttribute("data-show", ""); };
+      btn.disabled = true; const label = btn.textContent; btn.textContent = "Sending…";
+      const fd = new FormData(f);
+      try {
+        const res = await fetch(U("/api/contact"), {
+          method: "POST", headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            name: fd.get("name"), email: fd.get("email"),
+            subject: [fd.get("topic"), fd.get("order")].filter(Boolean).join(" · "),
+            message: fd.get("message"), website: fd.get("website"),
+          }),
+        });
+        const data = await res.json().catch(() => ({}));
+        if (!res.ok) throw new Error(data.error || "That didn’t send.");
+        say("Thank you — your message is on its way. We read every note and reply within one business day (Mon–Fri, 9–5 PT).", true);
+        f.reset();
+      } catch (err) {
+        say(`${err.message} You can also email us directly at hello@functionalelixirs.com.`, false);
+        btn.disabled = false; btn.textContent = label;
+      }
+    });
   }
 
   /* Cookie notice — essential-only by default (CCPA/CPRA friendly) */

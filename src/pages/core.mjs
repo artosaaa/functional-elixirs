@@ -1,6 +1,6 @@
 /* Home · Shop · Product (all SKUs) · Collections · Cart · Checkout · Confirmation · Track */
 import { BEE, BEE_FLY, bees, LINE } from "../site.mjs";
-import { page, jsonld, breadcrumbs, productCard, applePayButton, faqList, ctaBand, stars, ICONS, esc, money, BRAND, CFG, abs, HERO_URL, valueBullets, guaranteeBlock, REVIEWS_VERIFIED } from "../layout.mjs";
+import { page, jsonld, breadcrumbs, productCard, stripeHead, faqList, ctaBand, stars, ICONS, esc, money, BRAND, CFG, abs, HERO_URL, valueBullets, guaranteeBlock, REVIEWS_VERIFIED } from "../layout.mjs";
 import { PRODUCTS, HERO, byId } from "../products.mjs";
 import { art, altFor, photo, resolvedPhoto } from "../art.mjs";
 
@@ -173,9 +173,8 @@ function product(p) {
       <p><strong>What if I change my mind?</strong> Send the jar back unopened and we’ll refund it in full — there’s no deadline. Return postage is yours. Once a jar is opened we can’t take it back: honey is food.</p>
     </div>
     <div class="express">
-      ${applePayButton(`data-express-buy="${p.id}" aria-label="Buy now with Apple Pay"`)}
-      <div class="express__secondary"><button class="btn btn--gpay" type="button" data-express-buy="${p.id}" aria-label="Buy with Google Pay"><strong style="color:#4285F4">G</strong>&nbsp;Pay</button><button class="btn btn--shop-pay" type="button" data-express-buy="${p.id}" aria-label="Buy with Shop Pay">Shop <span style="font-style:normal;font-weight:400">Pay</span></button></div>
-      <p class="express__or">or pay with card at checkout</p>
+      <button class="btn btn--ghost btn--block" type="button" data-buy-now="${p.id}">Buy it now</button>
+      <p class="express__or">Card, Apple&nbsp;Pay, Google&nbsp;Pay and Link at checkout</p>
     </div>
     <div class="ship-snippet">
       <div>${ICONS.truck}<span><strong data-ship-estimate="${p.id}">Arrives in 3–5 business days</strong> · Free shipping over $${CFG.freeShipOver} · <a href="/shipping/">Rates &amp; calculator</a></span></div>
@@ -214,11 +213,11 @@ function product(p) {
   <div class="deskbar__thumb">${art("front", p, { alt: "" })}</div>
   <div class="deskbar__info"><strong>${esc(p.name)}</strong><span>${esc(p.size)} · ${money(p.price)}</span></div>
   <div class="deskbar__actions">
-    ${applePayButton(`data-express-buy="${p.id}" aria-label="Buy now with Apple Pay"`).replace('btn--block', '')}
+    <button class="btn btn--ghost" type="button" data-buy-now="${p.id}">Buy it now</button>
     <button class="btn btn--primary" type="button" data-add="${p.id}">Add to cart — ${money(p.price)}</button>
   </div>
 </div></div>
-<div class="buybar" id="buybar"><div class="buybar__info"><strong>${esc(p.name)}</strong><span>${esc(p.size)} · ${money(p.price)}</span></div><div class="cluster" style="flex-wrap:nowrap"><button class="btn btn--apple-pay btn--sm" type="button" data-express-buy="${p.id}" aria-label="Buy with Apple Pay">${ICONS.apple} Pay</button><button class="btn btn--primary btn--sm" type="button" data-add="${p.id}">Add</button></div></div>`;
+<div class="buybar" id="buybar"><div class="buybar__info"><strong>${esc(p.name)}</strong><span>${esc(p.size)} · ${money(p.price)}</span></div><div class="cluster" style="flex-wrap:nowrap"><button class="btn btn--ghost btn--sm" type="button" data-buy-now="${p.id}">Buy now</button><button class="btn btn--primary btn--sm" type="button" data-add="${p.id}">Add</button></div></div>`;
   return { path: p.url, html: page({ title: `${p.name} — ${p.sub} | ${money(p.price)}`, description: `${p.short} ${p.size}, ${money(p.price)}. Free US shipping over $${CFG.freeShipOver}. Apple Pay checkout.`, path: p.url, body, type: "product", image: abs(`/assets/img/og-${p.slug}.svg`), jsonld: [jsonld.product(p), jsonld.faq(faq)], breadcrumbs: [{ name: "Shop", href: "/shop/" }, { name: p.name, href: p.url }] }) };
 }
 
@@ -237,7 +236,7 @@ function cart() {
   <div><div data-cart-page></div>
     <div data-cart-has hidden style="margin-top:var(--s-6)"><div class="field"><label for="note">Gift note or delivery instructions (optional)</label><textarea class="textarea" id="note" name="note" placeholder="“One spoon, warm water, before the phone. Thinking of you.”"></textarea></div></div>
   </div>
-  <aside class="cart-layout__side summary"><h2>Summary</h2><div data-cart-summary></div>${promoForm()}<a class="btn btn--primary btn--block" href="/checkout/">Checkout</a>${applePayButton(`onclick="location.href='/checkout/?express=apple-pay'"`)}<p class="secure">${ICONS.lock} Secure checkout · no account needed</p><hr><h2 style="font-size:var(--fs-base)">Estimate shipping</h2>${shipCalc()}</aside>
+  <aside class="cart-layout__side summary"><h2>Summary</h2><div data-cart-summary></div>${promoForm()}<a class="btn btn--primary btn--block" href="/checkout/">Checkout</a><p class="secure">${ICONS.lock} Secure checkout · no account needed</p><hr><h2 style="font-size:var(--fs-base)">Estimate shipping</h2>${shipCalc()}</aside>
 </div></section>
 `;
   return { path: "/cart/", html: page({ title: "Cart", description: "Your Functional Elixirs cart — review your honey-ginger jars, apply a promo code, estimate shipping, and check out with Apple Pay or card.", path: "/cart/", body, noindex: true }) };
@@ -253,10 +252,6 @@ function checkout() {
   <div class="checkout">
   <aside class="checkout__side summary"><h2>Order summary</h2><div data-summary-lines></div>${promoForm()}<div data-checkout-totals></div><p class="secure">${ICONS.lock} Payments encrypted end-to-end. We never store card numbers.</p></aside>
   <form id="checkout-form" class="form" novalidate>
-    <section class="co-section">
-      <h2>Express checkout</h2>
-      <div class="express">${applePayButton('data-apple-pay')}<div class="express__secondary"><button class="btn btn--gpay" type="button" data-gpay><strong style="color:#4285F4">G</strong>&nbsp;Pay</button><button class="btn btn--shop-pay" type="button" data-shop-pay>Shop <span style="font-style:normal;font-weight:400">Pay</span></button></div><p class="express__or">or continue below</p></div>
-    </section>
     <section class="co-section">
       <div class="co-section__head"><h2>Contact</h2><p class="small muted">We’ll email your receipt and tracking here.</p></div>
       <div class="field"><label for="email">Email</label><input class="input" id="email" name="email" type="email" autocomplete="email" required inputmode="email"><p class="error" id="email-err">Enter a valid email so we can send your receipt.</p></div>
@@ -281,18 +276,13 @@ function checkout() {
     </section>
     <section class="co-section">
       <h2>Payment</h2>
-      <div class="opt" role="radiogroup" aria-label="Payment method">
-        <label><input type="radio" name="pay" value="card" checked><span><span class="opt__title">Credit or debit card</span><br><span class="opt__meta">Visa, Mastercard, Amex, Discover</span></span><span class="card-icons" aria-hidden="true"><span>VISA</span><span>MC</span><span>AMEX</span></span></label>
-        <label><input type="radio" name="pay" value="paypal"><span><span class="opt__title">PayPal</span><br><span class="opt__meta">You’ll be redirected to PayPal to confirm</span></span><span></span></label>
-      </div>
-      <div class="card-fields" data-card-fields>
-        <!-- REAL: replace these three inputs with a Stripe <PaymentElement> / Elements mount (div#card-element).
-             Card data then never touches your DOM or server (PCI SAQ-A). -->
-        <div class="field"><label for="cc">Card number</label><input class="input" id="cc" name="cc" inputmode="numeric" autocomplete="cc-number" placeholder="4242 4242 4242 4242" pattern="[\\d ]{15,19}" required><p class="error">Enter a valid card number.</p></div>
-        <div class="field-row"><div class="field"><label for="exp">Expiry</label><input class="input" id="exp" name="exp" inputmode="numeric" autocomplete="cc-exp" placeholder="MM / YY" pattern="\\d{2}\\s?/\\s?\\d{2}" required><p class="error">MM / YY</p></div><div class="field"><label for="cvc">Security code</label><input class="input" id="cvc" name="cvc" inputmode="numeric" autocomplete="cc-csc" placeholder="CVC" pattern="\\d{3,4}" required><p class="error">3–4 digits.</p></div></div>
-        <div class="field"><label for="ccname">Name on card</label><input class="input" id="ccname" name="ccname" autocomplete="cc-name" required><p class="error">Required.</p></div>
-        <label class="check"><input type="checkbox" name="billing_same" checked> Billing address same as shipping</label>
-      </div>
+      <!-- Stripe's Payment Element. Card, Apple Pay, Google Pay and Link render here
+           according to what is enabled in the Stripe dashboard and what the shopper's
+           browser supports. Card details live inside Stripe's iframe: they never touch
+           this page's DOM or our server, which is what keeps us in PCI SAQ-A. -->
+      <div id="payment-element" data-payment-element></div>
+      <p class="field-note small muted" data-payment-status role="status" aria-live="polite">Loading secure payment…</p>
+      <label class="check"><input type="checkbox" name="billing_same" checked> Billing address same as shipping</label>
     </section>
     <section class="co-section">
       <div class="field"><label for="gift">Gift note <span class="muted">(optional — we never include prices)</span></label><textarea class="textarea" id="gift" name="gift" style="min-height:5rem"></textarea></div>
@@ -302,11 +292,11 @@ function checkout() {
   </form>
   </div>
 </div></section>`;
-  return { path: "/checkout/", html: page({ title: "Checkout", description: "Secure checkout — Apple Pay, Google Pay, Shop Pay or card. Guest checkout with live shipping rates.", path: "/checkout/", body, noindex: true }) };
+  return { path: "/checkout/", html: page({ title: "Checkout", description: "Secure checkout — card, Apple Pay, Google Pay or Link. Guest checkout with live shipping rates.", path: "/checkout/", body, noindex: true, extraHead: stripeHead() }) };
 }
 
 function confirmation() {
-  return { path: "/order-confirmation/", html: page({ title: "Order confirmed", description: "Thank you — your Functional Elixirs order is confirmed. Order details, delivery estimate and tracking.", path: "/order-confirmation/", body: `<section class="wrap" data-confirmation style="padding-bottom:var(--section)"></section>`, noindex: true }) };
+  return { path: "/order-confirmation/", html: page({ title: "Order confirmed", description: "Thank you — your Functional Elixirs order is confirmed. Order details, delivery estimate and tracking.", path: "/order-confirmation/", body: `<section class="wrap" data-confirmation style="padding-bottom:var(--section)"></section>`, noindex: true, extraHead: stripeHead() }) };
 }
 
 function track() {

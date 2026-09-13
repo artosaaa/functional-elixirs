@@ -46,6 +46,9 @@ function contact() {
     <div class="field"><label for="c-topic">Topic</label><select class="select" id="c-topic" name="topic"><option>Order question</option><option>Product question</option><option>Gift or wholesale</option><option>Press</option><option>Something else</option></select></div>
     <div class="field"><label for="c-order">Order number <span class="muted">(optional)</span></label><input class="input" id="c-order" name="order" placeholder="FE-"></div>
     <div class="field"><label for="c-msg">Message</label><textarea class="textarea" id="c-msg" name="message" required></textarea><p class="error">Tell us a little more.</p></div>
+    <!-- Honeypot: hidden from people, irresistible to bots. Anything in it and the
+         server accepts the request politely and sends nothing. -->
+    <div class="hp" aria-hidden="true"><label for="c-website">Leave this field empty</label><input id="c-website" name="website" type="text" tabindex="-1" autocomplete="off"></div>
     <p class="form-msg" role="status"></p>
     <button class="btn btn--primary" type="submit">Send message</button>
     <p class="form__foot">We use your details only to reply. <a href="/privacy/">Privacy</a>.</p>
