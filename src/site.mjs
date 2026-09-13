@@ -15,7 +15,7 @@ export const BRAND = {
   tagline: "Nature’s Daily Elixir.",
   ritual: "Scoop. Stir. Sip.",
   positioning: "Rich raw honey infused with real fresh ginger — two ingredients, one daily ritual, from our mother’s kitchen to yours.",
-  email: "hello@functionalelixirs.com",
+  email: "info@functionalelixirs.com",
   address: { city: "", region: "CA", country: "US" },
   hours: "Mon–Fri 9am–5pm PT",
   founded: 2023,

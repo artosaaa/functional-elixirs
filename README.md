@@ -248,7 +248,7 @@ Say the word if the accented version is the correct one.
 
 Copy is written from your two brand documents. These items were **not** in them and were written as reasonable defaults — change in `src/site.mjs` / `src/products.mjs` / `src/pages/support.mjs`:
 
-- Contact email (`hello@functionalelixirs.com`), social handles, founding year
+- Contact email (`info@functionalelixirs.com` — set once in `BRAND.email`, injected into the runtime as `window.__BRAND_EMAIL__`), social handles, founding year
 - Prices for every SKU except the 15 oz jar ($23.99); stock counts; whether the 8 oz, sets, dipper and travel jar exist
 - "Blended and jarred in small batches in the USA" — add the real city/state
 - Governing law and tax nexus (set to **California**); shipping rates and carriers

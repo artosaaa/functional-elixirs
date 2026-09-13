@@ -29,6 +29,10 @@
   /* Base path — set by the build when the site is served from a subdirectory
      (e.g. GitHub Pages at /functional-elixirs/). Empty at a domain root. */
   const BASE = (window.__BASE__ || "").replace(/\/$/, "");
+  /* Injected from BRAND.email by the build, so the address lives in exactly one
+     place. The fallback only matters if this script runs on a page the build did
+     not render. */
+  const CONTACT = window.__BRAND_EMAIL__ || "info@functionalelixirs.com";
   const U = (p) => (p.startsWith("/") && !p.startsWith("//") ? BASE + p : p);
   const $  = (s, r = document) => r.querySelector(s);
   const $$ = (s, r = document) => [...r.querySelectorAll(s)];
@@ -401,7 +405,7 @@
       const mount = $("[data-payment-element]"); if (!mount) return;
       const pk = window.__STRIPE_PK__;
       if (!window.Stripe || !pk) {
-        this.status("Card payment isn’t available on this page right now. Email hello@functionalelixirs.com and we’ll take your order by hand.", true);
+        this.status(`Card payment isn’t available on this page right now. Email ${CONTACT} and we’ll take your order by hand.`, true);
         $('#checkout-form [type="submit"]').disabled = true;
         return;
       }
@@ -673,7 +677,7 @@
         say("Thank you — your message is on its way. We read every note and reply within one business day (Mon–Fri, 9–5 PT).", true);
         f.reset();
       } catch (err) {
-        say(`${err.message} You can also email us directly at hello@functionalelixirs.com.`, false);
+        say(`${err.message} You can also email us directly at ${CONTACT}.`, false);
         btn.disabled = false; btn.textContent = label;
       }
     });
