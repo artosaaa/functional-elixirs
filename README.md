@@ -275,8 +275,10 @@ Copy is written from your two brand documents. These items were **not** in them 
 - "Only X left in this batch" is driven by `stock` in `src/products.mjs` — set real numbers or raise them
 - **The $50 free-shipping threshold** needs three jars to reach at $23.99 each. Check it against your
   real margin and shipping cost; it may be doing nothing but discouraging single-jar orders.
-- **Your real dispatch turnaround.** The 1–2 day claim and the JSON-LD `handlingTime` are stripped
-  rather than guessed at. Give a number and it goes back honestly.
+- ~~Your real dispatch turnaround~~ — answered: **within 3 business days**, set once as
+  `CFG.dispatchDays` in `src/site.mjs` (mirrored in `assets/js/site.js`) and reflected in the
+  JSON-LD `handlingTime`, the shipping page, the FAQ, the product accordion and the stock line.
+  Change the number in those two places and it changes everywhere.
 - Allergen/facility statement in `/sourcing/`
 
 Health language is deliberately conservative (no treatment claims; FDA disclaimer in the footer and on story/sourcing pages) per the note in your product document.

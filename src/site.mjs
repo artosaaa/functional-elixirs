@@ -23,7 +23,9 @@ export const BRAND = {
   disclaimer: "These statements have not been evaluated by the Food and Drug Administration. This product is not intended to diagnose, treat, cure, or prevent any disease.",
 };
 
-export const CFG = { freeShipOver: 50, lowStockAt: 10 };
+/* dispatchDays: we pack and post within this many business days. Separate from
+   transit, which is the carrier's 2–7. A shopper cares about the sum of the two. */
+export const CFG = { freeShipOver: 50, lowStockAt: 10, dispatchDays: 3 };
 
 /* Star ratings, review counts and testimonials on this site are SAMPLES, not real customer data.
    While this is false the site shows no numeric rating and emits no aggregateRating in JSON-LD —

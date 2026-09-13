@@ -11,6 +11,7 @@
   /* ---------- 0. Config (mirrors src/site.mjs — keep in sync) ---------- */
   const CFG = {
     freeShipOver: 50,
+    dispatchDays: 3,                 // packed and posted within — mirrors src/site.mjs
     lowStockAt: 10,
     promos: {
       FIRSTJAR:  { type: "pct", value: 15, max: 5, label: "15% off your first jar (up to $5)" },
@@ -241,7 +242,7 @@
       el.classList.remove("stock--low", "stock--out");
       if (p.stock <= 0) { el.textContent = "Sold out — next batch in about 3 weeks"; el.classList.add("stock--out"); }
       else if (p.stock <= CFG.lowStockAt) { el.textContent = `Only ${p.stock} left in this batch`; el.classList.add("stock--low"); }
-      else el.textContent = "In stock";
+      else el.textContent = `In stock — ships within ${CFG.dispatchDays} business days`;
     });
     $$("[data-add]").forEach((b) => { const p = product(b.dataset.add); if (p && p.stock <= 0) { b.disabled = true; b.textContent = "Sold out"; } });
     $$("[data-buy-now]").forEach((b) => { const p = product(b.dataset.buyNow); if (p && p.stock <= 0) b.disabled = true; });
