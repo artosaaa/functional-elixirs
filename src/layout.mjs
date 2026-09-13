@@ -109,8 +109,20 @@ function footer() {
       <div class="footer__promise"><div>${ICONS.truck}<span>Free US shipping over $${CFG.freeShipOver}</span></div><div>${ICONS.refresh}<span>Unopened jars returnable for a full refund — return postage is yours</span></div><div>${ICONS.leaf}<span>Raw honey + fresh ginger · small batches · nothing else</span></div></div></div>
     ${col("Functional Elixirs", FOOTER.about)}${col("Help", FOOTER.help)}
   </div>
-  <div class="footer__bottom"><div><p>© ${new Date().getFullYear()} ${BRAND.legal} · Made in the USA</p><p class="disclaimer" style="margin-top:.5rem">${BRAND.disclaimer}</p></div><ul>${FOOTER.legal.map(([l, h]) => `<li><a href="${h}">${l}</a></li>`).join("")}</ul><div class="pay-marks" aria-label="Accepted payments"><span>APPLE PAY</span><span>G PAY</span><span>VISA</span><span>MC</span><span>AMEX</span></div></div>
-</div></footer>`;
+  <div class="footer__bottom"><div><p>© ${new Date().getFullYear()} ${BRAND.legal} · Made in the USA</p><p class="disclaimer" style="margin-top:.5rem">${BRAND.disclaimer}</p></div><ul>${FOOTER.legal.map(([l, h]) => `<li><a href="${h}">${l}</a></li>`).join("")}<li><button class="dopt__open" type="button" data-dopt-open aria-expanded="false" aria-controls="display-options">Display options</button></li></ul><div class="pay-marks" aria-label="Accepted payments"><span>APPLE PAY</span><span>G PAY</span><span>VISA</span><span>MC</span><span>AMEX</span></div></div>
+</div>
+  <div class="dopt" id="display-options" hidden>
+    <div class="wrap dopt__in">
+      <p class="dopt__title">Display options</p>
+      <div class="dopt__row">
+        <label class="dopt__toggle"><input type="checkbox" data-dopt="text"><span>Larger text</span></label>
+        <label class="dopt__toggle"><input type="checkbox" data-dopt="contrast"><span>Higher contrast</span></label>
+        <label class="dopt__toggle"><input type="checkbox" data-dopt="motion"><span>Reduce motion</span></label>
+      </div>
+      <p class="dopt__note">These change how this site looks on this device only — nothing is sent anywhere. Something still hard to use? <a href="/accessibility/">Tell us</a>.</p>
+    </div>
+  </div>
+</footer>`;
 }
 
 /* The guarantee, given a name and a position next to the price (offer-strategist rec). */

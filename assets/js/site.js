@@ -711,6 +711,48 @@
     $$("button", c).forEach((b) => b.addEventListener("click", () => { store.set("sw_cookie", { choice: b.dataset.cookie, at: Date.now() }); c.removeAttribute("data-show"); }));
   }
 
+  /* Display options — larger text, higher contrast, reduced motion.
+     Deliberately not an accessibility overlay: these set three attributes on <html>
+     and the site's own CSS does the rest, so nothing is layered over the page and
+     no screen reader is second-guessed. The choice is remembered on this device
+     only, in localStorage — it is never sent anywhere. */
+  function initDisplayOptions() {
+    const btn = $("[data-dopt-open]"), panel = $("#display-options");
+    if (!btn || !panel) return;
+    const KEY = "sw_display";
+    const ATTR = { text: ["data-text", "large"], contrast: ["data-contrast", "high"], motion: ["data-motion", "off"] };
+    const root = document.documentElement;
+
+    const saved = store.get(KEY, {});
+    const apply = (prefs) => {
+      for (const [k, [attr, on]] of Object.entries(ATTR)) {
+        if (prefs[k]) root.setAttribute(attr, on); else root.removeAttribute(attr);
+        const box = $(`[data-dopt="${k}"]`, panel); if (box) box.checked = Boolean(prefs[k]);
+      }
+    };
+    apply(saved);
+
+    btn.addEventListener("click", () => {
+      const open = panel.hasAttribute("hidden");
+      panel.toggleAttribute("hidden", !open);
+      btn.setAttribute("aria-expanded", String(open));
+      if (open) $("input", panel)?.focus();
+    });
+
+    panel.addEventListener("change", (e) => {
+      const key = e.target?.dataset?.dopt; if (!key) return;
+      const prefs = { ...store.get(KEY, {}), [key]: e.target.checked };
+      store.set(KEY, prefs); apply(prefs);
+      toast(e.target.checked ? `${e.target.nextElementSibling.textContent} on` : `${e.target.nextElementSibling.textContent} off`);
+    });
+
+    /* Escape closes it, and focus goes back to the button that opened it. */
+    panel.addEventListener("keydown", (e) => {
+      if (e.key !== "Escape") return;
+      panel.setAttribute("hidden", ""); btn.setAttribute("aria-expanded", "false"); btn.focus();
+    });
+  }
+
   /* Reveal on scroll */
   function initReveal() {
     const els = $$(".reveal"); if (!els.length || !("IntersectionObserver" in window)) { els.forEach((e) => e.setAttribute("data-in", "")); return; }
@@ -762,7 +804,7 @@
   /* ---------- 8. Boot ---------- */
   document.addEventListener("DOMContentLoaded", () => {
     Drawer.init(); render(); markNav();
-    initPDP(); initDeskbar(); initCapture(); initShipCalc(); Checkout.init(); initConfirmation(); initTrack(); initContact(); initCookie(); initReveal();
+    initPDP(); initDeskbar(); initCapture(); initShipCalc(); Checkout.init(); initConfirmation(); initTrack(); initContact(); initCookie(); initDisplayOptions(); initReveal();
     window.addEventListener("storage", (e) => { if (e.key?.startsWith("sw_")) render(); }); // multi-tab sync
   });
 

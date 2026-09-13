@@ -1352,3 +1352,66 @@ main:has(> :last-child.cta-band) + .footer { margin-top: 0; }
    items column next to it and left the left half of the page empty on a one-line
    cart. It reads better next to what is being shipped. */
 .cart-estimate { margin-top: var(--s-6); padding-top: var(--s-5); border-top: 1px solid var(--cream-3); max-width: 26rem; }
+
+/* ---------- 23t. Bees fly behind the words, not across them ----------
+   The drift layer sat at z-index 2 with the section content at auto, so a bee
+   passed in front of whatever it crossed. On a desktop hero the paths happen to
+   cross empty space; on a phone the same section is half the width and twice the
+   height, so a bee landed square on top of "MINDFUL MOMENTS". Behind the content
+   is where decoration belongs — the section background is on the section, not on
+   the copy, so a bee is still fully visible as it passes. */
+.bees { z-index: 0; }
+.mk-hero > :not(.bees),
+.mk-nature > :not(.bees),
+.shop-single-sec > :not(.bees),
+.rcp-head-sec > :not(.bees),
+.about-hero > :not(.bees) { position: relative; z-index: 1; }
+
+/* ---------- 23u. Display options ----------
+   A real control, not an accessibility overlay. Overlays sit on top of a page and
+   guess at fixes, frequently breaking the screen readers they claim to help; this
+   changes the site's own CSS and does exactly three things it can actually deliver.
+   Lives in the footer next to the accessibility statement, where a visitor looking
+   for this sort of thing already looks. */
+.dopt__open {
+  background: none; border: 0; padding: 0; cursor: pointer;
+  font: inherit; color: inherit; text-decoration: underline; text-underline-offset: .2em;
+}
+.dopt__open:hover { color: var(--gold-2); }
+.dopt { border-top: 1px solid rgb(255 255 255 / .12); background: rgb(0 0 0 / .18); }
+.dopt__in { padding-block: var(--s-5); }
+.dopt__title { font: 600 var(--fs-xs)/1 var(--sans); letter-spacing: .14em; text-transform: uppercase; color: var(--gold-2); margin-bottom: var(--s-4); }
+.dopt__row { display: flex; flex-wrap: wrap; gap: var(--s-4) var(--s-6); }
+.dopt__toggle { display: inline-flex; align-items: center; gap: .6rem; cursor: pointer; color: var(--cream); font-size: var(--fs-sm); min-height: 44px; }
+.dopt__toggle input { width: 1.1rem; height: 1.1rem; accent-color: var(--gold-2); cursor: pointer; }
+.dopt__note { margin-top: var(--s-4); font-size: var(--fs-xs); color: rgb(255 255 255 / .62); max-width: 52ch; }
+.dopt__note a { color: var(--gold-2); }
+
+/* --- what the three toggles actually do --- */
+/* Larger text: everything is sized in rem, so one root change scales the whole page
+   rather than growing a few hand-picked elements out of proportion. */
+:root[data-text="large"] { font-size: 118%; }
+
+/* Higher contrast: the muted greys are the weak point — they clear AA but only just.
+   This pushes body and meta text to near-black and strengthens every hairline. */
+:root[data-contrast="high"] {
+  --ink: #000000; --ink-soft: #2A2622; --ink-mute: #4A443C;
+  --gold-text: #5C4410; --cream-3: #B9AE99;
+}
+:root[data-contrast="high"] .muted, :root[data-contrast="high"] .small, :root[data-contrast="high"] .tiny { color: var(--ink-soft); }
+:root[data-contrast="high"] .input, :root[data-contrast="high"] .select, :root[data-contrast="high"] .textarea { border-color: #6B6355; }
+:root[data-contrast="high"] .btn--ghost { border-color: currentColor; }
+
+/* Reduce motion: the same rules the OS-level preference triggers, so the toggle and
+   the system setting cannot disagree. */
+:root[data-motion="off"] .bees { display: none; }
+:root[data-motion="off"] .bee__wing,
+:root[data-motion="off"] .mk-band__bee .bee,
+:root[data-motion="off"] .bee-drift,
+:root[data-motion="off"] .bee-drift .bee,
+:root[data-motion="off"] .lockup:hover .lockup__bee svg { animation: none !important; }
+:root[data-motion="off"] *, :root[data-motion="off"] *::before, :root[data-motion="off"] *::after {
+  animation-duration: .001ms !important; animation-iteration-count: 1 !important;
+  transition-duration: .001ms !important; scroll-behavior: auto !important;
+}
+:root[data-motion="off"] .reveal { opacity: 1 !important; transform: none !important; }
