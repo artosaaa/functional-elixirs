@@ -50,6 +50,7 @@ function home() {
 <section class="mk-hero">${bees([
   { top: "14%", from: "-8vw", to: "104vw", dur: 34, delay: 0, size: 1.5, tilt: 9, bob: 1.4 },
   { top: "62%", from: "106vw", to: "-10vw", dur: 46, delay: 6, size: 1.05, tilt: -7, bob: 1 },
+  { top: "38%", from: "-12vw", to: "108vw", dur: 58, delay: 17, size: 0.85, tilt: 5, bob: 1.6 },
 ])}<div class="wrap mk-hero__in">
   <div class="mk-hero__copy reveal">
     <p class="mk-eyebrow">Nature’s Daily Elixir</p>
@@ -78,7 +79,10 @@ function home() {
   </div>
 </div></section>
 
-<section class="mk-nature"><div class="wrap">
+<section class="mk-nature">${bees([
+  { top: "18%", from: "104vw", to: "-8vw", dur: 52, delay: 3, size: 1.15, tilt: -8, bob: 1.3 },
+  { top: "74%", from: "-10vw", to: "106vw", dur: 64, delay: 21, size: 0.9, tilt: 6, bob: 1 },
+])}<div class="wrap">
   <div class="mk-title reveal"><h2 class="mk-h2">Inspired by nature. Made for you.</h2><span class="mk-rule mk-rule--center" aria-hidden="true"></span></div>
   <div class="mk-gallery">${gallery.map(([src, alt], i) => `<figure class="reveal" style="--d:${i * 90}ms"><img src="${src}" alt="${esc(alt)}" width="900" height="900" loading="lazy" decoding="async"></figure>`).join("")}</div>
   <div class="mk-features">${features.map(([ic, t, d], i) => `<div class="mk-feature reveal" style="--d:${i * 90}ms"><span class="mk-feature__icon">${ic}</span><h3>${t}</h3><p>${d}</p></div>`).join("")}</div>
@@ -102,7 +106,10 @@ function shop() {
   const single = PRODUCTS.length === 1;
   const body = `${breadcrumbs([{ name: "Shop", href: "/shop/" }])}
 <div class="wrap page-head"><p class="eyebrow">Shop</p><h1>Honey with Fresh Ginger.</h1></div>
-${single ? `<section class="section--tight"><div class="wrap shop-single">
+${single ? `<section class="section--tight shop-single-sec">${bees([
+  { top: "12%", from: "-8vw", to: "104vw", dur: 44, delay: 2, size: 1.2, tilt: 8, bob: 1.3 },
+  { top: "70%", from: "106vw", to: "-10vw", dur: 60, delay: 15, size: 0.9, tilt: -6, bob: 1.1 },
+])}<div class="wrap shop-single">
   <figure class="shop-single__photo reveal"><img src="/assets/img/product/hero-800.jpg" srcset="/assets/img/product/hero-400.jpg 400w, /assets/img/product/hero-800.jpg 800w, /assets/img/product/hero.jpg 1000w" sizes="(min-width: 56em) 42vw, 88vw" alt="${esc(altFor(p, "hero"))}" width="1000" height="1250" fetchpriority="high" decoding="async"></figure>
   <div class="shop-single__copy reveal">
     <p class="eyebrow">${esc(p.badge || p.type)}</p>
@@ -185,7 +192,7 @@ function product(p) {
         <p>${p.type === "Accessory" ? "Twist the dipper in the jar, lift, and let the honey spiral off the end into your cup. Rest it on a small dish between uses." : `Sweet first, then the ginger’s slow warmth. Warm — not boiling — water keeps the fresh ginger bright. <a href="/recipes/">Ways to use the jar →</a>`}</p></div></details>
       <details><summary>Ingredients</summary><div class="acc__body"><p>${esc(p.ingredients)}</p><p>${esc(p.origin)}. No added sugar, colours, flavours or preservatives. Naturally gluten-free. Not suitable for infants under 12 months.</p></div></details>
       <details><summary>Storage</summary><div class="acc__body"><p>Room temperature, lid closed, dry spoon. Raw honey may crystallize over time — that’s natural. Warm the closed jar in a bowl of warm water to restore.</p></div></details>
-      <details><summary>Shipping &amp; returns</summary><div class="acc__body"><p>Shipped from the USA. Standard $5.95 (free over $${CFG.freeShipOver}), Express $14, local pickup free. An unopened jar can be returned any time for a full refund, with return postage paid by you; opened jars can’t be returned. <a href="/shipping/">Shipping</a> · <a href="/returns/">Returns</a></p></div></details>
+      <details><summary>Shipping &amp; returns</summary><div class="acc__body"><p>Shipped within the US by standard mail — $5.95, free over $${CFG.freeShipOver}, arriving in 2–7 business days. An unopened jar can be returned any time for a full refund, with return postage paid by you; opened jars can’t be returned. <a href="/shipping/">Shipping</a> · <a href="/returns/">Returns</a></p></div></details>
     </div>
   </div>
 </section>
@@ -218,10 +225,10 @@ function product(p) {
 /* ---------------- CART ---------------- */
 const promoForm = () => `<form class="promo" data-promo-form novalidate><label class="sr-only" for="promo">Promo code</label><input class="input" id="promo" name="code" placeholder="Promo code" autocomplete="off"><button class="btn btn--soft" type="submit">Apply</button></form><p class="promo-msg" aria-live="polite"></p>`;
 const shipCalc = () => `<form class="ship-calc" data-ship-calc novalidate>
-  <div class="field-row"><div class="field"><label for="sc-country">Country</label><select class="select" id="sc-country" name="country"><option value="US">United States</option><option value="CA">Canada</option><option value="GB">United Kingdom</option><option value="AU">Australia</option><option value="OTHER">Other</option></select></div>
-  <div class="field"><label for="sc-zip">ZIP / postcode</label><input class="input" id="sc-zip" name="zip" inputmode="numeric" autocomplete="postal-code" placeholder="94103"></div></div>
+  <div class="field-row">
+  <div class="field"><label for="sc-zip">ZIP code</label><input class="input" id="sc-zip" name="zip" inputmode="numeric" autocomplete="postal-code" placeholder="94103"></div></div>
   <button class="btn btn--ghost btn--sm" type="submit">Estimate shipping</button>
-  <div class="ship-calc__result" aria-live="polite"><p class="small muted">Enter a ZIP for a live estimate — standard, express and local pickup.</p></div></form>`;
+  <div class="ship-calc__result" aria-live="polite"><p class="small muted">Enter a ZIP for a live estimate.</p></div></form>`;
 
 function cart() {
   const body = `${breadcrumbs([{ name: "Cart", href: "/cart/" }])}
@@ -230,7 +237,7 @@ function cart() {
   <div><div data-cart-page></div>
     <div data-cart-has hidden style="margin-top:var(--s-6)"><div class="field"><label for="note">Gift note or delivery instructions (optional)</label><textarea class="textarea" id="note" name="note" placeholder="“One spoon, warm water, before the phone. Thinking of you.”"></textarea></div></div>
   </div>
-  <aside class="cart-layout__side summary"><h2>Summary</h2><div data-cart-summary></div>${promoForm()}<a class="btn btn--primary btn--block" href="/checkout/">Checkout</a>${applePayButton(`onclick="location.href='/checkout/?express=apple-pay'"`)}<p class="secure">${ICONS.lock} Secure checkout · guest or account</p><hr><h2 style="font-size:var(--fs-base)">Estimate shipping</h2>${shipCalc()}</aside>
+  <aside class="cart-layout__side summary"><h2>Summary</h2><div data-cart-summary></div>${promoForm()}<a class="btn btn--primary btn--block" href="/checkout/">Checkout</a>${applePayButton(`onclick="location.href='/checkout/?express=apple-pay'"`)}<p class="secure">${ICONS.lock} Secure checkout · no account needed</p><hr><h2 style="font-size:var(--fs-base)">Estimate shipping</h2>${shipCalc()}</aside>
 </div></section>
 `;
   return { path: "/cart/", html: page({ title: "Cart", description: "Your Functional Elixirs cart — review your honey-ginger jars, apply a promo code, estimate shipping, and check out with Apple Pay or card.", path: "/cart/", body, noindex: true }) };
@@ -253,7 +260,6 @@ function checkout() {
     <section class="co-section">
       <div class="co-section__head"><h2>Contact</h2><p class="small muted">We’ll email your receipt and tracking here.</p></div>
       <div class="field"><label for="email">Email</label><input class="input" id="email" name="email" type="email" autocomplete="email" required inputmode="email"><p class="error" id="email-err">Enter a valid email so we can send your receipt.</p></div>
-      <label class="check"><input type="checkbox" name="news" checked> Email me the monthly note from the kitchen (unsubscribe any time)</label>
     </section>
     <section class="co-section">
       <h2>Shipping address</h2>
@@ -265,7 +271,7 @@ function checkout() {
         <div class="field"><label for="state">State</label><select class="select" id="state" name="state" autocomplete="address-level1" required><option value="">—</option>${states.map((s) => `<option>${s}</option>`).join("")}</select><p class="error">Required.</p></div>
         <div class="field"><label for="zip">ZIP</label><input class="input" id="zip" name="zip" autocomplete="postal-code" inputmode="numeric" pattern="\\d{5}(-\\d{4})?" required><p class="error">5-digit ZIP.</p></div>
       </div>
-      <div class="field"><label for="country">Country</label><select class="select" id="country" name="country" autocomplete="country"><option value="US">United States</option><option value="CA">Canada</option><option value="GB">United Kingdom</option><option value="AU">Australia</option><option value="OTHER">Other</option></select></div>
+      <input type="hidden" id="country" name="country" value="US">
       <div class="field"><label for="phone">Phone <span class="muted">(optional — for delivery questions only)</span></label><input class="input" id="phone" name="phone" type="tel" autocomplete="tel" inputmode="tel"></div>
     </section>
     <section class="co-section">
@@ -289,12 +295,6 @@ function checkout() {
       </div>
     </section>
     <section class="co-section">
-      <h2>Save time next order <span class="muted small">(optional)</span></h2>
-      <label class="check"><input type="checkbox" name="create_account"> Create an account with this email — orders, addresses and wishlist in one place</label>
-      <div class="field"><label for="new_password">Password <span class="muted">(only if creating an account)</span></label><input class="input" id="new_password" name="new_password" type="password" autocomplete="new-password" minlength="8"><p class="help">8+ characters.</p></div>
-      <label class="check"><input type="checkbox" name="save_address" checked> Save this address to my account</label>
-    </section>
-    <section class="co-section">
       <div class="field"><label for="gift">Gift note <span class="muted">(optional — we never include prices)</span></label><textarea class="textarea" id="gift" name="gift" style="min-height:5rem"></textarea></div>
       <button class="btn btn--primary btn--block" type="submit" style="min-height:3.25rem">Place order · <span data-total>—</span></button>
       <p class="small muted center">By placing your order you agree to our <a href="/terms/">Terms</a> and <a href="/privacy/">Privacy Policy</a>. Unopened jars are returnable for a full refund.</p>
@@ -302,7 +302,7 @@ function checkout() {
   </form>
   </div>
 </div></section>`;
-  return { path: "/checkout/", html: page({ title: "Checkout", description: "Secure checkout — Apple Pay, Google Pay, Shop Pay or card. Guest or account checkout with live shipping rates.", path: "/checkout/", body, noindex: true }) };
+  return { path: "/checkout/", html: page({ title: "Checkout", description: "Secure checkout — Apple Pay, Google Pay, Shop Pay or card. Guest checkout with live shipping rates.", path: "/checkout/", body, noindex: true }) };
 }
 
 function confirmation() {

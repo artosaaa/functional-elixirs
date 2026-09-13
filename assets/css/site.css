@@ -1269,3 +1269,52 @@ main:has(> :last-child.cta-band) + .footer { margin-top: 0; }
 .page-head + .section--tight { padding-top: var(--s-4); }
 .page-head + .section--tight .shop-single { margin-top: 0; }
 .shop-single__sub { margin-top: .4rem; font-size: var(--fs-md); color: var(--ink); }
+
+/* 23l. Shipping rate — one method doesn't warrant a table header row */
+.rate-card { display: grid; gap: var(--s-4); margin-top: var(--s-4); padding: var(--s-5); border: 1px solid var(--cream-3); border-radius: var(--r-md); background: #fff; }
+@media (min-width: 40em) { .rate-card { grid-template-columns: repeat(3, 1fr); gap: var(--s-5); } }
+.rate-card div { display: grid; gap: .25rem; }
+.rate-card strong { font: 400 var(--fs-md)/1.2 var(--serif); color: var(--navy-2); }
+.rate-card span { font-size: var(--fs-sm); color: var(--ink-soft); }
+
+/* 23m. The ingredients page ran on the large default section padding with short
+   blocks between, so the gaps read as missing content rather than as rhythm.
+   Scoped to this page so other pages keep their spacing. */
+.p-ingredients .section, .p-ingredients .section--tight { padding-block: clamp(1.75rem, 4vw, 3rem); }
+.p-ingredients .split { align-items: start; }
+.p-ingredients .hero__art { max-width: 26rem; }
+.p-ingredients .prose > h2:first-child { margin-top: 0; }
+
+/* 23n. More bees. The drift layer is absolutely positioned, so any section that
+   hosts one needs a containing block and needs to clip the fly-in/out. */
+.mk-nature, .shop-single-sec, .rcp-head-sec, .about-hero { position: relative; overflow: hidden; }
+
+/* 23o. Mobile pass ----------------------------------------------------------
+   The home signature photo used the same 4:5 contain frame the shop page had,
+   so the jar sat small inside the jpeg's own white margin. Same square centre
+   crop as /shop/ — trims the margin, not the jar. */
+.mk-signature__photo { aspect-ratio: 1 / 1; }
+.mk-signature__photo img { object-fit: cover; object-position: center; }
+
+@media (max-width: 47.99em) {
+  /* 5:4 was tried here and cropped the lid and the base off a 4:5 source; the
+     square keeps the whole jar and still trims the jpeg's own white margin */
+  .mk-signature__photo, .shop-single__photo { aspect-ratio: 1 / 1; }
+
+  /* the add-to-cart row wrapped the button under a full-width stepper */
+  .shop-single__acts { flex-wrap: nowrap; }
+  .shop-single__acts .qty { flex: 0 0 auto; }
+  .shop-single__acts .btn { flex: 1 1 auto; min-width: 0; }
+}
+
+/* 23p. Touch targets. The small button variant rendered at 36-40px, which clears
+   WCAG 2.2 AA (24px) but is under the 44px the README claims and under what is
+   comfortable on a phone. Raised on coarse pointers only, so desktop keeps the
+   compact size the layouts were built around. */
+@media (pointer: coarse) {
+  .btn--sm { min-height: 44px; }
+  .qty button { min-width: 44px; min-height: 44px; }
+  .btn--link { min-height: 44px; display: inline-flex; align-items: center; }
+  .cookie .btn--sm { min-height: 44px; }
+  label.check { min-height: 44px; display: flex; align-items: center; gap: .6rem; }
+}
