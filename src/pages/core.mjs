@@ -185,7 +185,7 @@ function product(p) {
         <p>${p.type === "Accessory" ? "Twist the dipper in the jar, lift, and let the honey spiral off the end into your cup. Rest it on a small dish between uses." : `Sweet first, then the ginger’s slow warmth. Warm — not boiling — water keeps the fresh ginger bright. <a href="/recipes/">Ways to use the jar →</a>`}</p></div></details>
       <details><summary>Ingredients</summary><div class="acc__body"><p>${esc(p.ingredients)}</p><p>${esc(p.origin)}. No added sugar, colours, flavours or preservatives. Naturally gluten-free. Not suitable for infants under 12 months.</p></div></details>
       <details><summary>Storage</summary><div class="acc__body"><p>Room temperature, lid closed, dry spoon. Raw honey may crystallize over time — that’s natural. Warm the closed jar in a bowl of warm water to restore.</p></div></details>
-      <details><summary>Shipping &amp; returns</summary><div class="acc__body"><p>Shipped from the USA. Standard $5.95 (free over $${CFG.freeShipOver}), Express $14, local pickup free. An unopened jar can be returned any time for a full refund, with return postage paid by you; opened jars can’t be returned. <a href="/shipping/">Shipping</a> · <a href="/returns/">Returns</a></p></div></details>
+      <details><summary>Shipping &amp; returns</summary><div class="acc__body"><p>Shipped within the US by standard mail — $5.95, free over $${CFG.freeShipOver}, arriving in 2–7 business days. An unopened jar can be returned any time for a full refund, with return postage paid by you; opened jars can’t be returned. <a href="/shipping/">Shipping</a> · <a href="/returns/">Returns</a></p></div></details>
     </div>
   </div>
 </section>
@@ -218,10 +218,10 @@ function product(p) {
 /* ---------------- CART ---------------- */
 const promoForm = () => `<form class="promo" data-promo-form novalidate><label class="sr-only" for="promo">Promo code</label><input class="input" id="promo" name="code" placeholder="Promo code" autocomplete="off"><button class="btn btn--soft" type="submit">Apply</button></form><p class="promo-msg" aria-live="polite"></p>`;
 const shipCalc = () => `<form class="ship-calc" data-ship-calc novalidate>
-  <div class="field-row"><div class="field"><label for="sc-country">Country</label><select class="select" id="sc-country" name="country"><option value="US">United States</option><option value="CA">Canada</option><option value="GB">United Kingdom</option><option value="AU">Australia</option><option value="OTHER">Other</option></select></div>
+  <div class="field-row">
   <div class="field"><label for="sc-zip">ZIP / postcode</label><input class="input" id="sc-zip" name="zip" inputmode="numeric" autocomplete="postal-code" placeholder="94103"></div></div>
   <button class="btn btn--ghost btn--sm" type="submit">Estimate shipping</button>
-  <div class="ship-calc__result" aria-live="polite"><p class="small muted">Enter a ZIP for a live estimate — standard, express and local pickup.</p></div></form>`;
+  <div class="ship-calc__result" aria-live="polite"><p class="small muted">Enter a ZIP for a live estimate.</p></div></form>`;
 
 function cart() {
   const body = `${breadcrumbs([{ name: "Cart", href: "/cart/" }])}
@@ -265,7 +265,7 @@ function checkout() {
         <div class="field"><label for="state">State</label><select class="select" id="state" name="state" autocomplete="address-level1" required><option value="">—</option>${states.map((s) => `<option>${s}</option>`).join("")}</select><p class="error">Required.</p></div>
         <div class="field"><label for="zip">ZIP</label><input class="input" id="zip" name="zip" autocomplete="postal-code" inputmode="numeric" pattern="\\d{5}(-\\d{4})?" required><p class="error">5-digit ZIP.</p></div>
       </div>
-      <div class="field"><label for="country">Country</label><select class="select" id="country" name="country" autocomplete="country"><option value="US">United States</option><option value="CA">Canada</option><option value="GB">United Kingdom</option><option value="AU">Australia</option><option value="OTHER">Other</option></select></div>
+      <input type="hidden" id="country" name="country" value="US">
       <div class="field"><label for="phone">Phone <span class="muted">(optional — for delivery questions only)</span></label><input class="input" id="phone" name="phone" type="tel" autocomplete="tel" inputmode="tel"></div>
     </section>
     <section class="co-section">

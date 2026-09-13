@@ -50,8 +50,7 @@ function sourcing() {
     <p>We buy from small local suppliers. Because raw honey varies with the season, no two batches taste exactly alike. We think that’s the point.</p>
   </div>
 </div></section>
-<section class="section"><div class="wrap split split--reverse">
-  <div class="marquee-photo reveal">${photo("terraces")}</div>
+<section class="section--tight"><div class="wrap--prose">
   <div class="prose reveal">
     <h2>Ginger — a root with a long tradition</h2>
     <p>Ginger has been used in food and traditional wellness practices for centuries. It contains naturally occurring bioactive compounds — gingerols and shogaols among them — and has been widely studied for its antioxidant and anti-inflammatory properties and its role in digestive wellness.</p>
@@ -71,7 +70,7 @@ function sourcing() {
   <h2>Where it’s made</h2>
   <p>Blended and jarred in small batches in the USA. Glass jars, wooden lids and paper labels — chosen because they age well and recycle cleanly.</p>
 </div></section>${ctaBand()}`;
-  return { path, html: page({ title: "Ingredients & Sourcing — Raw Honey and Fresh Ginger", description: "What’s in Functional Elixirs Honey with Fresh Ginger: locally sourced raw honey and fresh ginger root — no added sugar, flavourings or preservatives. Allergen details.", path, body, breadcrumbs: [{ name: "Ingredients & sourcing", href: path }] }) };
+  return { path, html: page({ title: "Ingredients & Sourcing — Raw Honey and Fresh Ginger", description: "What’s in Functional Elixirs Honey with Fresh Ginger: locally sourced raw honey and fresh ginger root — no added sugar, flavourings or preservatives. Allergen details.", path, body, bodyClass: "p-ingredients", breadcrumbs: [{ name: "Ingredients & sourcing", href: path }] }) };
 }
 
 export default () => [story(), sourcing()];

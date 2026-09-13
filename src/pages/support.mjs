@@ -15,10 +15,10 @@ const FAQ = [
   ["Is it safe for children and during pregnancy?", "Honey must not be given to infants under 12 months. For older children it’s food. If you’re pregnant or managing a health condition, ask your doctor as you would about any food — we don’t give medical advice."],
   ["Is it vegan, gluten-free, nut-free?", "It contains honey, so it isn’t vegan. It is naturally gluten-free, dairy-free and nut-free."],
   ["Where is it made?", "Blended and jarred in small batches in the USA."],
-  ["How fast will it ship?", `Standard delivery runs 2–7 business days once the parcel is with the carrier, depending on distance; Express is 1–3. Free standard shipping over $${CFG.freeShipOver}. <a href="/shipping/">Rates and calculator</a>.`],
+  ["How fast will it ship?", `We ship within the US by standard mail — 2–7 business days once the parcel is with the carrier, depending on distance. Free over $${CFG.freeShipOver}. <a href="/shipping/">Rates and calculator</a>.`],
   ["Can I return it?", `An unopened jar, yes — any time, for a full refund, with return postage paid by you. An opened jar we can’t take back: honey is food. <a href="/returns/">Returns policy</a>.`],
   ["Do you offer Apple Pay?", "Yes — Apple Pay, Google Pay and Shop Pay on the product page, in the cart and at checkout, plus all major cards. Guest checkout is always available."],
-  ["Do you ship internationally?", "Canada, the UK and Australia, with tracked rates shown at checkout. Duties and taxes may apply on delivery."],
+  ["Do you ship internationally?", "Not at the moment — we ship within the United States only."],
   ["Can I send it as a gift?", `Yes. Enter their address, add a note at checkout (we hand-write it and never include prices), or choose the <a href="/shop/honey-with-fresh-ginger-gift-box/">Gift Box</a>.`],
   ["Is there a subscription?", "Not yet. The two-jar set is our low-tech version — it covers about three months of mornings."],
 ];
@@ -59,34 +59,26 @@ function shipping() {
   const body = `${head("Shipping & delivery", path, "Help", "Shipping &amp; delivery", `Shipped from the USA. Free standard shipping on orders over $${CFG.freeShipOver}.`)}
 <section class="section--tight"><div class="wrap--narrow stack" style="--flow:var(--s-7)">
   <div class="form-card"><h2 style="font-size:var(--fs-md);margin-bottom:var(--s-4)">Estimate for your address</h2>
-    <form class="ship-calc" data-ship-calc novalidate><div class="field-row"><div class="field"><label for="sp-country">Country</label><select class="select" id="sp-country" name="country"><option value="US">United States</option><option value="CA">Canada</option><option value="GB">United Kingdom</option><option value="AU">Australia</option><option value="OTHER">Other</option></select></div><div class="field"><label for="sp-zip">ZIP / postcode</label><input class="input" id="sp-zip" name="zip" inputmode="numeric" autocomplete="postal-code" placeholder="94103"></div></div><button class="btn btn--ghost btn--sm" type="submit">Estimate</button><div class="ship-calc__result" aria-live="polite"><p class="small muted">Enter a ZIP to see live rates and arrival windows.</p></div></form></div>
+    <form class="ship-calc" data-ship-calc novalidate><div class="field"><label for="sp-zip">ZIP code</label><input class="input" id="sp-zip" name="zip" inputmode="numeric" autocomplete="postal-code" placeholder="94103"></div><button class="btn btn--ghost btn--sm" type="submit">Estimate</button><div class="ship-calc__result" aria-live="polite"><p class="small muted">Enter a US ZIP code to see your rate and arrival window.</p></div></form></div>
   <div class="prose">
-    <h2>United States</h2>
-    <table class="rate-table"><thead><tr><th>Method</th><th>Transit</th><th>Cost</th></tr></thead><tbody>
-      <tr><td><strong>Standard</strong> — USPS Ground Advantage / UPS Ground</td><td>2–7 business days (West 2–4 · Central 3–5 · East 4–7)</td><td>$5.95 · free over $${CFG.freeShipOver}</td></tr>
-      <tr><td><strong>Express</strong> — USPS Priority Express / UPS 2nd Day</td><td>1–3 business days</td><td>$14.00</td></tr>
-      <tr><td><strong>Local pickup</strong></td><td>Same day — we email when it’s boxed</td><td>Free</td></tr>
-    </tbody></table>
+    <h2>Rate</h2>
+    <div class="rate-card">
+      <div><strong>Standard</strong><span>USPS Ground Advantage / UPS Ground</span></div>
+      <div><strong>$5.95</strong><span>Free over $${CFG.freeShipOver}</span></div>
+      <div><strong>2–7 business days</strong><span>West 2–4 · Central 3–5 · East 4–7</span></div>
+    </div>
     <h2>Processing</h2>
-    <p>Orders placed before 1pm Pacific on a business day ship the same day; otherwise the next business day. We don’t ship on US federal holidays. You’ll get a tracking email the moment the label is scanned, and you can always check <a href="/track-order/">Track order</a>.</p>
+    <p>We pack and post orders as they come in, by regular mail. We don’t ship on US federal holidays. You’ll get a tracking email the moment the label is scanned, and you can always check <a href="/track-order/">Track order</a>.</p>
     <h2>Packaging</h2>
     <p>Glass jars are wrapped in paper and cushioned in a recycled-fibre box. If a jar arrives broken — it happens rarely, but glass is glass — photograph the box and jar and <a href="/contact/">tell us</a>. We’ll send a replacement immediately, no return needed.</p>
-    <h2>International</h2>
-    <table class="rate-table"><thead><tr><th>Destination</th><th>Standard</th><th>Express</th></tr></thead><tbody>
-      <tr><td>Canada</td><td>$12.95 · 6–10 days</td><td>$24.00 · 3–5 days</td></tr>
-      <tr><td>United Kingdom</td><td>$15.95 · 7–12 days</td><td>$29.00 · 3–6 days</td></tr>
-      <tr><td>Australia</td><td>$19.95 · 9–15 days</td><td>$34.00 · 4–7 days</td></tr>
-      <tr><td>Elsewhere</td><td>$19.95 · 8–14 days</td><td>$32.00 · 4–7 days</td></tr>
-    </tbody></table>
-    <p>International orders are shipped DDU: duties, VAT and import fees, if any, are collected by the carrier on delivery and are the recipient’s responsibility. Honey is a food product; a small number of countries restrict its import — check your local rules before ordering.</p>
     <h2>Addresses &amp; changes</h2>
-    <p>We can change an address until the label is printed (usually within a few hours). Email us right away with your order number. PO Boxes and APO/FPO are fine via USPS Standard. We can’t deliver to freight forwarders.</p>
+    <p>We ship within the United States only. We can change an address until the label is printed — email us right away with your order number. PO Boxes and APO/FPO are fine via USPS. We can’t deliver to freight forwarders.</p>
     <h2>Heat</h2>
     <p>Honey is unbothered by heat in transit — it may thin slightly, then settle. It won’t spoil. In deep winter it may arrive firmer; a warm-water bath brings it back.</p>
     <p>Questions about returns? See <a href="/returns/">Returns &amp; exchanges</a>.</p>
   </div>
 </div></section>`;
-  return { path, html: page({ title: "Shipping & Delivery — Rates, Times and Free Shipping over $50", description: "Functional Elixirs shipping: free US standard shipping over $50, $5.95 standard (2–7 days), $14 express (1–3 days), free local pickup, and tracked international rates to Canada, UK and Australia.", path, body, breadcrumbs: [{ name: "Shipping & delivery", href: path }] }) };
+  return { path, html: page({ title: "Shipping & Delivery — US Standard, Free over $50", description: "Functional Elixirs shipping: standard US shipping $5.95, free over $50, arriving in 2–7 business days. We ship within the United States.", path, body, breadcrumbs: [{ name: "Shipping & delivery", href: path }] }) };
 }
 
 const returns = () => policy({

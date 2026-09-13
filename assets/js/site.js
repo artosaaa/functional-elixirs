@@ -20,16 +20,8 @@
       FREESHIP:   { type: "ship", value: 0, label: "Free standard shipping" },
     },
     rates: {
-      // Base rates; the calculator adjusts days by zone. Real: fetch from carrier / Shippo / EasyPost.
+      // Standard US shipping is the only method offered. Real: fetch from carrier / Shippo / EasyPost.
       standard: { id: "standard", name: "Standard", price: 5.95,  days: [4, 7] },
-      express:  { id: "express",  name: "Express",  price: 14.00, days: [1, 3] },
-      pickup:   { id: "pickup",   name: "Local pickup", price: 0, days: [0, 1] },
-    },
-    intl: {
-      CA: { standard: { price: 12.95, days: [6, 10] }, express: { price: 24.00, days: [3, 5] } },
-      GB: { standard: { price: 15.95, days: [7, 12] }, express: { price: 29.00, days: [3, 6] } },
-      AU: { standard: { price: 19.95, days: [9, 15] }, express: { price: 34.00, days: [4, 7] } },
-      OTHER: { standard: { price: 19.95, days: [8, 14] }, express: { price: 32.00, days: [4, 7] } },
     },
   };
 
@@ -121,20 +113,11 @@
     /* Returns [{id,name,price,days,note}] for a destination; applies free-shipping threshold */
     quote(country, zip, subtotal) {
       const free = subtotal >= CFG.freeShipOver || Promo.freeShip();
-      if (country === "US") {
-        const z = this.zone(zip);
-        const adj = { west: [-2, -3], central: [-1, -2], east: [0, 0] }[z] || [0, 0];
-        const std = CFG.rates.standard, exp = CFG.rates.express;
-        return [
-          { ...std, price: free ? 0 : std.price, days: [Math.max(2, std.days[0] + adj[0]), Math.max(3, std.days[1] + adj[1])], note: free ? `Free — you’re over ${money(CFG.freeShipOver)}` : `Free over ${money(CFG.freeShipOver)}` },
-          { ...exp, days: z === "west" ? [1, 2] : exp.days, note: "USPS Priority Express / UPS 2nd Day" },
-          { ...CFG.rates.pickup, note: "Ready same day — we’ll email you when it’s boxed." },
-        ];
-      }
-      const r = CFG.intl[country] || CFG.intl.OTHER;
+      const z = this.zone(zip);
+      const adj = { west: [-2, -3], central: [-1, -2], east: [0, 0] }[z] || [0, 0];
+      const std = CFG.rates.standard;
       return [
-        { id: "standard", name: "International standard", price: r.standard.price, days: r.standard.days, note: "Duties & taxes may apply on delivery" },
-        { id: "express",  name: "International express",  price: r.express.price,  days: r.express.days,  note: "Tracked, DHL / UPS" },
+        { ...std, price: free ? 0 : std.price, days: [Math.max(2, std.days[0] + adj[0]), Math.max(3, std.days[1] + adj[1])], note: free ? `Free — you’re over ${money(CFG.freeShipOver)}` : `Free over ${money(CFG.freeShipOver)}` },
       ];
     },
     daysLabel(d) { if (d[0] === 0) return "Today"; return d[0] === d[1] ? `${d[0]} business days` : `${d[0]}–${d[1]} business days`; },
