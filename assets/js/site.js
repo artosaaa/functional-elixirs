@@ -10,7 +10,7 @@
 
   /* ---------- 0. Config (mirrors src/site.mjs — keep in sync) ---------- */
   const CFG = {
-    freeShipOver: 40,
+    freeShipOver: 50,
     lowStockAt: 10,
     taxRateCA: 0.0875,               // California nexus (edit for your state). Real: use a tax API (Stripe Tax / TaxJar).
     promos: {
@@ -212,13 +212,7 @@
   function freeShipHTML() {
     const sub = Cart.subtotal(); const left = CFG.freeShipOver - sub; const pct = Math.min(100, (sub / CFG.freeShipOver) * 100);
     const items = Cart.items();
-    /* If the cart is exactly one single jar, the cheapest way to close the gap is the two-jar set — offer it in one tap. */
-    const lone = items.length === 1 && items[0].id === "hg-15" && items[0].qty === 1;
-    const duo = product("hg-duo");
-    const upsell = left > 0 && lone && duo && duo.stock > 0
-      ? `<button class="ship-upsell" type="button" data-swap-duo>Make it two jars — ${money(duo.price)}<span>${money(duo.price / 2)} a jar, ${money(23.99 * 2 - duo.price)} less than two bought apart, and it ships free</span></button>`
-      : "";
-    return `<div class="free-ship"><span>${left > 0 ? `You’re <strong>${money(left)}</strong> from free shipping` : `<strong>Free shipping unlocked.</strong>`}</span><div class="free-ship__bar"><i style="width:${pct}%"></i></div>${upsell}</div>`;
+    return `<div class="free-ship"><span>${left > 0 ? `You’re <strong>${money(left)}</strong> from free shipping` : `<strong>Free shipping unlocked.</strong>`}</span><div class="free-ship__bar"><i style="width:${pct}%"></i></div></div>`;
   }
 
   const emptyHTML = `<div class="empty">
@@ -255,7 +249,7 @@
       el.classList.remove("stock--low", "stock--out");
       if (p.stock <= 0) { el.textContent = "Sold out — next batch in about 3 weeks"; el.classList.add("stock--out"); }
       else if (p.stock <= CFG.lowStockAt) { el.textContent = `Only ${p.stock} left in this batch`; el.classList.add("stock--low"); }
-      else el.textContent = "In stock — ships in 1–2 days";
+      else el.textContent = "In stock";
     });
     $$("[data-add]").forEach((b) => { const p = product(b.dataset.add); if (p && p.stock <= 0) { b.disabled = true; b.textContent = "Sold out"; } });
     $$("[data-express-buy]").forEach((b) => { const p = product(b.dataset.expressBuy); if (p && p.stock <= 0) b.disabled = true; });
@@ -289,7 +283,7 @@
 
   /* ---------- 5. Global delegated events ---------- */
   document.addEventListener("click", (e) => {
-    const t = e.target.closest("[data-add],[data-express-buy],[data-cart-open],[data-wish],[data-inc],[data-dec],[data-remove],[data-swap-duo],[data-menu-open],[data-menu-close],[data-promo-clear],[data-signout]");
+    const t = e.target.closest("[data-add],[data-express-buy],[data-cart-open],[data-wish],[data-inc],[data-dec],[data-remove],[data-menu-open],[data-menu-close],[data-promo-clear],[data-signout]");
     if (!t) return;
     if (t.dataset.add !== undefined) { const q = parseInt($("[data-qty-input]")?.value || "1", 10) || 1; Cart.add(t.dataset.add, q); t.setAttribute("data-added", ""); setTimeout(() => t.removeAttribute("data-added"), 900); }
     else if (t.dataset.expressBuy !== undefined) {
@@ -309,7 +303,6 @@
       else { const i = t.closest(".qty").querySelector("input"); i.value = Math.max(1, Math.min(+i.max || 99, (+i.value || 1) + (t.dataset.inc !== undefined ? 1 : -1))); i.dispatchEvent(new Event("change")); }
     }
     else if (t.dataset.remove !== undefined) Cart.remove(t.closest("[data-line]").dataset.line);
-    else if (t.dataset.swapDuo !== undefined) { Cart.save(Cart.items().filter((i) => i.id !== "hg-15").concat([{ id: "hg-duo", qty: 1 }])); toast("Swapped to the two-jar set — shipping is on us"); }
     else if (t.dataset.menuOpen !== undefined) { const m = $("#mobile-nav"); m.setAttribute("data-open", ""); m.removeAttribute("aria-hidden"); document.body.style.overflow = "hidden"; $("[data-menu-close]", m)?.focus(); }
     else if (t.dataset.menuClose !== undefined) { const m = $("#mobile-nav"); m.removeAttribute("data-open"); m.setAttribute("aria-hidden", "true"); document.body.style.overflow = ""; $("[data-menu-open]")?.focus(); }
     else if (t.dataset.promoClear !== undefined) { Promo.clear(); $$("[data-promo-form] input").forEach((i) => (i.value = "")); $$(".promo-msg").forEach((m) => { m.textContent = ""; m.removeAttribute("data-ok"); }); }
@@ -628,51 +621,6 @@
 
   /* ---------- 7b. Selling layer ---------- */
 
-  /* Bundle tiers: the radio picks which SKU the buy buttons add. */
-  function initTiers() {
-    $$("[data-tiers]").forEach((box) => {
-      const sync = () => {
-        const r = $('input[name="tier"]:checked', box); if (!r) return;
-        const p = product(r.value); if (!p) return;
-        $$("[data-tier-add]").forEach((b) => { b.dataset.add = p.id; const l = $("[data-tier-label]", b); if (l) l.textContent = money(p.price); });
-        $$("[data-tier-express]").forEach((b) => (b.dataset.expressBuy = p.id));
-        $$("[data-tier-price]").forEach((el) => (el.textContent = money(p.price)));
-        $$("[data-tier-compare]").forEach((el) => { el.textContent = p.compareAt ? money(p.compareAt) : ""; el.hidden = !p.compareAt; });
-        $$("[data-tier-stock]").forEach((el) => (el.dataset.stock = p.id));
-        $$("[data-tier-ship]").forEach((el) => {
-          const free = p.price >= CFG.freeShipOver;
-          el.innerHTML = free ? "<strong>Ships free.</strong> No minimum to hit." : `Add ${money(CFG.freeShipOver - p.price)} more for free shipping`;
-        });
-        render();
-      };
-      box.addEventListener("change", (e) => { if (e.target.name === "tier") sync(); });
-      sync();
-    });
-  }
-
-  /* Same-day dispatch line — honest: counts down to the real 1pm PT cutoff, then rolls to the next business day. */
-  function initDispatch() {
-    const els = $$("[data-dispatch]"); if (!els.length) return;
-    const tick = () => {
-      const now = new Date();
-      // "now" expressed in Los Angeles wall-clock time
-      const pt = new Date(now.toLocaleString("en-US", { timeZone: "America/Los_Angeles" }));
-      const cutoff = new Date(pt); cutoff.setHours(13, 0, 0, 0);
-      const day = pt.getDay(); const weekend = day === 0 || day === 6;
-      let msg;
-      if (!weekend && pt < cutoff) {
-        const mins = Math.floor((cutoff - pt) / 60000), h = Math.floor(mins / 60), m = mins % 60;
-        msg = `<strong>Ships today</strong> if you order in the next ${h ? h + "h " : ""}${m}m`;
-      } else {
-        const next = new Date(pt); next.setDate(next.getDate() + 1);
-        while (next.getDay() === 0 || next.getDay() === 6) next.setDate(next.getDate() + 1);
-        msg = `<strong>Ships ${next.toLocaleDateString("en-US", { weekday: "long" })}</strong> — packed by hand in small batches`;
-      }
-      els.forEach((el) => (el.innerHTML = msg));
-    };
-    tick(); setInterval(tick, 60000);
-  }
-
   /* Sticky desktop buy bar — mirrors the mobile one above 56em. */
   function initDeskbar() {
     const bar = $("#deskbar"), anchor = $("[data-buy-anchor]");
@@ -712,7 +660,7 @@
   /* ---------- 8. Boot ---------- */
   document.addEventListener("DOMContentLoaded", () => {
     Drawer.init(); render(); markNav();
-    initPDP(); initTiers(); initDispatch(); initDeskbar(); initCapture(); initShipCalc(); Checkout.init(); initConfirmation(); initTrack(); initAuth(); initAccount(); initContact(); initCookie(); initReveal();
+    initPDP(); initDeskbar(); initCapture(); initShipCalc(); Checkout.init(); initConfirmation(); initTrack(); initContact(); initCookie(); initReveal();
     window.addEventListener("storage", (e) => { if (e.key?.startsWith("sw_")) render(); }); // multi-tab sync
   });
 

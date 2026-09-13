@@ -1,0 +1,17 @@
+About Us hero photograph
+========================
+
+Drop the family archive scan here as:
+
+  assets/img/about-family-archive.jpg
+
+The About Us page picks it up on the next build and shows it with the caption
+"From the family album." Until the file exists the page falls back to
+about-kitchen-jar.jpg, so it is never left without an image.
+
+Portrait orientation suits the layout; the scan is shown at its natural aspect
+ratio, so no particular crop is required.
+
+If you want a different caption (a name, a year, a place), say so and it can be
+changed — the current one was chosen because it is true without assuming which
+child is which.

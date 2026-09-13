@@ -5,12 +5,9 @@ import { mkdirSync, writeFileSync, rmSync, existsSync, readdirSync, statSync } f
 import { dirname, join } from "node:path";
 import { SITE_URL, BRAND } from "./src/site.mjs";
 import { PRODUCTS, HERO } from "./src/products.mjs";
-import { ARTICLES } from "./src/articles.mjs";
 import { ogImage } from "./src/art.mjs";
 import core from "./src/pages/core.mjs";
-import account from "./src/pages/account.mjs";
 import brand from "./src/pages/brand.mjs";
-import journal from "./src/pages/journal.mjs";
 import support from "./src/pages/support.mjs";
 import recipes from "./src/pages/recipes.mjs";
 
@@ -33,10 +30,44 @@ const withBase = (html) => {
     .replace(/<body([^>]*)>/, `<body$1><script>window.__BASE__=${JSON.stringify(BASE)}</script>`);
 };
 
-const pages = [...core(), ...account(), ...brand(), ...journal(), ...support(), ...recipes()];
+const pages = [...core(), ...brand(), ...support(), ...recipes()];
 /* old URL kept alive: /our-story/ moved to /about-us/ */
-const redirect = (to) => `<!doctype html><html lang="en"><meta charset="utf-8"><title>Redirecting…</title><meta name="robots" content="noindex"><meta http-equiv="refresh" content="0; url=${to}"><link rel="canonical" href="${SITE_URL}${to}"><p>This page has moved to <a href="${to}">${to}</a>.</p></html>`;
+const redirect = (to) => `<!doctype html><html lang="en"><meta charset="utf-8"><title>Redirecting…</title><meta name="robots" content="noindex"><link rel="icon" href="/assets/img/favicon-32.png" sizes="32x32" type="image/png"><meta http-equiv="refresh" content="0; url=${to}"><link rel="canonical" href="${SITE_URL}${to}"><p>This page has moved to <a href="${to}">${to}</a>.</p></html>`;
 pages.push({ path: "/our-story/", html: redirect("/about-us/"), noindex: true });
+/* the journal and the sustainability page were retired; their URLs are indexed, so point them
+   at the nearest surviving page rather than letting them 404 */
+const RETIRED = [
+  ["/journal/", "/recipes/"],
+  ["/journal/the-morning-ritual-honey-ginger-warm-water/", "/recipes/"],
+  ["/journal/how-to-store-honey-and-why-it-crystallizes/", "/faq/"],
+  ["/journal/counter-styling-making-room-for-a-ritual/", "/recipes/"],
+  ["/journal/honey-ginger-in-tea-instead-of-sugar/", "/recipes/"],
+  ["/journal/how-to-give-a-jar/", "/gift-guide/"],
+  ["/journal/a-jar-for-the-cold-months/", "/recipes/"],
+  ["/journal/caring-for-and-reusing-the-jar/", "/faq/"],
+  ["/journal/beyond-the-spoon-dressings-glazes-oats/", "/recipes/"],
+  ["/sustainability/", "/sourcing/"],
+  ["/ritual/", "/recipes/"],
+  /* accounts are not offered yet; these URLs were noindex but are linked from old pages */
+  ["/account/", "/track-order/"],
+  ["/account/signup/", "/track-order/"],
+  ["/account/login/", "/track-order/"],
+  ["/account/forgot-password/", "/track-order/"],
+  ["/account/addresses/", "/track-order/"],
+  ["/account/wishlist/", "/shop/"],
+  /* catalog reduced to the single 15 oz jar; these product, collection and guide
+     URLs are indexed, so send them to the jar or the shop rather than 404 */
+  ["/shop/honey-with-fresh-ginger-8oz/", "/shop/honey-with-fresh-ginger/"],
+  ["/shop/honey-with-fresh-ginger-two-jar-set/", "/shop/honey-with-fresh-ginger/"],
+  ["/shop/honey-with-fresh-ginger-gift-box/", "/shop/honey-with-fresh-ginger/"],
+  ["/shop/honey-with-fresh-ginger-travel-jar/", "/shop/honey-with-fresh-ginger/"],
+  ["/shop/honey-with-fresh-ginger-family-pack/", "/shop/honey-with-fresh-ginger/"],
+  ["/shop/beechwood-honey-dipper/", "/shop/"],
+  ["/collections/gifts-under-30/", "/shop/"],
+  ["/collections/for-beginners/", "/shop/"],
+  ["/gift-guide/", "/shop/"],
+];
+for (const [from, to] of RETIRED) pages.push({ path: from, html: redirect(to), noindex: true });
 const seen = new Set();
 for (const { path, html } of pages) {
   if (seen.has(path)) throw new Error("Duplicate path " + path); seen.add(path);
@@ -50,9 +81,9 @@ out("assets/img/og-default.svg", ogImage(null));
 for (const p of PRODUCTS) out(`assets/img/og-${p.slug}.svg`, ogImage(p));
 
 // Sitemap (indexable pages only), robots, RSS
-const noindex = new Set(["/our-story/", "/cart/", "/checkout/", "/order-confirmation/", "/account/", "/account/addresses/", "/account/wishlist/", "/account/signup/", "/account/login/", "/account/forgot-password/", "/404.html"]);
+const noindex = new Set([...RETIRED.map(([from]) => from), "/our-story/", "/cart/", "/checkout/", "/order-confirmation/", "/404.html"]);
 const today = new Date().toISOString().slice(0, 10);
-const prio = (p) => p === "/" ? "1.0" : p.startsWith("/shop/honey-with-fresh-ginger/") ? "0.9" : p.startsWith("/shop") || p.startsWith("/collections") ? "0.8" : p.startsWith("/journal/") && p !== "/journal/" ? "0.6" : ["/privacy/", "/terms/", "/cookies/", "/sitemap/"].includes(p) ? "0.3" : "0.7";
+const prio = (p) => p === "/" ? "1.0" : p.startsWith("/shop/honey-with-fresh-ginger/") ? "0.9" : p.startsWith("/shop") || p.startsWith("/collections") ? "0.8" : ["/privacy/", "/terms/", "/cookies/", "/sitemap/"].includes(p) ? "0.3" : "0.7";
 const urls = pages.map((p) => p.path).filter((p) => !noindex.has(p));
 out("sitemap.xml", `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemapns.org/schemas/sitemap/0.9">\n${urls.map((u) => `  <url><loc>${SITE_URL}${u}</loc><lastmod>${today}</lastmod><changefreq>${u === "/" || u.startsWith("/shop") ? "weekly" : "monthly"}</changefreq><priority>${prio(u)}</priority></url>`).join("\n")}\n</urlset>\n`.replace("sitemapns.org", "sitemaps.org"));
 out("robots.txt", `# ${BRAND.name} — robots.txt
@@ -71,6 +102,5 @@ Disallow: /account/
 Sitemap: ${SITE_URL}/sitemap.xml
 `);
 const esc = (s) => String(s).replace(/[&<>]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;" }[c]));
-out("journal/feed.xml", `<?xml version="1.0" encoding="UTF-8"?>\n<rss version="2.0"><channel><title>${BRAND.name} Journal</title><link>${SITE_URL}/journal/</link><description>Notes on honey, ginger and the daily ritual.</description>${ARTICLES.map((a) => `<item><title>${esc(a.title)}</title><link>${SITE_URL}${a.url}</link><guid>${SITE_URL}${a.url}</guid><pubDate>${new Date(a.date).toUTCString()}</pubDate><description>${esc(a.description)}</description></item>`).join("")}</channel></rss>\n`);
 
-console.log(`✓ ${pages.length} pages${BASE ? ` · base ${BASE}` : ""} · ${urls.length} in sitemap · ${PRODUCTS.length} products · ${ARTICLES.length} articles → ${SITE_URL}`);
+console.log(`✓ ${pages.length} pages${BASE ? ` · base ${BASE}` : ""} · ${urls.length} in sitemap · ${PRODUCTS.length} products → ${SITE_URL}`);

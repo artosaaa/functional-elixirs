@@ -17,7 +17,7 @@ export const BRAND = {
   disclaimer: "These statements have not been evaluated by the Food and Drug Administration. This product is not intended to diagnose, treat, cure, or prevent any disease.",
 };
 
-export const CFG = { freeShipOver: 40, lowStockAt: 10, returnsDays: 30 };
+export const CFG = { freeShipOver: 50, lowStockAt: 10 };
 
 /* Star ratings, review counts and testimonials on this site are SAMPLES, not real customer data.
    While this is false the site shows no numeric rating and emits no aggregateRating in JSON-LD —
@@ -36,15 +36,11 @@ export const NAV = [
 export const HERO_URL = "/shop/honey-with-fresh-ginger/";
 
 export const FOOTER = {
-  shop: [
-    ["All products", "/shop/"], ["Honey with Fresh Ginger — 15 oz", HERO_URL],
-    ["Gifts under $30", "/collections/gifts-under-30/"], ["New here? Start here", "/collections/for-beginners/"], ["Gift guide", "/gift-guide/"],
-  ],
   about: [
-    ["About us", "/about-us/"], ["Recipes", "/recipes/"], ["The ritual", "/ritual/"], ["Ingredients & sourcing", "/sourcing/"], ["Sustainability", "/sustainability/"], ["Journal", "/journal/"],
+    ["About us", "/about-us/"], ["Recipes", "/recipes/"], ["Ingredients & sourcing", "/sourcing/"],
   ],
   help: [
-    ["FAQ", "/faq/"], ["Contact", "/contact/"], ["Shipping & delivery", "/shipping/"], ["Returns & exchanges", "/returns/"], ["Track an order", "/track-order/"], ["Account", "/account/"],
+    ["FAQ", "/faq/"], ["Contact", "/contact/"], ["Shipping & delivery", "/shipping/"], ["Returns & exchanges", "/returns/"], ["Track an order", "/track-order/"],
   ],
   legal: [["Privacy", "/privacy/"], ["Terms", "/terms/"], ["Cookies", "/cookies/"], ["Sitemap", "/sitemap/"]],
 };

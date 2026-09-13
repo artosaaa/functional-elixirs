@@ -44,6 +44,8 @@ function findPhoto(pid, variant) {
   return null;
 }
 export const photoCount = () => Object.keys(PHOTOS).length;
+/* which file a (product, variant) pair actually resolves to — null when it would be drawn */
+export const resolvedPhoto = (p, variant) => (p?.id === "dipper" ? null : findPhoto(p?.id || "brand", variant));
 
 export const REAL = {
   ritual: { src: "/assets/img/ritual-teapot-window-light.jpg", w: 480, h: 640, alt: "Pale celadon teapot and cup on a linen-covered wooden table beside a tall window, soft morning light and red curtains" },
