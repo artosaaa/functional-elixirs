@@ -100,7 +100,9 @@ function drawer() {
 }
 
 function footer() {
-  const col = (t, items) => `<div><h3>${t}</h3><ul>${items.map(([l, h]) => `<li><a href="${h}">${l}</a></li>`).join("")}</ul></div>`;
+  /* h2, not h3: on pages whose main content has no h2 (the shop index, contact,
+     track-order, 404) an h3 here jumped the heading level straight from the h1. */
+  const col = (t, items) => `<div><h2>${t}</h2><ul>${items.map(([l, h]) => `<li><a href="${h}">${l}</a></li>`).join("")}</ul></div>`;
   return `<footer class="footer"><div class="wrap">
   <div class="footer__grid">
     <div class="footer__brand"><a class="logo logo--dark" href="/"><span class="logo__bee">${BEE}</span><span class="logo__word"><span>Functional</span><span>Elixirs</span></span></a><p>${BRAND.positioning}</p>

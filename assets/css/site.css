@@ -22,7 +22,7 @@
   --ink:          #241F1A;   /* body text (14:1) */
   --ink-soft:     #5C534B;   /* secondary text (6.9:1) */
   --ink-mute:     #857A70;   /* meta (3.9:1 — large text/decorative only) */
-  --gold:         #7F5E1C;   /* accent for text (5:1 on cream) */
+  --gold:         #6F5116;   /* accent for text (clears 4.5:1 on cream, white and the well surface) */
   --honey:        #B5651D;   /* amber accent */
   --honey-deep:   #7A3E0F;
   --gold-2:       #D4AC54;   /* logo gold — on dark + decorative */
@@ -380,9 +380,14 @@ body:has(.buybar[data-show]) { padding-bottom: 5.5rem; }
 
 /* ---------- 11. Cart drawer + cart page ---------- */
 .drawer-backdrop { position: fixed; inset: 0; z-index: 70; background: rgb(15 24 29 / .4); opacity: 0; visibility: hidden; transition: opacity .25s var(--ease), visibility .25s; }
-.drawer { position: fixed; top: 0; right: 0; bottom: 0; z-index: 71; width: min(100%, 27rem); background: var(--cream); box-shadow: var(--shadow-3); display: flex; flex-direction: column; transform: translateX(100%); transition: transform .32s var(--ease); }
+/* Closed, the drawer is slid off-screen AND made visibility:hidden. transform
+   alone leaves "Close cart" and "Shop the jar" in the tab order, inside an
+   aria-hidden container — a keyboard user tabs into a panel they cannot see and
+   a screen reader announces nothing. visibility is delayed by the length of the
+   slide so the panel is still painted on its way out. */
+.drawer { position: fixed; top: 0; right: 0; bottom: 0; z-index: 71; width: min(100%, 27rem); background: var(--cream); box-shadow: var(--shadow-3); display: flex; flex-direction: column; transform: translateX(100%); visibility: hidden; transition: transform .32s var(--ease), visibility 0s .32s; }
 body:has(.drawer[data-open]) .drawer-backdrop { opacity: 1; visibility: visible; }
-.drawer[data-open] { transform: none; }
+.drawer[data-open] { transform: none; visibility: visible; transition: transform .32s var(--ease), visibility 0s; }
 .drawer__head { display: flex; justify-content: space-between; align-items: center; padding: var(--s-4) var(--s-5); border-bottom: 1px solid var(--cream-3); }
 .drawer__head h2 { font-size: var(--fs-md); }
 .drawer__body { flex: 1; overflow: auto; padding: var(--s-4) var(--s-5); }
@@ -423,9 +428,9 @@ body:has(.drawer[data-open]) .drawer-backdrop { opacity: 1; visibility: visible;
 /* ---------- 12. Checkout ---------- */
 .checkout { display: grid; gap: var(--s-6); }
 @media (min-width: 60em) { .checkout { grid-template-columns: minmax(0, 1.1fr) minmax(0, .8fr); gap: var(--s-9); align-items: start; } .checkout__side { position: sticky; top: calc(var(--header-h) + 1rem); order: 2; } }
-.steps { display: flex; gap: var(--s-3); font-size: var(--fs-xs); color: var(--ink-mute); letter-spacing: .04em; margin-bottom: var(--s-5); flex-wrap: wrap; }
+.steps { display: flex; gap: var(--s-3); font-size: var(--fs-xs); color: var(--ink-soft); letter-spacing: .04em; margin-bottom: var(--s-5); flex-wrap: wrap; }
 .steps span[aria-current] { color: var(--navy-2); font-weight: 600; }
-.steps span:not(:last-child)::after { content: "›"; margin-left: var(--s-3); color: var(--ink-mute); }
+.steps span:not(:last-child)::after { content: "›"; margin-left: var(--s-3); color: var(--ink-soft); }
 .co-section { display: grid; gap: var(--s-4); padding-block: var(--s-6); border-top: 1px solid var(--cream-3); }
 .co-section:first-of-type { border-top: 0; padding-top: 0; }
 .co-section h2 { font-size: var(--fs-lg); }
@@ -572,7 +577,7 @@ body:has(.drawer[data-open]) .drawer-backdrop { opacity: 1; visibility: visible;
 @media (min-width: 52em) { .footer__brand { grid-column: auto; } }
 .footer__brand .logo { color: var(--cream); }
 .footer__brand p { font-size: var(--fs-sm); max-width: 28em; }
-.footer h3 { font: 600 var(--fs-xs)/1 var(--sans); letter-spacing: .14em; text-transform: uppercase; color: var(--gold-2); margin-bottom: var(--s-4); }
+.footer h2 { font: 600 var(--fs-xs)/1 var(--sans); letter-spacing: .14em; text-transform: uppercase; color: var(--gold-2); margin-bottom: var(--s-4); }
 .footer ul { list-style: none; padding: 0; display: grid; gap: .6rem; font-size: var(--fs-sm); }
 .footer__promise { display: grid; gap: var(--s-3); font-size: var(--fs-sm); }
 .footer__promise div { display: flex; gap: .6em; align-items: flex-start; }
@@ -908,7 +913,9 @@ h1, h2 { letter-spacing: -0.018em; }
 :root {
   --stripe: #E9C84B;          /* label yellow */
   --gold-btn: #C9A227;        /* buttons, rules, icons (decorative) */
-  --gold-text: #8F6E14;       /* gold used as text — 5:1 on white */
+  --gold-text: #7E6011;       /* gold used as text — 5.9:1 on white, 5.4:1 on the well surface.
+                                 #8F6E14 measured 4.82:1 on white and only 4.41:1 on the
+                                 well, so eyebrows at 13px missed AA. */
   --gold: var(--gold-text);
   --gold-2: var(--gold-btn);
   --cream:   #FFFFFF;
