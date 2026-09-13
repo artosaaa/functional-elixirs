@@ -1,6 +1,6 @@
 /* FAQ · Contact · Shipping · Returns · Privacy · Terms · Cookies · Sitemap · 404 */
 import { page, jsonld, breadcrumbs, faqList, ctaBand, ICONS, esc, BRAND, CFG, HERO_URL, abs } from "../layout.mjs";
-import { PRODUCTS, COLLECTIONS } from "../products.mjs";
+import { PRODUCTS } from "../products.mjs";
 
 const UPDATED = "September 1, 2026";
 const head = (crumb, path, eyebrow, h1, lede) => `${breadcrumbs([{ name: crumb, href: path }])}<div class="wrap--narrow page-head"><p class="eyebrow">${eyebrow}</p><h1>${h1}</h1>${lede ? `<p class="lede">${lede}</p>` : ""}</div>`;
@@ -15,7 +15,7 @@ const FAQ = [
   ["Is it safe for children and during pregnancy?", "Honey must not be given to infants under 12 months. For older children it’s food. If you’re pregnant or managing a health condition, ask your doctor as you would about any food — we don’t give medical advice."],
   ["Is it vegan, gluten-free, nut-free?", "It contains honey, so it isn’t vegan. It is naturally gluten-free, dairy-free and nut-free."],
   ["Where is it made?", "Blended and jarred in small batches in the USA."],
-  ["How fast will it ship?", `Orders ship in 1–2 business days. Standard delivery is 2–7 business days depending on distance, Express 1–3. Free standard shipping over $${CFG.freeShipOver}. <a href="/shipping/">Rates and calculator</a>.`],
+  ["How fast will it ship?", `Standard delivery runs 2–7 business days once the parcel is with the carrier, depending on distance; Express is 1–3. Free standard shipping over $${CFG.freeShipOver}. <a href="/shipping/">Rates and calculator</a>.`],
   ["Can I return it?", `An unopened jar, yes — any time, for a full refund, with return postage paid by you. An opened jar we can’t take back: honey is food. <a href="/returns/">Returns policy</a>.`],
   ["Do you offer Apple Pay?", "Yes — Apple Pay, Google Pay and Shop Pay on the product page, in the cart and at checkout, plus all major cards. Guest checkout is always available."],
   ["Do you ship internationally?", "Canada, the UK and Australia, with tracked rates shown at checkout. Duties and taxes may apply on delivery."],
@@ -56,7 +56,7 @@ function contact() {
 
 function shipping() {
   const path = "/shipping/";
-  const body = `${head("Shipping & delivery", path, "Help", "Shipping &amp; delivery", `Ships in 1–2 business days from the USA. Free standard shipping on orders over $${CFG.freeShipOver}.`)}
+  const body = `${head("Shipping & delivery", path, "Help", "Shipping &amp; delivery", `Shipped from the USA. Free standard shipping on orders over $${CFG.freeShipOver}.`)}
 <section class="section--tight"><div class="wrap--narrow stack" style="--flow:var(--s-7)">
   <div class="form-card"><h2 style="font-size:var(--fs-md);margin-bottom:var(--s-4)">Estimate for your address</h2>
     <form class="ship-calc" data-ship-calc novalidate><div class="field-row"><div class="field"><label for="sp-country">Country</label><select class="select" id="sp-country" name="country"><option value="US">United States</option><option value="CA">Canada</option><option value="GB">United Kingdom</option><option value="AU">Australia</option><option value="OTHER">Other</option></select></div><div class="field"><label for="sp-zip">ZIP / postcode</label><input class="input" id="sp-zip" name="zip" inputmode="numeric" autocomplete="postal-code" placeholder="94103"></div></div><button class="btn btn--ghost btn--sm" type="submit">Estimate</button><div class="ship-calc__result" aria-live="polite"><p class="small muted">Enter a ZIP to see live rates and arrival windows.</p></div></form></div>
@@ -126,13 +126,13 @@ const privacy = () => policy({
 <li><strong>Device &amp; usage data</strong> — IP address, browser, pages viewed, referring site, collected via server logs and, if you accept them, analytics cookies. See <a href="/cookies/">Cookies</a>.</li>
 </ul>
 <h2>How we use it</h2>
-<ul><li>To fulfil and deliver orders, send receipts and shipping updates, and handle returns.</li><li>To remember your cart while you shop.</li><li>To answer your messages.</li><li>To send the newsletter if you asked for it (unsubscribe in one click, any time).</li><li>To understand how the site is used and fix what’s broken.</li><li>To prevent fraud and meet legal obligations (tax, accounting).</li></ul>
+<ul><li>To fulfil and deliver orders, send receipts and shipping updates, and handle returns.</li><li>To remember your cart while you shop.</li><li>To answer your messages.</li><li>To understand how the site is used and fix what’s broken.</li><li>To prevent fraud and meet legal obligations (tax, accounting).</li></ul>
 <h2>Who we share it with</h2>
 <p>Only service providers who need it to do a job for us: payment processors, shipping carriers and label services, our email provider, our web host, and analytics (if you’ve opted in). Each is bound by contract to use your data only for that job. We do not sell personal information, and we do not “share” it for cross-context behavioural advertising as defined by California law.</p>
 <h2>Cookies</h2>
 <p>Essential cookies and local storage keep your cart and login working. Analytics cookies are off until you accept them in the banner. Details, and how to change your mind, in the <a href="/cookies/">Cookie notice</a>.</p>
 <h2>How long we keep it</h2>
-<p>Order records for 7 years (tax law). Newsletter email until you unsubscribe. Messages for 2 years. Server logs for 30 days.</p>
+<p>Order records for 7 years (tax law). Messages for 2 years. Server logs for 30 days.</p>
 <h2>Your rights</h2>
 <p>Wherever you live, you can ask us to access, correct or delete your personal information, or to stop sending you marketing. Email <a href="mailto:${BRAND.email}">${BRAND.email}</a>; we respond within 45 days and will verify your identity by matching your request to the email on the order.</p>
 <h3>California (CCPA / CPRA)</h3>
@@ -188,8 +188,8 @@ function sitemap() {
   const group = (t, items) => `<div><h2 style="font-size:var(--fs-md);margin-bottom:var(--s-3)">${t}</h2><ul class="stack small" style="list-style:none;padding:0;--flow:.4rem">${items.map(([l, h]) => `<li><a href="${h}">${esc(l)}</a></li>`).join("")}</ul></div>`;
   const body = `${head("Sitemap", path, "Index", "Sitemap", "Every page on the site. Search engines: see <a href='/sitemap.xml'>/sitemap.xml</a>.")}
 <section class="section--tight"><div class="wrap grid grid--3">
-  ${group("Shop", [["All products", "/shop/"], ...PRODUCTS.map((p) => [`${p.name} — ${p.size}`, p.url]), ...Object.entries(COLLECTIONS).map(([s, c]) => [c.title, `/collections/${s}/`]), ["Cart", "/cart/"], ["Checkout", "/checkout/"], ["Track order", "/track-order/"]])}
-  ${group("Functional Elixirs", [["Home", "/"], ["About us", "/about-us/"], ["Recipes", "/recipes/"], ["Ingredients & sourcing", "/sourcing/"], ["Gift guide", "/gift-guide/"]])}
+  ${group("Shop", [["All products", "/shop/"], ...PRODUCTS.map((p) => [`${p.name} — ${p.size}`, p.url]), ["Cart", "/cart/"], ["Checkout", "/checkout/"], ["Track order", "/track-order/"]])}
+  ${group("Functional Elixirs", [["Home", "/"], ["About us", "/about-us/"], ["Recipes", "/recipes/"], ["Ingredients & sourcing", "/sourcing/"]])}
   ${group("Help", [["FAQ", "/faq/"], ["Contact", "/contact/"], ["Shipping & delivery", "/shipping/"], ["Returns & exchanges", "/returns/"], ["Privacy", "/privacy/"], ["Terms", "/terms/"], ["Cookies", "/cookies/"]])}
 </div></section>`;
   return { path, html: page({ title: "Sitemap", description: "All pages on functionalelixirs.com — shop, story, recipes and help.", path, body, breadcrumbs: [{ name: "Sitemap", href: path }] }) };

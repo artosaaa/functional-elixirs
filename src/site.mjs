@@ -36,10 +36,6 @@ export const NAV = [
 export const HERO_URL = "/shop/honey-with-fresh-ginger/";
 
 export const FOOTER = {
-  shop: [
-    ["All products", "/shop/"], ["Honey with Fresh Ginger — 15 oz", HERO_URL],
-    ["Gifts under $30", "/collections/gifts-under-30/"], ["New here? Start here", "/collections/for-beginners/"], ["Gift guide", "/gift-guide/"],
-  ],
   about: [
     ["About us", "/about-us/"], ["Recipes", "/recipes/"], ["Ingredients & sourcing", "/sourcing/"],
   ],

@@ -2,7 +2,7 @@
 import { existsSync } from "node:fs";
 import { BEE } from "../site.mjs";
 import { page, jsonld, breadcrumbs, productCard, faqList, ctaBand, ICONS, esc, money, BRAND, CFG, HERO_URL } from "../layout.mjs";
-import { PRODUCTS, HERO, byId } from "../products.mjs";
+import { HERO } from "../products.mjs";
 import { art, altFor, photo } from "../art.mjs";
 
 const head = (crumb, eyebrow, h1, lede, center = false) => `${breadcrumbs([{ name: crumb, href: "" }])}<div class="wrap page-head ${center ? "page-head--center" : ""}"><p class="eyebrow">${eyebrow}</p><h1>${h1}</h1><p class="lede ${center ? "measure mx-auto" : "measure--wide"}">${lede}</p></div>`;
@@ -74,17 +74,4 @@ function sourcing() {
   return { path, html: page({ title: "Ingredients & Sourcing — Raw Honey and Fresh Ginger", description: "What’s in Functional Elixirs Honey with Fresh Ginger: locally sourced raw honey and fresh ginger root — no added sugar, flavourings or preservatives. Allergen details.", path, body, breadcrumbs: [{ name: "Ingredients & sourcing", href: path }] }) };
 }
 
-function giftGuide() {
-  const path = "/gift-guide/";
-  const body = `${head("Gift guide", "Gift guide", "A gift they’ll finish.", "The best gifts get used up. A jar of honey-ginger is a small pleasure every morning for six weeks — and gone before it becomes clutter.", true)}
-<section class="section--tight"><div class="wrap gift-tiers">
-  <div class="gift-tier reveal"><p class="eyebrow">Under $15</p><h3>The small kindness</h3><ul><li>8 oz everyday jar — ${money(byId["hg-8"].price)}</li><li>Beechwood dipper — ${money(byId.dipper.price)}</li><li>Add a note at checkout</li></ul><a class="btn btn--ghost btn--sm" href="/collections/gifts-under-30/">Shop under $30</a></div>
-  <div class="gift-tier reveal" style="border-color:var(--gold-2)"><p class="eyebrow">Under $30</p><h3>The one we give most</h3><ul><li>15 oz signature jar — ${money(HERO.price)}</li><li>Six weeks of mornings</li><li>Ribbon on the lid, and it’s a gift</li></ul><a class="btn btn--primary btn--sm" href="${HERO_URL}">The 15 oz jar</a></div>
-  <div class="gift-tier reveal"><p class="eyebrow">Under $50</p><h3>Ready to hand over</h3><ul><li>The Gift Box — ${money(byId["hg-gift"].price)}: jar, dipper, linen wrap, hand-written card</li><li>The Two-Jar Set — ${money(byId["hg-duo"].price)}: two jars, one to keep and one to give</li></ul><a class="btn btn--ghost btn--sm" href="/shop/honey-with-fresh-ginger-gift-box/">The Gift Box</a></div>
-</div></section>
-<section class="section"><div class="wrap"><div class="section-head"><p class="eyebrow">Everything giftable</p><h2>All of it wraps well</h2></div><div class="products">${PRODUCTS.filter((p) => p.tags.includes("gift")).map(productCard).join("")}</div></div></section>
-<section class="section section--well"><div class="wrap--prose prose"><h2>Gift notes &amp; shipping direct</h2><p>Enter their address at checkout and write a note — we hand-write it on the card and never include prices. Most US addresses see the box in 2–5 business days; <a href="/shipping/">see rates</a>.</p></div></section>`;
-  return { path, html: page({ title: "Gift Guide — Honey with Fresh Ginger Gifts Under $15, $30 and $50", description: "Gift guide for Functional Elixirs: the 8 oz jar and dipper under $15, the 15 oz signature jar under $30, and the hand-wrapped Gift Box and two-jar set under $50. Gift notes included.", path, body, breadcrumbs: [{ name: "Gift guide", href: path }] }) };
-}
-
-export default () => [story(), sourcing(), giftGuide()];
+export default () => [story(), sourcing()];

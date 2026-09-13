@@ -1,7 +1,7 @@
 /* Home · Shop · Product (all SKUs) · Collections · Cart · Checkout · Confirmation · Track */
 import { BEE, BEE_FLY, bees, LINE } from "../site.mjs";
 import { page, jsonld, breadcrumbs, productCard, applePayButton, faqList, ctaBand, stars, ICONS, esc, money, BRAND, CFG, abs, HERO_URL, valueBullets, guaranteeBlock, REVIEWS_VERIFIED } from "../layout.mjs";
-import { PRODUCTS, HERO, COLLECTIONS, byId } from "../products.mjs";
+import { PRODUCTS, HERO, byId } from "../products.mjs";
 import { art, altFor, photo } from "../art.mjs";
 
 /* PLACEHOLDER testimonials — replace with real verified reviews before launch (README §7). */
@@ -74,7 +74,7 @@ function home() {
       <button class="btn btn--gold" type="button" data-add="${p.id}">Add to cart</button>
       <a class="btn btn--link" href="${p.url}">Read the full story</a>
     </div>
-    <p class="mk-signature__note">${ICONS.truck} Free US shipping over $${CFG.freeShipOver} · ships in 1–2 business days</p>
+    <p class="mk-signature__note">${ICONS.truck} Free US shipping over $${CFG.freeShipOver}</p>
   </div>
 </div></section>
 
@@ -97,23 +97,10 @@ function home() {
 /* ---------------- SHOP ---------------- */
 function shop() {
   const body = `${breadcrumbs([{ name: "Shop", href: "/shop/" }])}
-<div class="wrap page-head"><p class="eyebrow">Shop</p><h1>One honey. Every size of ritual.</h1><p class="lede measure--wide">Everything here is the same jar in different amounts — raw honey, fresh ginger — plus the dipper made to fit it. Free US shipping over $${CFG.freeShipOver}.</p></div>
+<div class="wrap page-head"><p class="eyebrow">Shop</p><h1>Honey with Fresh Ginger.</h1></div>
 <section class="section--tight"><div class="wrap"><div class="products">${PRODUCTS.map(productCard).join("")}</div></div></section>
-<section class="section"><div class="wrap--narrow"><h2 class="center" style="margin-bottom:var(--s-5)">Before you choose</h2>${faqList([
-  ["Which size should I start with?", `The <a href="${HERO_URL}">15 oz jar</a> is about six weeks of daily spoonfuls and the best value per ounce. The <a href="/shop/honey-with-fresh-ginger-8oz/">8 oz</a> is right for a first try or a gift.`],
-  ["Is it the same recipe in every jar?", "Yes. Raw honey and fresh ginger root, blended in small batches. Only the amount changes."],
-  ["How long does a jar last?", "Honey is naturally shelf-stable. For peak ginger flavour, enjoy within 12 months of opening — see the date on the base."],
-])}</div></section>`;
-  return { path: "/shop/", html: page({ title: "Shop Honey with Fresh Ginger — 8 oz, 15 oz, sets & gifts", description: "Shop Functional Elixirs Honey with Fresh Ginger: the 15 oz signature jar ($23.99), 8 oz everyday jar, two-jar set, gift box and beechwood dipper. Free US shipping over $50.", path: "/shop/", body, breadcrumbs: [{ name: "Shop", href: "/shop/" }] }) };
-}
-
-function collection(slug) {
-  const c = COLLECTIONS[slug]; const items = PRODUCTS.filter(c.filter); const path = `/collections/${slug}/`;
-  const body = `${breadcrumbs([{ name: "Shop", href: "/shop/" }, { name: c.title, href: path }])}
-<div class="wrap page-head"><p class="eyebrow">Collection</p><h1>${c.h1}</h1><p class="lede measure--wide">${c.lede}</p></div>
-<section class="section--tight"><div class="wrap"><div class="products">${items.map(productCard).join("")}</div></div></section>
-<section class="section--tight"><div class="wrap--narrow center"><p class="muted">Not sure? Browse the <a href="/recipes/">recipes</a> or the <a href="/gift-guide/">gift guide</a>.</p></div></section>${ctaBand()}`;
-  return { path, html: page({ title: c.title, description: c.description, path, body, breadcrumbs: [{ name: "Shop", href: "/shop/" }, { name: c.title, href: path }] }) };
+`;
+  return { path: "/shop/", html: page({ title: "Shop Honey with Fresh Ginger — 15 oz Jar", description: "Shop Functional Elixirs Honey with Fresh Ginger: the 15 oz signature jar, $23.99. Raw honey and fresh ginger root, nothing else. Free US shipping over $50.", path: "/shop/", body, breadcrumbs: [{ name: "Shop", href: "/shop/" }] }) };
 }
 
 /* ---------------- PRODUCT ---------------- */
@@ -130,9 +117,6 @@ function product(p) {
     ["Is it safe for children?", "Honey should not be given to infants under 12 months. For everyone else, it’s food — enjoy it as you would any honey."],
     ["Is it vegan / gluten-free?", "It contains honey, so it isn’t vegan. It is naturally gluten-free with no added sugar, colours or preservatives."],
   ];
-  /* deliberate ladder, not a blind slice — the 3-pack used to fall off the end */
-  const order = ["hg-duo", "hg-trio", "hg-gift", "dipper", "hg-8"];
-  const related = order.map((id) => PRODUCTS.find((x) => x.id === id)).filter((x) => x && x.id !== p.id).slice(0, 4);
   const body = `${breadcrumbs([{ name: "Shop", href: "/shop/" }, { name: p.name, href: p.url }])}
 <section class="wrap pdp">
   <div class="pdp__gallery"><div class="gallery" data-gallery>
@@ -154,7 +138,6 @@ function product(p) {
       <p><strong>How long does it last?</strong> A 15 oz jar is roughly six weeks of morning spoonfuls — one teaspoon a day.</p>
       <p><strong>What if I change my mind?</strong> Send the jar back unopened and we’ll refund it in full — there’s no deadline. Return postage is yours. Once a jar is opened we can’t take it back: honey is food.</p>
     </div>
-    <p class="urgency" data-dispatch><strong>Ships today</strong> if you order before 1pm PT</p>
     <div class="express">
       ${applePayButton(`data-express-buy="${p.id}" aria-label="Buy now with Apple Pay"`)}
       <div class="express__secondary"><button class="btn btn--gpay" type="button" data-express-buy="${p.id}" aria-label="Buy with Google Pay"><strong style="color:#4285F4">G</strong>&nbsp;Pay</button><button class="btn btn--shop-pay" type="button" data-express-buy="${p.id}" aria-label="Buy with Shop Pay">Shop <span style="font-style:normal;font-weight:400">Pay</span></button></div>
@@ -175,7 +158,7 @@ function product(p) {
         <p>${p.type === "Accessory" ? "Twist the dipper in the jar, lift, and let the honey spiral off the end into your cup. Rest it on a small dish between uses." : `Sweet first, then the ginger’s slow warmth. Warm — not boiling — water keeps the fresh ginger bright. <a href="/recipes/">Ways to use the jar →</a>`}</p></div></details>
       <details><summary>Ingredients</summary><div class="acc__body"><p>${esc(p.ingredients)}</p><p>${esc(p.origin)}. No added sugar, colours, flavours or preservatives. Naturally gluten-free. Not suitable for infants under 12 months.</p></div></details>
       <details><summary>Storage</summary><div class="acc__body"><p>Room temperature, lid closed, dry spoon. Raw honey may crystallize over time — that’s natural. Warm the closed jar in a bowl of warm water to restore.</p></div></details>
-      <details><summary>Shipping &amp; returns</summary><div class="acc__body"><p>Ships in 1–2 business days from the USA. Standard $5.95 (free over $${CFG.freeShipOver}), Express $14, local pickup free. An unopened jar can be returned any time for a full refund, with return postage paid by you; opened jars can’t be returned. <a href="/shipping/">Shipping</a> · <a href="/returns/">Returns</a></p></div></details>
+      <details><summary>Shipping &amp; returns</summary><div class="acc__body"><p>Shipped from the USA. Standard $5.95 (free over $${CFG.freeShipOver}), Express $14, local pickup free. An unopened jar can be returned any time for a full refund, with return postage paid by you; opened jars can’t be returned. <a href="/shipping/">Shipping</a> · <a href="/returns/">Returns</a></p></div></details>
     </div>
   </div>
 </section>
@@ -191,7 +174,7 @@ function product(p) {
 
 <section class="section"><div class="wrap--narrow"><h2 class="center" style="margin-bottom:var(--s-5)">Questions</h2>${faqList(faq)}</div></section>
 
-<section class="section section--well"><div class="wrap"><div class="section-head"><p class="eyebrow">Also</p><h2>Other sizes &amp; sets</h2></div><div class="products">${related.map(productCard).join("")}</div></div></section>
+
 
 <div class="deskbar" id="deskbar"><div class="wrap deskbar__in">
   <div class="deskbar__thumb">${art("front", p, { alt: "" })}</div>
@@ -222,7 +205,7 @@ function cart() {
   </div>
   <aside class="cart-layout__side summary"><h2>Summary</h2><div data-cart-summary></div>${promoForm()}<a class="btn btn--primary btn--block" href="/checkout/">Checkout</a>${applePayButton(`onclick="location.href='/checkout/?express=apple-pay'"`)}<p class="secure">${ICONS.lock} Secure checkout · guest or account</p><hr><h2 style="font-size:var(--fs-base)">Estimate shipping</h2>${shipCalc()}</aside>
 </div></section>
-<section class="section"><div class="wrap"><div class="section-head"><p class="eyebrow">Add to your order</p><h2>Goes well with the jar</h2></div><div class="products">${PRODUCTS.filter((x) => ["dipper", "hg-8", "hg-duo", "hg-gift"].includes(x.id)).map(productCard).join("")}</div></div></section>`;
+`;
   return { path: "/cart/", html: page({ title: "Cart", description: "Your Functional Elixirs cart — review your honey-ginger jars, apply a promo code, estimate shipping, and check out with Apple Pay or card.", path: "/cart/", body, noindex: true }) };
 }
 
@@ -310,4 +293,4 @@ function track() {
   return { path: "/track-order/", html: page({ title: "Track your order", description: "Track your Functional Elixirs order by order number or tracking number — see when your honey-ginger jar was packed, shipped, and will arrive.", path: "/track-order/", body, breadcrumbs: [{ name: "Track order", href: "/track-order/" }] }) };
 }
 
-export default () => [home(), shop(), ...Object.keys(COLLECTIONS).map(collection), ...PRODUCTS.map(product), cart(), checkout(), confirmation(), track()];
+export default () => [home(), shop(), ...PRODUCTS.map(product), cart(), checkout(), confirmation(), track()];

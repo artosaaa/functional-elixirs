@@ -32,7 +32,7 @@ export const jsonld = {
     additionalProperty: [{ "@type": "PropertyValue", name: "Ingredients", value: p.ingredients }, { "@type": "PropertyValue", name: "Size", value: p.size }],
     ...(REVIEWS_VERIFIED ? { aggregateRating: { "@type": "AggregateRating", ratingValue: p.rating, reviewCount: p.reviews, bestRating: 5 } } : {}),
     offers: { "@type": "Offer", url: abs(p.url), priceCurrency: "USD", price: p.price.toFixed(2), priceValidUntil: "2027-12-31", itemCondition: "https://schema.org/NewCondition", availability: p.stock > 0 ? (p.stock <= CFG.lowStockAt ? "https://schema.org/LimitedAvailability" : "https://schema.org/InStock") : "https://schema.org/OutOfStock", seller: { "@id": abs("/#organization") },
-      shippingDetails: { "@type": "OfferShippingDetails", shippingRate: { "@type": "MonetaryAmount", value: "5.95", currency: "USD" }, shippingDestination: { "@type": "DefinedRegion", addressCountry: "US" }, deliveryTime: { "@type": "ShippingDeliveryTime", handlingTime: { "@type": "QuantitativeValue", minValue: 0, maxValue: 1, unitCode: "DAY" }, transitTime: { "@type": "QuantitativeValue", minValue: 2, maxValue: 7, unitCode: "DAY" } } },
+      shippingDetails: { "@type": "OfferShippingDetails", shippingRate: { "@type": "MonetaryAmount", value: "5.95", currency: "USD" }, shippingDestination: { "@type": "DefinedRegion", addressCountry: "US" }, deliveryTime: { "@type": "ShippingDeliveryTime", transitTime: { "@type": "QuantitativeValue", minValue: 2, maxValue: 7, unitCode: "DAY" } } },
       hasMerchantReturnPolicy: { "@type": "MerchantReturnPolicy", applicableCountry: "US", returnPolicyCategory: "https://schema.org/MerchantReturnUnlimitedWindow", returnMethod: "https://schema.org/ReturnByMail", returnFees: "https://schema.org/ReturnFeesCustomerResponsibility" } },
   }),
   faq: (items) => ({ "@context": "https://schema.org", "@type": "FAQPage", mainEntity: items.map(([q, a]) => ({ "@type": "Question", name: q, acceptedAnswer: { "@type": "Answer", text: a.replace(/<[^>]+>/g, "") } })) }),
@@ -96,12 +96,10 @@ function drawer() {
 function footer() {
   const col = (t, items) => `<div><h3>${t}</h3><ul>${items.map(([l, h]) => `<li><a href="${h}">${l}</a></li>`).join("")}</ul></div>`;
   return `<footer class="footer"><div class="wrap">
-  <div class="footer__news"><div><h2>Notes from the kitchen</h2><p>One letter a month: new batches, recipes, and the occasional early jar.</p></div>
-    <form class="news-form" data-news-form novalidate><label class="sr-only" for="news-email">Email address</label><input class="input" id="news-email" type="email" name="email" placeholder="you@example.com" autocomplete="email" required><button class="btn btn--on-dark" type="submit">Subscribe</button><p class="small">No spam, ever. Unsubscribe in one tap. <a href="/privacy/">Privacy</a>.</p></form></div>
   <div class="footer__grid">
     <div class="footer__brand"><a class="logo logo--dark" href="/"><span class="logo__bee">${BEE}</span><span class="logo__word"><span>Functional</span><span>Elixirs</span></span></a><p>${BRAND.positioning}</p>
-      <div class="footer__promise"><div>${ICONS.truck}<span>Free US shipping over $${CFG.freeShipOver} · ships in 1–2 business days</span></div><div>${ICONS.refresh}<span>Unopened jars returnable for a full refund — return postage is yours</span></div><div>${ICONS.leaf}<span>Raw honey + fresh ginger · small batches · nothing else</span></div></div></div>
-    ${col("Shop", FOOTER.shop)}${col("Functional Elixirs", FOOTER.about)}${col("Help", FOOTER.help)}
+      <div class="footer__promise"><div>${ICONS.truck}<span>Free US shipping over $${CFG.freeShipOver}</span></div><div>${ICONS.refresh}<span>Unopened jars returnable for a full refund — return postage is yours</span></div><div>${ICONS.leaf}<span>Raw honey + fresh ginger · small batches · nothing else</span></div></div></div>
+    ${col("Functional Elixirs", FOOTER.about)}${col("Help", FOOTER.help)}
   </div>
   <div class="footer__bottom"><div><p>© ${new Date().getFullYear()} ${BRAND.legal} · Made in the USA</p><p class="disclaimer" style="margin-top:.5rem">${BRAND.disclaimer}</p></div><ul>${FOOTER.legal.map(([l, h]) => `<li><a href="${h}">${l}</a></li>`).join("")}</ul><div class="pay-marks" aria-label="Accepted payments"><span>APPLE PAY</span><span>G PAY</span><span>VISA</span><span>MC</span><span>AMEX</span></div></div>
 </div></footer>`;

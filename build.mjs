@@ -55,6 +55,17 @@ const RETIRED = [
   ["/account/forgot-password/", "/track-order/"],
   ["/account/addresses/", "/track-order/"],
   ["/account/wishlist/", "/shop/"],
+  /* catalog reduced to the single 15 oz jar; these product, collection and guide
+     URLs are indexed, so send them to the jar or the shop rather than 404 */
+  ["/shop/honey-with-fresh-ginger-8oz/", "/shop/honey-with-fresh-ginger/"],
+  ["/shop/honey-with-fresh-ginger-two-jar-set/", "/shop/honey-with-fresh-ginger/"],
+  ["/shop/honey-with-fresh-ginger-gift-box/", "/shop/honey-with-fresh-ginger/"],
+  ["/shop/honey-with-fresh-ginger-travel-jar/", "/shop/honey-with-fresh-ginger/"],
+  ["/shop/honey-with-fresh-ginger-family-pack/", "/shop/honey-with-fresh-ginger/"],
+  ["/shop/beechwood-honey-dipper/", "/shop/"],
+  ["/collections/gifts-under-30/", "/shop/"],
+  ["/collections/for-beginners/", "/shop/"],
+  ["/gift-guide/", "/shop/"],
 ];
 for (const [from, to] of RETIRED) pages.push({ path: from, html: redirect(to), noindex: true });
 const seen = new Set();
