@@ -343,7 +343,7 @@
         const sub = Cart.subtotal() || 23.99;
         const rates = Ship.quote(c, z, sub);
         out.innerHTML = `<table class="rate-table" aria-label="Shipping estimates"><thead><tr><th>Method</th><th>Arrives</th><th>Cost</th></tr></thead><tbody>${rates.map((r) => `<tr><td><strong>${esc(r.name)}</strong><br><span class="tiny muted">${esc(r.note)}</span></td><td>${Ship.daysLabel(r.days)}</td><td>${r.price ? money(r.price) : "Free"}</td></tr>`).join("")}</tbody></table>
-          <p class="tiny muted">Estimates for a ${money(sub)} order${Ship.isCA(c, z) ? " · CA sales tax added at checkout" : ""}. Orders placed before 1pm PT ship the same day.</p>`;
+          <p class="tiny muted">Estimates for a ${money(sub)} order${Ship.isCA(c, z) ? " · CA sales tax added at checkout" : ""}.</p>`;
         Checkout.recalc?.();
       };
       calc.addEventListener("submit", (e) => { e.preventDefault(); run(); });
