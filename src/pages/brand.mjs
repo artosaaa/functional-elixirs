@@ -64,7 +64,7 @@ function ritual() {
   </div>
 </div></section>
 <section class="section"><div class="wrap split">
-  <div class="prose reveal"><p class="eyebrow">A note on warmth</p><h2>Why warm, not boiling</h2><p>Fresh ginger carries bright, almost citrusy top notes that fade quickly in boiling water. Somewhere around 130°F the honey dissolves instantly and the ginger stays lively. That one detail is most of the difference between a good cup and a great one.</p><p>The same goes for cooking: add the jar late to glazes and marinades, and not at all to dressings and drinks. <a href="/journal/beyond-the-spoon-dressings-glazes-oats/">Six things to make →</a></p></div>
+  <div class="prose reveal"><p class="eyebrow">A note on warmth</p><h2>Why warm, not boiling</h2><p>Fresh ginger carries bright, almost citrusy top notes that fade quickly in boiling water. Somewhere around 130°F the honey dissolves instantly and the ginger stays lively. That one detail is most of the difference between a good cup and a great one.</p><p>The same goes for cooking: add the jar late to glazes and marinades, and not at all to dressings and drinks. <a href="/recipes/">Six things to make →</a></p></div>
   <div class="marquee-photo reveal">${photo("ritual")}</div>
 </div></section>
 <section class="section section--well"><div class="wrap--narrow"><h2 class="center" style="margin-bottom:var(--s-5)">Ritual questions</h2>${faqList(faq)}</div></section>
@@ -74,13 +74,13 @@ ${ctaBand("Start the ritual.", `The 15 oz jar is about six weeks of mornings —
 
 function sourcing() {
   const path = "/sourcing/";
-  const body = `${head("Ingredients & sourcing", "Ingredients", "Two ingredients, chosen carefully.", "Everything in the jar is on the label: raw honey and fresh ginger root. Here is what that means, and what it doesn’t.")}
+  const body = `${head("Ingredients & sourcing", "Ingredients", "Two ingredients, chosen carefully.", "Everything in the jar is on the label: raw honey and fresh ginger root — and everything is sourced locally.")}
 <section class="section--tight"><div class="wrap split">
   <div class="hero__art reveal" style="box-shadow:var(--shadow-2)">${art("open", HERO, { alt: altFor(HERO, "open") })}</div>
   <div class="prose reveal">
     <h2>Honey — nature’s golden sweetener</h2>
     <p>Honey is more than a beautifully rich natural sweetener. Its distinctive flavour and naturally occurring compounds have made it a treasured food across cultures for generations. Ours is raw — not heated or ultra-filtered — which is why it may crystallize over time and why it tastes like the flowers it came from rather than like sugar.</p>
-    <p>We buy from small apiaries that can tell us which fields the hives sat in. Because raw honey varies with the season, no two batches taste exactly alike. We think that’s the point.</p>
+    <p>We buy from small local suppliers. Because raw honey varies with the season, no two batches taste exactly alike. We think that’s the point.</p>
   </div>
 </div></section>
 <section class="section"><div class="wrap split split--reverse">
@@ -102,19 +102,9 @@ function sourcing() {
   <h2>Allergens &amp; suitability</h2>
   <p>Contains honey. Not suitable for infants under 12 months. Naturally gluten-free, dairy-free and nut-free; made in a facility that handles no nuts. Not vegan. If you have a known allergy to bee products or ginger, this jar isn’t for you.</p>
   <h2>Where it’s made</h2>
-  <p>Blended and jarred in small batches in the USA. Glass jars, wooden lids and paper labels — more on why in <a href="/sustainability/">Sustainability</a>.</p>
+  <p>Blended and jarred in small batches in the USA. Glass jars, wooden lids and paper labels — chosen because they age well and recycle cleanly.</p>
 </div></section>${ctaBand()}`;
-  return { path, html: page({ title: "Ingredients & Sourcing — Raw Honey and Fresh Ginger", description: "What’s in Functional Elixirs Honey with Fresh Ginger: raw honey from small apiaries and fresh ginger root — no added sugar, flavourings or preservatives. Allergen details.", path, body, breadcrumbs: [{ name: "Ingredients & sourcing", href: path }] }) };
-}
-
-function sustainability() {
-  const path = "/sustainability/";
-  const body = `${head("Sustainability", "Sustainability", "Made to be finished, not thrown away.", "A consumable gift leaves nothing behind but the jar — and we chose the jar so you’d want to keep it.")}
-<section class="section--tight"><div class="wrap grid grid--3">
-  ${[["Glass, not plastic", "The jar is real glass: infinitely recyclable, dishwasher-safe, and better-looking on the counter. Most customers keep theirs. <a href='/journal/caring-for-and-reusing-the-jar/'>Second lives for the jar →</a>"], ["A lid made of wood", "Solid wood lids, oiled not lacquered. They age well, and when they finally give out they compost."], ["Paper labels", "Uncoated paper, soy-based inks, and no plastic sleeve. Soak and peel if you want a blank jar."], ["Small batches", "We make what sells, roughly monthly. No warehouse of ageing honey, no markdown bins."], ["Recycled-fibre shipping", "Boxes and paper cushioning, no foam, no bubble wrap. The box is curbside-recyclable everywhere in the US."], ["Honest about the rest", "We haven’t solved shipping emissions and we won’t pretend to have. We consolidate orders, ship ground by default, and offer the two-jar set so the truck comes half as often."]].map(([t, d]) => `<div class="gift-tier reveal"><h3>${t}</h3><p class="small muted">${d}</p></div>`).join("")}
-</div></section>
-<section class="section"><div class="wrap split"><div class="marquee-photo reveal">${photo("garden")}</div><div class="prose reveal"><h2>Bees first</h2><p>Raw honey only exists if hives are healthy. We buy from small apiaries at a fair price and don’t ask them to push production. When a season is thin, our batches are smaller — you may see the jar sell out. We’d rather that than compromise the honey.</p><h2>What you can do</h2><ul><li>Keep the jar — it’s a good jar.</li><li>Order the <a href="/shop/honey-with-fresh-ginger-two-jar-set/">two-jar set</a> if you get through one a month.</li><li>Recycle the box; compost the paper cushioning.</li></ul></div></div></section>${ctaBand()}`;
-  return { path, html: page({ title: "Sustainability — Glass Jars, Wooden Lids, Small Batches", description: "How Functional Elixirs approaches sustainability: recyclable glass jars, wooden lids, paper labels, recycled-fibre shipping and small monthly batches from small apiaries.", path, body, breadcrumbs: [{ name: "Sustainability", href: path }] }) };
+  return { path, html: page({ title: "Ingredients & Sourcing — Raw Honey and Fresh Ginger", description: "What’s in Functional Elixirs Honey with Fresh Ginger: locally sourced raw honey and fresh ginger root — no added sugar, flavourings or preservatives. Allergen details.", path, body, breadcrumbs: [{ name: "Ingredients & sourcing", href: path }] }) };
 }
 
 function giftGuide() {
@@ -126,8 +116,8 @@ function giftGuide() {
   <div class="gift-tier reveal"><p class="eyebrow">Under $50</p><h3>Ready to hand over</h3><ul><li>The Gift Box — ${money(byId["hg-gift"].price)}: jar, dipper, linen wrap, hand-written card</li><li>The Two-Jar Set — ${money(byId["hg-duo"].price)}, ships free</li></ul><a class="btn btn--ghost btn--sm" href="/shop/honey-with-fresh-ginger-gift-box/">The Gift Box</a></div>
 </div></section>
 <section class="section"><div class="wrap"><div class="section-head"><p class="eyebrow">Everything giftable</p><h2>All of it wraps well</h2></div><div class="products">${PRODUCTS.filter((p) => p.tags.includes("gift")).map(productCard).join("")}</div></div></section>
-<section class="section section--well"><div class="wrap--prose prose"><h2>Gift notes &amp; shipping direct</h2><p>Enter their address at checkout and write a note — we hand-write it on the card and never include prices. Most US addresses see the box in 2–5 business days; <a href="/shipping/">see rates</a>. For the how and the why, read <a href="/journal/how-to-give-a-jar/">How to Give a Jar</a>.</p></div></section>`;
+<section class="section section--well"><div class="wrap--prose prose"><h2>Gift notes &amp; shipping direct</h2><p>Enter their address at checkout and write a note — we hand-write it on the card and never include prices. Most US addresses see the box in 2–5 business days; <a href="/shipping/">see rates</a>.</p></div></section>`;
   return { path, html: page({ title: "Gift Guide — Honey with Fresh Ginger Gifts Under $15, $30 and $50", description: "Gift guide for Functional Elixirs: the 8 oz jar and dipper under $15, the 15 oz signature jar under $30, and the hand-wrapped Gift Box and two-jar set under $50. Gift notes included.", path, body, breadcrumbs: [{ name: "Gift guide", href: path }] }) };
 }
 
-export default () => [story(), ritual(), sourcing(), sustainability(), giftGuide()];
+export default () => [story(), ritual(), sourcing(), giftGuide()];

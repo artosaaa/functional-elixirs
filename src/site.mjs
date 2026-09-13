@@ -41,7 +41,7 @@ export const FOOTER = {
     ["Gifts under $30", "/collections/gifts-under-30/"], ["New here? Start here", "/collections/for-beginners/"], ["Gift guide", "/gift-guide/"],
   ],
   about: [
-    ["About us", "/about-us/"], ["Recipes", "/recipes/"], ["The ritual", "/ritual/"], ["Ingredients & sourcing", "/sourcing/"], ["Sustainability", "/sustainability/"], ["Journal", "/journal/"],
+    ["About us", "/about-us/"], ["Recipes", "/recipes/"], ["The ritual", "/ritual/"], ["Ingredients & sourcing", "/sourcing/"],
   ],
   help: [
     ["FAQ", "/faq/"], ["Contact", "/contact/"], ["Shipping & delivery", "/shipping/"], ["Returns & exchanges", "/returns/"], ["Track an order", "/track-order/"], ["Account", "/account/"],

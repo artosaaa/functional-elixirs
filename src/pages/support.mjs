@@ -1,7 +1,6 @@
 /* FAQ · Contact · Shipping · Returns · Privacy · Terms · Cookies · Sitemap · 404 */
 import { page, jsonld, breadcrumbs, faqList, ctaBand, ICONS, esc, BRAND, CFG, HERO_URL, abs } from "../layout.mjs";
 import { PRODUCTS, COLLECTIONS } from "../products.mjs";
-import { ARTICLES } from "../articles.mjs";
 
 const UPDATED = "September 1, 2026";
 const head = (crumb, path, eyebrow, h1, lede) => `${breadcrumbs([{ name: crumb, href: path }])}<div class="wrap--narrow page-head"><p class="eyebrow">${eyebrow}</p><h1>${h1}</h1>${lede ? `<p class="lede">${lede}</p>` : ""}</div>`;
@@ -12,12 +11,12 @@ const FAQ = [
   ["How do I use it?", `One teaspoon in about 8 oz of warm water is the classic. It also replaces sugar in tea one-for-one, and works in oats, smoothies, dressings and glazes. <a href="/ritual/">The ritual</a> has all eight ways.`],
   ["How much is in a jar, and how long does it last?", "The signature jar is 15 oz (425 g) — about six weeks of daily teaspoons. The 8 oz jar is about three weeks. Honey is shelf-stable; for peak ginger flavour, enjoy within 12 months of opening."],
   ["Does it need to be refrigerated?", "No. Room temperature, lid closed, dry spoon. Cold speeds crystallization."],
-  ["My honey is cloudy / thick / grainy. Is it bad?", `No — raw honey crystallizes naturally. Set the closed jar in warm water for 20–30 minutes and stir. <a href="/journal/how-to-store-honey-and-why-it-crystallizes/">Full guide</a>.`],
+  ["My honey is cloudy / thick / grainy. Is it bad?", `No — raw honey crystallizes naturally. Set the closed jar in warm water for 20–30 minutes and stir.`],
   ["Is it safe for children and during pregnancy?", "Honey must not be given to infants under 12 months. For older children it’s food. If you’re pregnant or managing a health condition, ask your doctor as you would about any food — we don’t give medical advice."],
   ["Is it vegan, gluten-free, nut-free?", "It contains honey, so it isn’t vegan. It is naturally gluten-free, dairy-free and nut-free."],
   ["Where is it made?", "Blended and jarred in small batches in the USA."],
   ["How fast will it ship?", `Orders ship in 1–2 business days. Standard delivery is 2–7 business days depending on distance, Express 1–3. Free standard shipping over $${CFG.freeShipOver}. <a href="/shipping/">Rates and calculator</a>.`],
-  ["Can I return it?", `Unopened jars within ${CFG.returnsDays} days, free. Opened and not for you? Tell us — we’ll refund or replace. <a href="/returns/">Returns policy</a>.`],
+  ["Can I return it?", `An unopened jar, yes — within ${CFG.returnsDays} days, for a refund of the product price, with return postage paid by you. An opened jar we can’t take back: honey is food. <a href="/returns/">Returns policy</a>.`],
   ["Do you offer Apple Pay?", "Yes — Apple Pay, Google Pay and Shop Pay on the product page, in the cart and at checkout, plus all major cards. Guest checkout is always available."],
   ["Do you ship internationally?", "Canada, the UK and Australia, with tracked rates shown at checkout. Duties and taxes may apply on delivery."],
   ["Can I send it as a gift?", `Yes. Enter their address, add a note at checkout (we hand-write it and never include prices), or choose the <a href="/shop/honey-with-fresh-ginger-gift-box/">Gift Box</a>.`],
@@ -83,7 +82,7 @@ function shipping() {
     <h2>Addresses &amp; changes</h2>
     <p>We can change an address until the label is printed (usually within a few hours). Email us right away with your order number. PO Boxes and APO/FPO are fine via USPS Standard. We can’t deliver to freight forwarders.</p>
     <h2>Heat</h2>
-    <p>Honey is unbothered by heat in transit — it may thin slightly, then settle. It won’t spoil. In deep winter it may arrive firmer; a warm-water bath brings it back (<a href="/journal/how-to-store-honey-and-why-it-crystallizes/">how</a>).</p>
+    <p>Honey is unbothered by heat in transit — it may thin slightly, then settle. It won’t spoil. In deep winter it may arrive firmer; a warm-water bath brings it back.</p>
     <p>Questions about returns? See <a href="/returns/">Returns &amp; exchanges</a>.</p>
   </div>
 </div></section>`;
@@ -91,26 +90,26 @@ function shipping() {
 }
 
 const returns = () => policy({
-  path: "/returns/", crumb: "Returns & exchanges", title: "Returns & Exchanges — 30-Day Happiness Guarantee", description: "Functional Elixirs returns: 30-day happiness guarantee, free returns on unopened jars, and a straightforward promise if an opened jar isn’t for you. Damaged in transit? Replaced free.",
-  h1: "Returns &amp; exchanges", lede: "If a jar isn’t for you, we’ll make it right. That’s the whole policy; the rest is detail.", body: `
-<h2>The 30-day happiness guarantee</h2>
-<p>Within ${CFG.returnsDays} days of delivery, if you’re not happy for any reason, email <a href="mailto:${BRAND.email}">${BRAND.email}</a> with your order number and a sentence about what went wrong. We’ll offer a refund to your original payment method, a replacement, or store credit — your choice.</p>
+  path: "/returns/", crumb: "Returns & exchanges", title: "Returns & Exchanges — Unopened Jars, 30 Days", description: "Functional Elixirs returns: unopened jars can be returned within 30 days for a refund of the product price, with return postage paid by you. Opened jars can’t be returned. Damaged or wrong items are replaced free.",
+  h1: "Returns &amp; exchanges", lede: `Unopened jars go back within ${CFG.returnsDays} days for a refund. Opened ones can’t — honey is food. The detail is below.`, body: `
 <h2>Unopened jars</h2>
-<p>Return within ${CFG.returnsDays} days for a full refund of the product price. We email a prepaid USPS label; drop it at any post office. Refunds post within 5 business days of the jar reaching us. Original shipping charges are refunded when the return is our error (wrong item, damage) and otherwise not.</p>
+<p>If the jar is unopened and its seal is intact, return it within ${CFG.returnsDays} days of delivery for a refund of the product price. Email <a href="mailto:${BRAND.email}">${BRAND.email}</a> with your order number and we’ll send the return address.</p>
+<p><strong>You arrange and pay the return postage.</strong> We don’t send prepaid labels for change-of-mind returns. Pack the jar well — glass travels badly — and keep your tracking number; we can only refund a jar that reaches us intact. Refunds post within 5 business days of arrival, to your original payment method. The original outbound shipping charge isn’t refunded.</p>
 <h2>Opened jars</h2>
-<p>Because honey is food, we can’t resell an opened jar — so please don’t ship it back. If it’s not for you, tell us and we’ll refund or replace it once per customer, no jar required. If something tastes off or looks wrong, a photo helps us fix the batch.</p>
+<p>We can’t accept them. Honey is food, and once a seal is broken the jar can’t be resold or given to anyone else — so an opened jar can’t be returned or refunded, including if you simply don’t care for the taste. Please don’t ship one back; we’d have to throw it away and you’d be out the postage too.</p>
+<p>If something tastes genuinely wrong — off, fermented, not what the label describes — that’s a different matter. Email us with a photo and we’ll sort it out.</p>
 <h2>Damaged or wrong items</h2>
 <p>Photograph the box and the jar and send them to us within 7 days of delivery. We’ll ship a replacement immediately — no return, no charge. If you’d rather a refund, say so.</p>
 <h2>Gifts</h2>
-<p>Gift recipients can exchange or take store credit with the order number or the recipient email; refunds go to the purchaser’s original payment method. We never include prices in gift boxes.</p>
+<p>Gift recipients can exchange an unopened jar or take store credit using the order number or the recipient email; refunds go to the purchaser’s original payment method. We never include prices in gift boxes.</p>
 <h2>Exchanges</h2>
-<p>Want a different size or set? Email us; we’ll send the new item and a label for the unopened original, and settle any price difference.</p>
+<p>Want a different size or set? Email us within ${CFG.returnsDays} days. Send the unopened original back at your own cost; once it arrives we’ll ship the replacement and settle any price difference.</p>
 <h2>Not covered</h2>
-<p>Crystallized honey (it’s natural — <a href="/journal/how-to-store-honey-and-why-it-crystallizes/">here’s how to restore it</a>), jars past 30 days, and purchases from third-party retailers (please return to them).</p>
+<p>Opened jars. Crystallized honey — that’s natural, not a fault; stand the closed jar in warm water for 20–30 minutes and stir. Jars past ${CFG.returnsDays} days. Purchases from third-party retailers (please return to them). Return postage, in every case except our own error.</p>
 <h2>California residents</h2>
 <p>Nothing here limits your rights under California law, including the Consumer Legal Remedies Act. Refunds for returns made under this policy are issued in the original form of payment within the timeframes above.</p>
 <h2>How to start</h2>
-<p>Email <a href="mailto:${BRAND.email}">${BRAND.email}</a> or use the <a href="/contact/">contact form</a> with your order number (FE-XXXXXX). No forms, no restocking fees, no hoops.</p>`,
+<p>Email <a href="mailto:${BRAND.email}">${BRAND.email}</a> or use the <a href="/contact/">contact form</a> with your order number (FE-XXXXXX). No forms and no restocking fee — just tell us the jar is unopened and we’ll send the address.</p>`,
 });
 
 const privacy = () => policy({
@@ -156,7 +155,7 @@ const terms = () => policy({
 <h2>3. Orders &amp; pricing</h2><p>Prices are in US dollars and exclude shipping and any applicable sales tax, which are shown before you pay. We may correct pricing errors and will tell you before shipping; you can cancel for a full refund. An order is accepted when we email a shipping confirmation. We may decline or cancel orders that look fraudulent, exceed available stock, or are for resale without a wholesale agreement.</p>
 <h2>4. Payment</h2><p>We accept major cards, Apple Pay, Google Pay, Shop Pay and PayPal through PCI-compliant processors. You confirm you’re authorised to use the payment method.</p>
 <h2>5. Shipping</h2><p>Per our <a href="/shipping/">Shipping &amp; delivery</a> page. Delivery windows are estimates. Risk of loss passes to you on delivery to the address you gave us; if something arrives damaged, see returns below.</p>
-<h2>6. Returns</h2><p>Per our <a href="/returns/">Returns &amp; exchanges</a> policy, including the 30-day happiness guarantee.</p>
+<h2>6. Returns</h2><p>Per our <a href="/returns/">Returns &amp; exchanges</a> policy: unopened jars within ${CFG.returnsDays} days, return postage paid by you; opened jars are not returnable.</p>
 <h2>7. Promotions</h2><p>Promo codes are one per order, can’t be applied retroactively, and may be withdrawn at any time. Free-shipping thresholds are calculated on the subtotal after discounts.</p>
 <h2>8. Accounts</h2><p>Keep your password private; you’re responsible for activity under your account. We may close accounts used for fraud or abuse. You can delete your account any time by emailing us.</p>
 <h2>9. Content &amp; conduct</h2><p>Site content, the Functional Elixirs name and the F·E plaque mark are ours. Don’t copy them commercially without permission. Reviews and messages you send us may be used (with your first name and initial) in our marketing unless you tell us otherwise. Don’t scrape, attack, or misuse the site.</p>
@@ -190,7 +189,7 @@ function sitemap() {
   const body = `${head("Sitemap", path, "Index", "Sitemap", "Every page on the site. Search engines: see <a href='/sitemap.xml'>/sitemap.xml</a>.")}
 <section class="section--tight"><div class="wrap grid grid--3">
   ${group("Shop", [["All products", "/shop/"], ...PRODUCTS.map((p) => [`${p.name} — ${p.size}`, p.url]), ...Object.entries(COLLECTIONS).map(([s, c]) => [c.title, `/collections/${s}/`]), ["Cart", "/cart/"], ["Checkout", "/checkout/"], ["Track order", "/track-order/"]])}
-  ${group("Functional Elixirs", [["Home", "/"], ["About us", "/about-us/"], ["The ritual", "/ritual/"], ["Ingredients & sourcing", "/sourcing/"], ["Sustainability", "/sustainability/"], ["Gift guide", "/gift-guide/"], ["Journal", "/journal/"], ...ARTICLES.map((a) => [a.title, a.url])])}
+  ${group("Functional Elixirs", [["Home", "/"], ["About us", "/about-us/"], ["Recipes", "/recipes/"], ["The ritual", "/ritual/"], ["Ingredients & sourcing", "/sourcing/"], ["Gift guide", "/gift-guide/"]])}
   ${group("Help & account", [["FAQ", "/faq/"], ["Contact", "/contact/"], ["Shipping & delivery", "/shipping/"], ["Returns & exchanges", "/returns/"], ["Privacy", "/privacy/"], ["Terms", "/terms/"], ["Cookies", "/cookies/"], ["Sign up", "/account/signup/"], ["Log in", "/account/login/"], ["Forgot password", "/account/forgot-password/"], ["Account", "/account/"], ["Addresses", "/account/addresses/"], ["Wishlist", "/account/wishlist/"]])}
 </div></section>`;
   return { path, html: page({ title: "Sitemap", description: "All pages on functionalelixirs.com — shop, story, ritual, journal, help and account.", path, body, breadcrumbs: [{ name: "Sitemap", href: path }] }) };

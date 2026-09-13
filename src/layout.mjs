@@ -32,7 +32,7 @@ export const jsonld = {
     ...(REVIEWS_VERIFIED ? { aggregateRating: { "@type": "AggregateRating", ratingValue: p.rating, reviewCount: p.reviews, bestRating: 5 } } : {}),
     offers: { "@type": "Offer", url: abs(p.url), priceCurrency: "USD", price: p.price.toFixed(2), priceValidUntil: "2027-12-31", itemCondition: "https://schema.org/NewCondition", availability: p.stock > 0 ? (p.stock <= CFG.lowStockAt ? "https://schema.org/LimitedAvailability" : "https://schema.org/InStock") : "https://schema.org/OutOfStock", seller: { "@id": abs("/#organization") },
       shippingDetails: { "@type": "OfferShippingDetails", shippingRate: { "@type": "MonetaryAmount", value: "5.95", currency: "USD" }, shippingDestination: { "@type": "DefinedRegion", addressCountry: "US" }, deliveryTime: { "@type": "ShippingDeliveryTime", handlingTime: { "@type": "QuantitativeValue", minValue: 0, maxValue: 1, unitCode: "DAY" }, transitTime: { "@type": "QuantitativeValue", minValue: 2, maxValue: 7, unitCode: "DAY" } } },
-      hasMerchantReturnPolicy: { "@type": "MerchantReturnPolicy", applicableCountry: "US", returnPolicyCategory: "https://schema.org/MerchantReturnFiniteReturnWindow", merchantReturnDays: CFG.returnsDays, returnMethod: "https://schema.org/ReturnByMail", returnFees: "https://schema.org/FreeReturn" } },
+      hasMerchantReturnPolicy: { "@type": "MerchantReturnPolicy", applicableCountry: "US", returnPolicyCategory: "https://schema.org/MerchantReturnFiniteReturnWindow", merchantReturnDays: CFG.returnsDays, returnMethod: "https://schema.org/ReturnByMail", returnFees: "https://schema.org/ReturnFeesCustomerResponsibility" } },
   }),
   faq: (items) => ({ "@context": "https://schema.org", "@type": "FAQPage", mainEntity: items.map(([q, a]) => ({ "@type": "Question", name: q, acceptedAnswer: { "@type": "Answer", text: a.replace(/<[^>]+>/g, "") } })) }),
   article: (a) => ({ "@context": "https://schema.org", "@type": "Article", headline: a.title, description: a.description, datePublished: a.date, dateModified: a.modified || a.date, author: { "@type": "Organization", name: BRAND.name, url: SITE_URL }, publisher: { "@id": abs("/#organization") }, mainEntityOfPage: abs(a.url), image: [OG_DEFAULT], articleSection: a.tag, wordCount: a.body.replace(/<[^>]+>/g, "").split(/\s+/).length }),
@@ -80,7 +80,7 @@ function header(path = "/") {
 <div class="mobile-nav" id="mobile-nav" aria-hidden="true" role="dialog" aria-label="Menu">
   <div class="mobile-nav__top"><a class="logo" href="/">${logoMark({ size: 40 })}</a><button class="icon-btn" type="button" data-menu-close aria-label="Close menu">${ICONS.close}</button></div>
   <nav aria-label="Mobile">${links}<a href="/account/">Account</a></nav>
-  <div class="mobile-nav__foot"><a href="/journal/">Journal</a><a href="/faq/">FAQ</a><a href="/shipping/">Shipping &amp; delivery</a></div>
+  <div class="mobile-nav__foot"><a href="/recipes/">Recipes</a><a href="/faq/">FAQ</a><a href="/shipping/">Shipping &amp; delivery</a></div>
 </div>`;
 }
 
@@ -101,7 +101,7 @@ function footer() {
     <form class="news-form" data-news-form novalidate><label class="sr-only" for="news-email">Email address</label><input class="input" id="news-email" type="email" name="email" placeholder="you@example.com" autocomplete="email" required><button class="btn btn--on-dark" type="submit">Subscribe</button><p class="small">No spam, ever. Unsubscribe in one tap. <a href="/privacy/">Privacy</a>.</p></form></div>
   <div class="footer__grid">
     <div class="footer__brand"><a class="logo logo--dark" href="/"><span class="logo__bee">${BEE}</span><span class="logo__word"><span>Functional</span><span>Elixirs</span></span></a><p>${BRAND.positioning}</p>
-      <div class="footer__promise"><div>${ICONS.truck}<span>Free US shipping over $${CFG.freeShipOver} · ships in 1–2 business days</span></div><div>${ICONS.refresh}<span>30-day happiness guarantee — if a jar isn’t for you, we’ll make it right</span></div><div>${ICONS.leaf}<span>Raw honey + fresh ginger · small batches · nothing else</span></div></div></div>
+      <div class="footer__promise"><div>${ICONS.truck}<span>Free US shipping over $${CFG.freeShipOver} · ships in 1–2 business days</span></div><div>${ICONS.refresh}<span>Unopened jars returnable within ${CFG.returnsDays} days — return postage is yours</span></div><div>${ICONS.leaf}<span>Raw honey + fresh ginger · small batches · nothing else</span></div></div></div>
     ${col("Shop", FOOTER.shop)}${col("Functional Elixirs", FOOTER.about)}${col("Help", FOOTER.help)}
   </div>
   <div class="footer__bottom"><div><p>© ${new Date().getFullYear()} ${BRAND.legal} · Made in the USA</p><p class="disclaimer" style="margin-top:.5rem">${BRAND.disclaimer}</p></div><ul>${FOOTER.legal.map(([l, h]) => `<li><a href="${h}">${l}</a></li>`).join("")}</ul><div class="pay-marks" aria-label="Accepted payments"><span>APPLE PAY</span><span>G PAY</span><span>VISA</span><span>MC</span><span>AMEX</span></div></div>
@@ -110,8 +110,8 @@ function footer() {
 
 /* The guarantee, given a name and a position next to the price (offer-strategist rec). */
 export const guaranteeBlock = () => `<div class="guarantee">
-  <strong>${ICONS.shield} Open the jar. Then decide.</strong>
-  <p>Take it every morning for thirty days. If it isn't for you, write to us — we'll refund you. An opened jar is fine; please don't ship it back. <a href="/returns/">How it works</a></p>
+  <strong>${ICONS.shield} Still sealed? Send it back.</strong>
+  <p>Unopened jars can be returned within ${CFG.returnsDays} days of delivery for a refund of the product price. You arrange and pay the return postage. Honey is food, so once a jar is opened we can't take it back. <a href="/returns/">Read the policy</a></p>
 </div>`;
 
 export function page({ title, description, path, body, type = "website", image = OG_DEFAULT, jsonld: ld = [], breadcrumbs: bc, noindex = false, bodyClass = "", published, modified, extraHead = "" }) {
@@ -192,7 +192,7 @@ export function bundleTiers(ids, { selected = 0 } = {}) {
 export const valueBullets = () => `<div class="value-bullets">
   <div>${ICONS.check}<span><strong>Two ingredients.</strong> Raw honey and fresh ginger root — never powder, never extract.</span></div>
   <div>${ICONS.check}<span><strong>No added sugar</strong>, colours, flavourings or preservatives.</span></div>
-  <div>${ICONS.refresh}<span><strong>30-day happiness guarantee.</strong> Don't love it? We'll make it right, jar or no jar.</span></div>
+  <div>${ICONS.refresh}<span><strong>${CFG.returnsDays}-day returns on unopened jars.</strong> Refund of the product price; return postage is yours.</span></div>
 </div>`;
 
 export { stars, PRODUCTS, ICONS, esc, money, BRAND, CFG, abs, SITE_URL, HERO_URL, logoMark, REVIEWS_VERIFIED };

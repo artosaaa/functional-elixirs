@@ -3,7 +3,6 @@ import { BEE, BEE_FLY, bees, LINE } from "../site.mjs";
 import { page, jsonld, breadcrumbs, productCard, applePayButton, faqList, ctaBand, stars, ICONS, esc, money, BRAND, CFG, abs, HERO_URL, bundleTiers, valueBullets, guaranteeBlock, REVIEWS_VERIFIED } from "../layout.mjs";
 import { PRODUCTS, HERO, COLLECTIONS, byId } from "../products.mjs";
 import { art, altFor, photo } from "../art.mjs";
-import { ARTICLES } from "../articles.mjs";
 
 /* PLACEHOLDER testimonials — replace with real verified reviews before launch (README §7). */
 const REVIEWS = [
@@ -99,7 +98,7 @@ function shop() {
 <section class="section"><div class="wrap--narrow"><h2 class="center" style="margin-bottom:var(--s-5)">Before you choose</h2>${faqList([
   ["Which size should I start with?", `The <a href="${HERO_URL}">15 oz jar</a> is about six weeks of daily spoonfuls and the best value per ounce. The <a href="/shop/honey-with-fresh-ginger-8oz/">8 oz</a> is right for a first try or a gift.`],
   ["Is it the same recipe in every jar?", "Yes. Raw honey and fresh ginger root, blended in small batches. Only the amount changes."],
-  ["How long does a jar last?", "Honey is naturally shelf-stable. For peak ginger flavour, enjoy within 12 months of opening — see the date on the base. <a href='/journal/how-to-store-honey-and-why-it-crystallizes/'>Storage tips</a>."],
+  ["How long does a jar last?", "Honey is naturally shelf-stable. For peak ginger flavour, enjoy within 12 months of opening — see the date on the base."],
 ])}</div></section>`;
   return { path: "/shop/", html: page({ title: "Shop Honey with Fresh Ginger — 8 oz, 15 oz, sets & gifts", description: "Shop Functional Elixirs Honey with Fresh Ginger: the 15 oz signature jar ($23.99), 8 oz everyday jar, two-jar set, gift box and beechwood dipper. Free US shipping over $40.", path: "/shop/", body, breadcrumbs: [{ name: "Shop", href: "/shop/" }] }) };
 }
@@ -109,7 +108,7 @@ function collection(slug) {
   const body = `${breadcrumbs([{ name: "Shop", href: "/shop/" }, { name: c.title, href: path }])}
 <div class="wrap page-head"><p class="eyebrow">Collection</p><h1>${c.h1}</h1><p class="lede measure--wide">${c.lede}</p></div>
 <section class="section--tight"><div class="wrap"><div class="products">${items.map(productCard).join("")}</div></div></section>
-<section class="section--tight"><div class="wrap--narrow center"><p class="muted">Not sure? Read <a href="/journal/the-morning-ritual-honey-ginger-warm-water/">how the morning ritual works</a> or browse the <a href="/gift-guide/">gift guide</a>.</p></div></section>${ctaBand()}`;
+<section class="section--tight"><div class="wrap--narrow center"><p class="muted">Not sure? Read <a href="/ritual/">how the morning ritual works</a> or browse the <a href="/gift-guide/">gift guide</a>.</p></div></section>${ctaBand()}`;
   return { path, html: page({ title: c.title, description: c.description, path, body, breadcrumbs: [{ name: "Shop", href: "/shop/" }, { name: c.title, href: path }] }) };
 }
 
@@ -123,7 +122,7 @@ function product(p) {
   ] : [
     ["How do I use it?", `One teaspoon in about 8 oz of warm (not boiling) water is the classic. It’s also a one-for-one swap for sugar in tea, and works in oats, smoothies, dressings and glazes. <a href="/ritual/">The ritual →</a>`],
     ["Is the ginger fresh?", "Yes — fresh ginger root, never powder or extract. You can see the ginger threads suspended in the honey."],
-    ["Does it need refrigeration?", `No. Keep it at room temperature with the lid closed. Raw honey may crystallize; that’s natural — <a href="/journal/how-to-store-honey-and-why-it-crystallizes/">here’s how to bring it back</a>.`],
+    ["Does it need refrigeration?", `No. Keep it at room temperature with the lid closed. Raw honey may crystallize; that’s natural — stand the closed jar in warm water for 20–30 minutes and stir.`],
     ["Is it safe for children?", "Honey should not be given to infants under 12 months. For everyone else, it’s food — enjoy it as you would any honey."],
     ["Is it vegan / gluten-free?", "It contains honey, so it isn’t vegan. It is naturally gluten-free with no added sugar, colours or preservatives."],
   ];
@@ -150,7 +149,7 @@ function product(p) {
     <div class="objections">
       <p><strong>Worried it’s too hot?</strong> It’s honey first. The ginger arrives after, as warmth rather than heat.</p>
       <p><strong>How long does it last?</strong> A 15 oz jar is roughly six weeks of morning spoonfuls — one teaspoon a day.</p>
-      <p><strong>What if I don’t like it?</strong> Tell us within 30 days and we’ll make it right. Opened jar included.</p>
+      <p><strong>What if I change my mind?</strong> Send the jar back unopened within ${CFG.returnsDays} days and we’ll refund the product price. Return postage is yours. Once a jar is opened we can’t take it back — honey is food.</p>
     </div>
     <p class="urgency" data-dispatch><strong>Ships today</strong> if you order before 1pm PT</p>
     <div class="express">
@@ -160,7 +159,7 @@ function product(p) {
     </div>
     <div class="ship-snippet">
       <div>${ICONS.truck}<span><strong data-ship-estimate="${p.id}">Arrives in 3–5 business days</strong> · Free shipping over $${CFG.freeShipOver} · <a href="/shipping/">Rates &amp; calculator</a></span></div>
-      <div>${ICONS.refresh}<span>30-day happiness guarantee. Not for you? <a href="/returns/">We’ll make it right.</a></span></div>
+      <div>${ICONS.refresh}<span>${CFG.returnsDays}-day returns on unopened jars. <a href="/returns/">How returns work.</a></span></div>
       <div>${ICONS.lock}<span>Secure checkout · Apple Pay, Google Pay, all major cards</span></div>
     </div>
     ${valueBullets()}
@@ -172,8 +171,8 @@ function product(p) {
           : `<div class="brew"><div><strong>${esc(p.use.spoon)}</strong><small>Scoop</small></div><div><strong>${esc(p.use.water)}</strong><small>Stir into</small></div><div><strong>${esc(p.use.when)}</strong><small>When</small></div><div><strong style="font-size:var(--fs-base)">${esc(p.use.also)}</strong><small>Also</small></div></div>`}
         <p>${p.type === "Accessory" ? "Twist the dipper in the jar, lift, and let the honey spiral off the end into your cup. Rest it on a small dish between uses." : `Sweet first, then the ginger’s slow warmth. Warm — not boiling — water keeps the fresh ginger bright. <a href="/ritual/">The full ritual, and eight ways to use the jar →</a>`}</p></div></details>
       <details><summary>Ingredients</summary><div class="acc__body"><p>${esc(p.ingredients)}</p><p>${esc(p.origin)}. No added sugar, colours, flavours or preservatives. Naturally gluten-free. Not suitable for infants under 12 months.</p></div></details>
-      <details><summary>Storage</summary><div class="acc__body"><p>Room temperature, lid closed, dry spoon. Raw honey may crystallize over time — that’s natural. Warm the closed jar in a bowl of warm water to restore. <a href="/journal/how-to-store-honey-and-why-it-crystallizes/">Storage guide →</a></p></div></details>
-      <details><summary>Shipping &amp; returns</summary><div class="acc__body"><p>Ships in 1–2 business days from the USA. Standard $5.95 (free over $${CFG.freeShipOver}), Express $14, local pickup free. Unopened jars can be returned within ${CFG.returnsDays} days; if an opened jar isn’t for you, tell us and we’ll make it right. <a href="/shipping/">Shipping</a> · <a href="/returns/">Returns</a></p></div></details>
+      <details><summary>Storage</summary><div class="acc__body"><p>Room temperature, lid closed, dry spoon. Raw honey may crystallize over time — that’s natural. Warm the closed jar in a bowl of warm water to restore.</p></div></details>
+      <details><summary>Shipping &amp; returns</summary><div class="acc__body"><p>Ships in 1–2 business days from the USA. Standard $5.95 (free over $${CFG.freeShipOver}), Express $14, local pickup free. Unopened jars can be returned within ${CFG.returnsDays} days for a refund of the product price, with return postage paid by you; opened jars can’t be returned. <a href="/shipping/">Shipping</a> · <a href="/returns/">Returns</a></p></div></details>
     </div>
   </div>
 </section>
@@ -185,7 +184,7 @@ function product(p) {
 
 <section class="section section--well" id="reviews"><div class="wrap">${REVIEWS_VERIFIED
   ? `<div class="section-head center"><p class="eyebrow">Reviews</p><h2>${p.rating} out of 5</h2><p class="muted">${p.reviews} verified reviews</p></div><div class="grid grid--3">${REVIEWS.slice(0, 3).map(reviewCard).join("")}</div>`
-  : `<div class="wrap--narrow center stack" style="--flow:var(--s-4)"><p class="eyebrow">The guarantee</p><h2>If it isn’t for you, we’ll make it right.</h2><p class="lede">Thirty days, opened or not. Write to us and we’ll refund it — we won’t ask you to ship the jar back.</p><p><a class="btn btn--ghost" href="/contact/">Questions first? Write to us</a></p></div>`}</div></section>
+  : `<div class="wrap--narrow center stack" style="--flow:var(--s-4)"><p class="eyebrow">Returns</p><h2>Unopened jars go back within ${CFG.returnsDays} days.</h2><p class="lede">Return it sealed and we’ll refund the product price; you cover the return postage. An opened jar we can’t accept — honey is food, and a broken seal can’t be resold.</p><p><a class="btn btn--ghost" href="/contact/">Questions first? Write to us</a></p></div>`}</div></section>
 
 <section class="section"><div class="wrap--narrow"><h2 class="center" style="margin-bottom:var(--s-5)">Questions</h2>${faqList(faq)}</div></section>
 
@@ -285,7 +284,7 @@ function checkout() {
     <section class="co-section">
       <div class="field"><label for="gift">Gift note <span class="muted">(optional — we never include prices)</span></label><textarea class="textarea" id="gift" name="gift" style="min-height:5rem"></textarea></div>
       <button class="btn btn--primary btn--block" type="submit" style="min-height:3.25rem">Place order · <span data-total>—</span></button>
-      <p class="small muted center">By placing your order you agree to our <a href="/terms/">Terms</a> and <a href="/privacy/">Privacy Policy</a>. ${CFG.returnsDays}-day happiness guarantee.</p>
+      <p class="small muted center">By placing your order you agree to our <a href="/terms/">Terms</a> and <a href="/privacy/">Privacy Policy</a>. ${CFG.returnsDays}-day returns on unopened jars.</p>
     </section>
   </form>
   </div>
