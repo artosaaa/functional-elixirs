@@ -467,8 +467,6 @@
         tax: this._tax || 0, total: this._total ?? sub, status: "confirmed", guest: !u,
       };
       Orders.add(order);
-      if (fd.get("create_account") && !u && fd.get("email")) Auth.signup({ name: order.name, email: fd.get("email"), password: fd.get("new_password") || "" });
-      if (fd.get("save_address") && u) { const a = store.get("sw_addresses", []); a.push({ id: uid("A"), label: "Home", name: order.name, ...order.address, default: !a.length }); store.set("sw_addresses", a); }
       Cart.clear(); Promo.clear();
       location.href = U(`/order-confirmation/?order=${order.id}`);
     },

@@ -226,7 +226,7 @@ function product(p) {
 const promoForm = () => `<form class="promo" data-promo-form novalidate><label class="sr-only" for="promo">Promo code</label><input class="input" id="promo" name="code" placeholder="Promo code" autocomplete="off"><button class="btn btn--soft" type="submit">Apply</button></form><p class="promo-msg" aria-live="polite"></p>`;
 const shipCalc = () => `<form class="ship-calc" data-ship-calc novalidate>
   <div class="field-row">
-  <div class="field"><label for="sc-zip">ZIP / postcode</label><input class="input" id="sc-zip" name="zip" inputmode="numeric" autocomplete="postal-code" placeholder="94103"></div></div>
+  <div class="field"><label for="sc-zip">ZIP code</label><input class="input" id="sc-zip" name="zip" inputmode="numeric" autocomplete="postal-code" placeholder="94103"></div></div>
   <button class="btn btn--ghost btn--sm" type="submit">Estimate shipping</button>
   <div class="ship-calc__result" aria-live="polite"><p class="small muted">Enter a ZIP for a live estimate.</p></div></form>`;
 
@@ -237,7 +237,7 @@ function cart() {
   <div><div data-cart-page></div>
     <div data-cart-has hidden style="margin-top:var(--s-6)"><div class="field"><label for="note">Gift note or delivery instructions (optional)</label><textarea class="textarea" id="note" name="note" placeholder="“One spoon, warm water, before the phone. Thinking of you.”"></textarea></div></div>
   </div>
-  <aside class="cart-layout__side summary"><h2>Summary</h2><div data-cart-summary></div>${promoForm()}<a class="btn btn--primary btn--block" href="/checkout/">Checkout</a>${applePayButton(`onclick="location.href='/checkout/?express=apple-pay'"`)}<p class="secure">${ICONS.lock} Secure checkout · guest or account</p><hr><h2 style="font-size:var(--fs-base)">Estimate shipping</h2>${shipCalc()}</aside>
+  <aside class="cart-layout__side summary"><h2>Summary</h2><div data-cart-summary></div>${promoForm()}<a class="btn btn--primary btn--block" href="/checkout/">Checkout</a>${applePayButton(`onclick="location.href='/checkout/?express=apple-pay'"`)}<p class="secure">${ICONS.lock} Secure checkout · no account needed</p><hr><h2 style="font-size:var(--fs-base)">Estimate shipping</h2>${shipCalc()}</aside>
 </div></section>
 `;
   return { path: "/cart/", html: page({ title: "Cart", description: "Your Functional Elixirs cart — review your honey-ginger jars, apply a promo code, estimate shipping, and check out with Apple Pay or card.", path: "/cart/", body, noindex: true }) };
@@ -260,7 +260,6 @@ function checkout() {
     <section class="co-section">
       <div class="co-section__head"><h2>Contact</h2><p class="small muted">We’ll email your receipt and tracking here.</p></div>
       <div class="field"><label for="email">Email</label><input class="input" id="email" name="email" type="email" autocomplete="email" required inputmode="email"><p class="error" id="email-err">Enter a valid email so we can send your receipt.</p></div>
-      <label class="check"><input type="checkbox" name="news" checked> Email me the monthly note from the kitchen (unsubscribe any time)</label>
     </section>
     <section class="co-section">
       <h2>Shipping address</h2>
@@ -296,12 +295,6 @@ function checkout() {
       </div>
     </section>
     <section class="co-section">
-      <h2>Save time next order <span class="muted small">(optional)</span></h2>
-      <label class="check"><input type="checkbox" name="create_account"> Create an account with this email — orders, addresses and wishlist in one place</label>
-      <div class="field"><label for="new_password">Password <span class="muted">(only if creating an account)</span></label><input class="input" id="new_password" name="new_password" type="password" autocomplete="new-password" minlength="8"><p class="help">8+ characters.</p></div>
-      <label class="check"><input type="checkbox" name="save_address" checked> Save this address to my account</label>
-    </section>
-    <section class="co-section">
       <div class="field"><label for="gift">Gift note <span class="muted">(optional — we never include prices)</span></label><textarea class="textarea" id="gift" name="gift" style="min-height:5rem"></textarea></div>
       <button class="btn btn--primary btn--block" type="submit" style="min-height:3.25rem">Place order · <span data-total>—</span></button>
       <p class="small muted center">By placing your order you agree to our <a href="/terms/">Terms</a> and <a href="/privacy/">Privacy Policy</a>. Unopened jars are returnable for a full refund.</p>
@@ -309,7 +302,7 @@ function checkout() {
   </form>
   </div>
 </div></section>`;
-  return { path: "/checkout/", html: page({ title: "Checkout", description: "Secure checkout — Apple Pay, Google Pay, Shop Pay or card. Guest or account checkout with live shipping rates.", path: "/checkout/", body, noindex: true }) };
+  return { path: "/checkout/", html: page({ title: "Checkout", description: "Secure checkout — Apple Pay, Google Pay, Shop Pay or card. Guest checkout with live shipping rates.", path: "/checkout/", body, noindex: true }) };
 }
 
 function confirmation() {

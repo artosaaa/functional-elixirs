@@ -163,7 +163,6 @@ const cookies = () => policy({
 <h2>Essential (always on)</h2>
 <table><thead><tr><th>Name</th><th>Purpose</th><th>Lifetime</th></tr></thead><tbody>
 <tr><td><code>sw_cart</code>, <code>sw_promo</code>, <code>sw_ship</code></td><td>Your cart, promo code and shipping estimate (browser local storage)</td><td>Until cleared</td></tr>
-<tr><td><code>sw_user</code>, <code>sw_addresses</code>, <code>sw_wishlist</code>, <code>sw_orders</code></td><td>Account session and saved data</td><td>Until sign-out</td></tr>
 <tr><td><code>sw_cookie</code></td><td>Remembers your cookie choice</td><td>12 months</td></tr>
 </tbody></table>
 <h2>Analytics (only if you accept)</h2>
