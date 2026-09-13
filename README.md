@@ -118,7 +118,20 @@ not just a settings save.
 - `assets/js/site.js` mounts Stripe's **Payment Element** in deferred mode. Card details live inside Stripe's iframe — they never reach this site's DOM or its server (PCI SAQ-A).
 - On submit the browser POSTs product **ids and quantities** to `/api/create-payment-intent`. It never sends an amount. The server re-prices from `src/commerce.mjs` and that is what Stripe charges, so a tampered cart buys nothing cheaper.
 - `stripe.confirmPayment()` redirects to `/order-confirmation/`, which asks Stripe whether the intent actually succeeded before claiming anything.
-- **Receipts are sent from `/api/stripe-webhook`, not the browser**, so a shopper who closes the tab still gets one. The webhook verifies Stripe's signature against the raw body and rejects replays older than five minutes.
+- **Receipts are sent by two routes, and the webhook is not required.** The order
+  confirmation page calls `/api/send-confirmation` as soon as Stripe redirects the
+  shopper back, so receipts go out with no dashboard configuration at all. The
+  webhook does the same job and is still worth registering, because it is the only
+  one that survives a shopper closing the tab before the page loads.
+  Delivery is recorded per recipient on the PaymentIntent, so the page, the webhook,
+  a page reload and a Stripe retry can all happen for one order without anyone
+  getting a second copy — whichever arrives first sends, the rest find it recorded
+  and send nothing.
+  `/api/send-confirmation` trusts the browser for nothing but *which* PaymentIntent
+  to look at: whether it was paid, what was in it and what it cost all come from
+  asking Stripe with the secret key, and the `client_secret` is compared against the
+  real one so a guessed intent id cannot trigger a stranger's receipt.
+- **The webhook** , so a shopper who closes the tab still gets one. The webhook verifies Stripe's signature against the raw body and rejects replays older than five minutes.
 - **Two emails go out per order:** the customer's receipt, and a picking slip to `ORDERS_EMAIL`.
   The webhook reports which ones it sent in its `200` body, and Stripe shows that body in the
   endpoint's **Attempts** tab — so `{"emailed":["jane@…","shop@…"],"shopNotified":true}` answers

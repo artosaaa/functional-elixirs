@@ -538,6 +538,22 @@
       } catch { status = null; }
     }
 
+    /* Send the receipts from here rather than waiting on the Stripe webhook, which
+       only fires if an endpoint has been registered in the dashboard. The server
+       re-checks with Stripe that this payment really succeeded before sending
+       anything, and records delivery per recipient — so the webhook, a page reload
+       and this call can all happen without anyone getting a second copy.
+
+       Deliberately not blocking the confirmation: the money is taken either way, and
+       a shopper who paid should see their order even if the email is slow. */
+    if (status === "succeeded" && intentId && secret) {
+      fetch(U("/api/send-confirmation"), {
+        method: "POST", headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ paymentIntent: intentId, clientSecret: secret }),
+        keepalive: true,
+      }).catch(() => { /* the webhook is the backstop; nothing useful to say here */ });
+    }
+
     if (status && status !== "succeeded") {
       if (status === "processing") { lost("Your payment is still processing. We’ll email a receipt the moment it clears — no need to pay again."); return; }
       lost("That payment didn’t go through, so nothing was charged. You can try again from the checkout.");
