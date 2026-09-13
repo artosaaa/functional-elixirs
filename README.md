@@ -237,14 +237,19 @@ Copy is written from your two brand documents. These items were **not** in them 
 - Contact email (`hello@functionalelixirs.com`), social handles, founding year
 - Prices for every SKU except the 15 oz jar ($23.99); stock counts; whether the 8 oz, sets, dipper and travel jar exist
 - "Blended and jarred in small batches in the USA" — add the real city/state
-- Governing law and tax nexus (set to **California**); free-shipping threshold ($45); shipping rates and carriers; return window (30 days)
-- **Review quotes, star ratings and review counts are PLACEHOLDERS.** They appear on the home page,
-  every product page and in `Product` JSON-LD `aggregateRating`. Publishing invented ratings as real
-  is both an FTC problem and a Google structured-data violation — replace them with real reviews
-  (Judge.me, Okendo, Loox) or delete the `aggregateRating` block in `src/layout.mjs` before launch.
+- Governing law and tax nexus (set to **California**); shipping rates and carriers
+- **Reviews: resolved, and it should stay that way.** Six invented testimonials and a fabricated
+  "4.9 out of 5 from 214 reviews" used to sit in the source behind a flag. They are deleted, and
+  `rating`/`reviews` are now `null`/`0`. Both the review section and the JSON-LD `aggregateRating`
+  check for real data *as well as* `REVIEWS_VERIFIED`, so flipping that flag on its own publishes
+  nothing — verified by flipping it and rebuilding. Publishing invented ratings as real is an FTC
+  problem and a Google structured-data violation; to add real ones, see the comment above `REVIEWS`
+  in `src/pages/core.mjs`.
 - "Only X left in this batch" is driven by `stock` in `src/products.mjs` — set real numbers or raise them
-- The bundle tier prices ($44.99 two-jar, $64.99 three-jar) and the $40 free-shipping threshold are
-  my proposals — check them against your real margins and shipping cost
+- **The $50 free-shipping threshold** needs three jars to reach at $23.99 each. Check it against your
+  real margin and shipping cost; it may be doing nothing but discouraging single-jar orders.
+- **Your real dispatch turnaround.** The 1–2 day claim and the JSON-LD `handlingTime` are stripped
+  rather than guessed at. Give a number and it goes back honestly.
 - Allergen/facility statement in `/sourcing/`
 
 Health language is deliberately conservative (no treatment claims; FDA disclaimer in the footer and on story/sourcing pages) per the note in your product document.

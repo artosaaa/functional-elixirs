@@ -4,15 +4,18 @@ import { page, jsonld, breadcrumbs, productCard, stripeHead, faqList, ctaBand, s
 import { PRODUCTS, HERO, byId } from "../products.mjs";
 import { art, altFor, photo, resolvedPhoto } from "../art.mjs";
 
-/* PLACEHOLDER testimonials — replace with real verified reviews before launch (README §7). */
-const REVIEWS = [
-  { q: "I bought it for the ginger and stayed for the ritual. One spoon in warm water before the kids are up. Six weeks in and I've ordered the two-jar set.", n: "Danielle R.", w: "Sacramento, CA", t: "Two-jar set" },
-  { q: "Real ginger — you can see the threads in the honey. Sweet first, then that slow warmth. It replaced sugar in my tea entirely and I'm not going back.", n: "Marcus T.", w: "Austin, TX", t: "15 oz jar" },
-  { q: "Gave the gift box to my mother-in-law. She sent a photo of the jar on her windowsill the next morning. That has never happened with a gift before.", n: "Priya S.", w: "Portland, OR", t: "Gift box" },
-  { q: "I've bought a lot of expensive honey. This is the first one where the ginger tastes like ginger and not like a candle.", n: "Ellen W.", w: "Asheville, NC", t: "15 oz jar" },
-  { q: "The jar is gorgeous and it lives on my counter. My husband finished half of it in three weeks, which is the only complaint I have.", n: "Sofia M.", w: "Chicago, IL", t: "Two-jar set" },
-  { q: "Arrived in two days, packed properly, no leaks. Tastes exactly like the description — warm, not spicy. Ordering the 3-pack next.", n: "Ray K.", w: "Denver, CO", t: "15 oz jar" },
-];
+/* No testimonials yet, and inventing them is not an option: the card renders a
+   name, a city and a "Verified buyer" badge, which is a representation about a
+   real person who bought something. Six placeholders used to live here — three
+   of them praising a Two-jar set, a Gift box and a 3-pack that the catalogue no
+   longer contains, and one promising delivery "in two days".
+
+   To publish real ones: put them in REVIEWS as
+     { q: "...", n: "First L.", w: "City, ST", t: "15 oz jar" }
+   with the buyer's permission, set rating/reviews in products.mjs to the real
+   figures, and flip REVIEWS_VERIFIED in site.mjs. The section stays on the
+   Questions block until all three are true. */
+const REVIEWS = [];
 const reviewCard = (r) => `<article class="review reveal"><div class="rating">${stars(5)}<span class="sr-only">5 out of 5 stars</span>${r.t ? `<span class="small muted">${esc(r.t)}</span>` : ""}</div><blockquote>“${r.q}”</blockquote><footer><span>${r.n} · ${r.w}</span><span class="verified">${ICONS.check} Verified buyer</span></footer></article>`;
 
 const USES = [
@@ -201,7 +204,7 @@ function product(p) {
   <div class="marquee-photo reveal">${photo(p.type === "Accessory" ? "ritual" : "jars")}</div>
 </div></section>
 
-<section class="section section--well" id="reviews"><div class="wrap">${REVIEWS_VERIFIED
+<section class="section section--well" id="reviews"><div class="wrap">${REVIEWS_VERIFIED && REVIEWS.length && p.rating && p.reviews
   ? `<div class="section-head center"><p class="eyebrow">Reviews</p><h2>${p.rating} out of 5</h2><p class="muted">${p.reviews} verified reviews</p></div><div class="grid grid--3">${REVIEWS.slice(0, 3).map(reviewCard).join("")}</div>`
   : `<div class="wrap--narrow center stack" style="--flow:var(--s-4)"><p class="eyebrow">Questions</p><h2>Anything you want to ask, ask.</h2><p class="lede">Ingredients, storage, gifting, an order that hasn’t turned up — a person reads every message and replies within one business day.</p><p><a class="btn btn--ghost" href="/contact/">Write to us</a></p></div>`}</div></section>
 
