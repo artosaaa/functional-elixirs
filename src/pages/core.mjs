@@ -3,6 +3,7 @@ import { BEE, BEE_FLY, bees, LINE } from "../site.mjs";
 import { page, jsonld, breadcrumbs, productCard, stripeHead, faqList, ctaBand, stars, ICONS, esc, money, BRAND, CFG, abs, HERO_URL, valueBullets, guaranteeBlock, REVIEWS_VERIFIED } from "../layout.mjs";
 import { PRODUCTS, HERO, byId } from "../products.mjs";
 import { art, altFor, photo, resolvedPhoto } from "../art.mjs";
+import { existsSync } from "node:fs";
 
 /* No testimonials yet, and inventing them is not an option: the card renders a
    name, a city and a "Verified buyer" badge, which is a representation about a
@@ -37,11 +38,18 @@ const gluePunct = (t) => String(t).replace(/ · /g, "\u00A0· ");
 function home() {
   const p = HERO;
   /* three, not four — the two garden-table frames were near-duplicates of each other */
+  /* The three photographs that used to sit here were stock-feeling holiday snapshots
+     — a dim teapot, an English garden with event tents — none of which had anything
+     to do with honey or ginger, and all of which undercut the product photography
+     directly above them. Same treatment as the recipes hero strip: the row renders
+     only for files actually present, so it stays empty until real photographs exist
+     and comes back on its own the moment they are dropped in. */
+  const GALLERY_DIR = new URL("../../assets/img/home/", import.meta.url);
   const gallery = [
-    ["/assets/img/ritual-teapot-window-light.jpg", "A ceramic teapot and cup on a linen-covered table in soft window light"],
-    ["/assets/img/garden-terraces-green.jpg", "Green garden terraces and tall trees under a wide sky"],
-    ["/assets/img/tea-table-garden-morning.jpg", "A teapot and two cups of tea set out on a garden table on a bright morning"],
-  ];
+    ["morning-ritual.jpg", "A spoonful of Functional Elixirs honey with fresh ginger being stirred into a mug of warm water"],
+    ["jar-on-counter.jpg", "The Functional Elixirs jar open on a kitchen counter, the ginger threads visible in the honey"],
+    ["breakfast-drizzle.jpg", "Honey with fresh ginger drizzled over a bowl of oats and fruit"],
+  ].filter(([file]) => existsSync(new URL(file, GALLERY_DIR)));
   const features = [
     [LINE.leaf, "Natural ingredients", "Pure, simple, and sustainably sourced."],
     [LINE.honeycomb, "Functional benefits", "Thoughtfully crafted to support your well-being."],
@@ -87,7 +95,7 @@ function home() {
   { top: "74%", from: "-10vw", to: "106vw", dur: 64, delay: 21, size: 0.9, tilt: 6, bob: 1 },
 ])}<div class="wrap">
   <div class="mk-title reveal"><h2 class="mk-h2">Inspired by nature. Made for you.</h2><span class="mk-rule mk-rule--center" aria-hidden="true"></span></div>
-  <div class="mk-gallery">${gallery.map(([src, alt], i) => `<figure class="reveal" style="--d:${i * 90}ms"><img src="${src}" alt="${esc(alt)}" width="900" height="900" loading="lazy" decoding="async"></figure>`).join("")}</div>
+  ${gallery.length ? `<div class="mk-gallery">${gallery.map(([file, alt], i) => `<figure class="reveal" style="--d:${i * 90}ms"><img src="/assets/img/home/${file}" alt="${esc(alt)}" width="900" height="900" loading="lazy" decoding="async"></figure>`).join("")}</div>` : ""}
   <div class="mk-features">${features.map(([ic, t, d], i) => `<div class="mk-feature reveal" style="--d:${i * 90}ms"><span class="mk-feature__icon">${ic}</span><h3>${t}</h3><p>${d}</p></div>`).join("")}</div>
 </div></section>
 

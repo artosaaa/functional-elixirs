@@ -20,7 +20,7 @@ const FAQ = [
   ["Do you offer Apple Pay?", "Yes — Apple Pay, Google Pay and Shop Pay on the product page, in the cart and at checkout, plus all major cards. Guest checkout is always available."],
   ["Do you ship internationally?", "Not at the moment — we ship within the United States only."],
   ["Can I send it as a gift?", `Yes. Enter their address and add a note at checkout — we hand-write it and never include prices in the parcel.`],
-  ["Is there a subscription?", "Not yet. The two-jar set is our low-tech version — it covers about three months of mornings."],
+  ["Is there a subscription?", "Not yet. Order another jar whenever you’re running low — that’s the low-tech version."],
 ];
 
 function faq() {
