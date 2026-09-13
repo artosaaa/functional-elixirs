@@ -1415,3 +1415,43 @@ main:has(> :last-child.cta-band) + .footer { margin-top: 0; }
   transition-duration: .001ms !important; scroll-behavior: auto !important;
 }
 :root[data-motion="off"] .reveal { opacity: 1 !important; transform: none !important; }
+
+/* ---------- 23v. Display options, as a floating button ----------
+   Moved out of the footer: a control someone needs in order to read the page is no
+   use at the bottom of it. Bottom-left, because bottom-right is where the sticky
+   buy bar's button sits and where people expect a chat bubble. Still not an
+   accessibility overlay — the same three attributes on <html>, the site's own CSS
+   doing the work. */
+.dopt-fab {
+  position: fixed; left: var(--s-4); bottom: calc(var(--s-4) + env(safe-area-inset-bottom));
+  z-index: 60; width: 3rem; height: 3rem; border-radius: 50%; cursor: pointer;
+  display: grid; place-items: center; padding: 0;
+  background: var(--navy-3, #1D2B33); color: var(--gold-2, #D4AC54);
+  border: 1px solid rgb(255 255 255 / .16); box-shadow: var(--shadow-2);
+  transition: transform .2s var(--ease), background .2s;
+}
+.dopt-fab:hover { transform: translateY(-2px); background: #14202699; background: #142026; }
+.dopt-fab svg { width: 1.5rem; height: 1.5rem; fill: none; stroke: currentColor; stroke-width: 1.7; stroke-linecap: round; }
+.dopt-fab svg circle { fill: currentColor; stroke: none; }
+/* The sticky buy bar owns the bottom of the screen on a product page; step over it. */
+body:has(.buybar[data-show]) .dopt-fab { bottom: calc(5.25rem + env(safe-area-inset-bottom)); }
+@media (min-width: 56em) { body:has(.buybar[data-show]) .dopt-fab { bottom: calc(var(--s-4) + env(safe-area-inset-bottom)); } }
+@media print { .dopt-fab, .dopt { display: none !important; } }
+
+/* the panel now floats above the button rather than sitting in the footer */
+.dopt {
+  position: fixed; left: var(--s-4); bottom: calc(4.5rem + env(safe-area-inset-bottom));
+  z-index: 61; width: min(22rem, calc(100vw - 2 * var(--s-4)));
+  background: var(--cream-2, #FBF7F0); color: var(--ink);
+  border: 1px solid var(--cream-3); border-radius: var(--r-md, 6px); box-shadow: var(--shadow-3);
+}
+body:has(.buybar[data-show]) .dopt { bottom: calc(9.5rem + env(safe-area-inset-bottom)); }
+@media (min-width: 56em) { body:has(.buybar[data-show]) .dopt { bottom: calc(4.5rem + env(safe-area-inset-bottom)); } }
+.dopt__in { padding: var(--s-4) var(--s-5) var(--s-5); }
+.dopt__head { display: flex; align-items: center; justify-content: space-between; gap: var(--s-3); margin-bottom: var(--s-4); }
+.dopt .dopt__title { color: var(--gold-text, #7E6011); margin: 0; }
+.dopt__close { background: none; border: 0; font-size: 1.5rem; line-height: 1; cursor: pointer; color: var(--ink-soft); padding: .1em .3em; }
+.dopt__row { display: grid; gap: var(--s-2); }
+.dopt .dopt__toggle { color: var(--ink); }
+.dopt .dopt__note { color: var(--ink-mute); margin-top: var(--s-4); }
+.dopt .dopt__note a { color: var(--gold-text, #7E6011); }
