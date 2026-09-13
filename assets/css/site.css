@@ -1221,3 +1221,20 @@ main:has(> :last-child.cta-band) + .footer { margin-top: 0; }
 .rcp-hero__shot img { width: 100%; height: 100%; object-fit: cover; display: block; transition: transform .9s var(--ease); }
 .rcp-hero__shot:hover img { transform: scale(1.04); }
 .rcp-hero__shot::after { content: ""; position: absolute; inset: 0; box-shadow: inset 0 0 0 1px rgb(20 19 17 / .06); pointer-events: none; border-radius: inherit; }
+
+/* 23i. About Us — one section built around the family photograph -------------
+   The portrait leads on desktop and the whole story sits beside it, rather than
+   splitting into a hero and a second text block. */
+.about-hero__in--story { align-items: center; }
+@media (min-width: 56em) {
+  .about-hero__in--story { grid-template-columns: minmax(0, 5fr) minmax(0, 6fr); gap: clamp(2.5rem, 6vw, 5rem); }
+}
+.about-hero__photo--archive { aspect-ratio: auto; border-radius: 6px; background: var(--cream-3); }
+.about-hero__photo--archive img { width: 100%; height: auto; display: block; border-radius: 6px; }
+.about-hero__photo--archive figcaption {
+  margin-top: .7rem; font: 500 .68rem/1 var(--sans); letter-spacing: .18em;
+  text-transform: uppercase; color: var(--gold-text); text-align: center;
+}
+.about-hero__prose { display: grid; gap: 1.1em; margin-top: var(--s-4); }
+.about-hero__prose p { font: 400 clamp(1rem, 1.3vw, 1.12rem)/1.6 var(--serif); color: #3C3934; max-width: 46ch; }
+.about-hero__prose .mk-lede { font-weight: 500; font-size: clamp(1.1rem, 1.5vw, 1.28rem); color: #2A2824; max-width: 34ch; margin-top: 0; }

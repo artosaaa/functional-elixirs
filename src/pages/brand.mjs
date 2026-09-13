@@ -1,4 +1,5 @@
-/* Our story · The ritual · Ingredients & sourcing · Sustainability · Gift guide */
+/* Our story · Ingredients & sourcing · Gift guide */
+import { existsSync } from "node:fs";
 import { BEE } from "../site.mjs";
 import { page, jsonld, breadcrumbs, productCard, faqList, ctaBand, ICONS, esc, money, BRAND, CFG, HERO_URL } from "../layout.mjs";
 import { PRODUCTS, HERO, byId } from "../products.mjs";
@@ -8,24 +9,26 @@ const head = (crumb, eyebrow, h1, lede, center = false) => `${breadcrumbs([{ nam
 
 function story() {
   const path = "/about-us/";
+  /* The family photograph is the page. It falls back to the kitchen shot only so the
+     page is never imageless if the archive scan hasn't been added yet. */
+  const ARCHIVE = "/assets/img/about-family-archive.jpg";
+  const hasArchive = existsSync(new URL("../../assets/img/about-family-archive.jpg", import.meta.url));
+  const photo = hasArchive
+    ? `<img src="${ARCHIVE}" alt="A photograph from the family album: two children in striped shirts standing at the edge of a large fountain" width="1280" height="1980" fetchpriority="high" decoding="async">`
+    : `<img src="/assets/img/about-kitchen-jar.jpg" alt="A jar of Functional Elixirs Honey with Fresh Ginger on the kitchen counter at home" width="750" height="1000" fetchpriority="high" decoding="async">`;
   const body = `${breadcrumbs([{ name: "About us", href: path }])}
-<section class="about-hero"><div class="wrap about-hero__in">
+<section class="about-hero"><div class="wrap about-hero__in about-hero__in--story">
+  <figure class="about-hero__photo about-hero__photo--archive reveal">${photo}${hasArchive ? `<figcaption>From the family album.</figcaption>` : ""}</figure>
   <div class="about-hero__copy reveal">
     <p class="mk-eyebrow">Our story</p>
     <h1 class="mk-h1 mk-h1--page">It started<br>with our mom.</h1>
     <span class="mk-rule" aria-hidden="true"></span>
-    <p class="mk-lede">Functional Elixirs began with our mother and a simple ritual she created for her own wellness.</p>
+    <div class="about-hero__prose">
+      <p class="mk-lede">Functional Elixirs began with our mother and a simple ritual she created for her own wellness.</p>
+      <p>She combined honey and fresh ginger as part of her daily routine, looking for natural ways to support how she felt. Over time she told us how much better she felt — and naturally, we wanted to try it ourselves.</p>
+      <p>We fell in love with more than the taste. What began in our mother’s kitchen became something we genuinely believed was worth sharing: just two natural ingredients, nothing complicated, rooted in a family tradition we still enjoy today.</p>
+    </div>
   </div>
-  <figure class="about-hero__photo reveal"><img src="/assets/img/about-kitchen-jar.jpg" alt="A jar of Functional Elixirs Honey with Fresh Ginger on the kitchen counter at home" width="750" height="1000" fetchpriority="high" decoding="async"></figure>
-</div></section>
-
-<section class="about-story"><div class="wrap about-story__in">
-  <div class="about-story__text reveal">
-    <p>She began combining honey and fresh ginger as part of her daily routine, looking for natural ways to support how she felt. Over time she told us how much better she felt — and naturally, we wanted to try it ourselves.</p>
-    <p>We fell in love with more than the taste. What began in our mother’s kitchen became something we genuinely believed was worth sharing.</p>
-    <p>Just two natural ingredients: honey and fresh ginger. Nothing complicated, and rooted in a family tradition we still enjoy today.</p>
-  </div>
-  <figure class="about-story__photo reveal"><img src="/assets/img/honey-ginger-jars-kitchen.jpg" alt="Jars of Functional Elixirs Honey with Fresh Ginger stacked on the kitchen counter, ready to ship" width="1200" height="1200" loading="lazy" decoding="async"><figcaption>Every batch is still jarred by hand.</figcaption></figure>
 </div></section>
 
 <section class="stripes stripes--band"><div class="wrap"><div class="mk-band reveal">
