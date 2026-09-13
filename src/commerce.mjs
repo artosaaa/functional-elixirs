@@ -6,9 +6,9 @@ import { byId } from "./products.mjs";
 
 export const FREE_SHIP_OVER = 50;
 export const STANDARD_SHIPPING = 5.95;
-/* Single hardcoded California rate. Real rates vary by city (7.25–10.75%) and by
-   wherever else there is nexus — switch this for Stripe Tax before selling at volume. */
-export const TAX_RATE_CA = 0.0875;
+/* No sales tax is calculated or collected. If that changes, do it with Stripe Tax
+   rather than a hardcoded rate: real rates vary by city and by wherever there is
+   nexus, and a single guessed percentage is wrong nearly everywhere. */
 export const MAX_QTY = 10;
 export const CURRENCY = "usd";
 
@@ -21,15 +21,11 @@ export const PROMOS = {
 
 const round = (n) => Math.round(n * 100) / 100;
 export const cents = (n) => Math.round(n * 100);
-export const isCA = (country, zip) => {
-  const n = parseInt(String(zip ?? "").slice(0, 3), 10);
-  return country === "US" && n >= 900 && n <= 961;
-};
 
 /* Throws on anything the catalog does not recognise. An unknown id or a quantity
    outside 1..MAX_QTY is a tampered cart, not a rounding problem — reject it rather
    than clamping, so the shopper sees an error instead of a silently different order. */
-export function price({ items, promo, country = "US", zip = "" } = {}) {
+export function price({ items, promo } = {}) {
   if (!Array.isArray(items) || items.length === 0) throw new Error("Your cart is empty.");
   if (items.length > 20) throw new Error("Too many items in the cart.");
 
@@ -53,11 +49,10 @@ export function price({ items, promo, country = "US", zip = "" } = {}) {
   /* Threshold is read off the pre-discount subtotal, matching what the cart drawer
      tells the shopper ("$X away from free shipping"). */
   const shipping = subtotal >= FREE_SHIP_OVER || rule?.type === "ship" ? 0 : STANDARD_SHIPPING;
-  const tax = isCA(country, zip) ? round(afterDiscount * TAX_RATE_CA) : 0;
-  const total = round(afterDiscount + shipping + tax);
+  const total = round(afterDiscount + shipping);
   if (total < 0.5) throw new Error("That total is below the minimum we can charge.");
 
-  return { lines, subtotal, discount, promo: rule ? code : null, shipping, tax, total, amount: cents(total), currency: CURRENCY };
+  return { lines, subtotal, discount, promo: rule ? code : null, shipping, total, amount: cents(total), currency: CURRENCY };
 }
 
 /* FE-XXXXXXXX. Unambiguous alphabet: no O/0, I/1, S/5. */

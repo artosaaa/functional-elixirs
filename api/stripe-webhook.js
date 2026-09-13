@@ -58,7 +58,6 @@ export async function POST(request) {
       discount: money(m.discount),
       promo: m.promo || null,
       shipping: money(m.shipping),
-      tax: money(m.tax),
       total: money(m.total) || pi.amount / 100,
     },
   };

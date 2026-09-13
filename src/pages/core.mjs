@@ -130,7 +130,7 @@ ${single ? `<section class="section--tight shop-single-sec">${bees([
     <p class="mk-price"><span class="mk-price__num">${money(p.price)}</span><span class="mk-price__sub" data-stock="${p.id}">In stock</span></p>
     <div class="shop-single__acts">
       <div class="qty" role="group" aria-label="Quantity"><button type="button" data-dec aria-label="Decrease quantity">−</button><input type="number" data-qty-input inputmode="numeric" min="1" max="${Math.max(1, p.stock)}" value="1" aria-label="Quantity"></div>
-      <button class="btn btn--primary" type="button" data-add="${p.id}">Add to cart — ${money(p.price)}</button>
+      <button class="btn btn--gold" type="button" data-add="${p.id}">Add to cart — ${money(p.price)}</button>
     </div>
     <p class="shop-single__more"><a href="${p.url}">Ingredients, storage and the full story →</a></p>
     <div class="shop-single__promise">
@@ -209,7 +209,7 @@ function product(p) {
 
 <section class="section"><div class="wrap split">
   <div class="stack reveal" style="--flow:var(--s-4)"><p class="eyebrow">Why this jar</p><h2>${p.type === "Accessory" ? "Made for the wide mouth." : "From our mother’s counter."}</h2><p class="lede">${esc(p.story)}</p><p><a href="/about-us/">Our story →</a></p></div>
-  <div class="marquee-photo reveal">${photo(p.type === "Accessory" ? "ritual" : "jars")}</div>
+  <div class="marquee-photo reveal">${photo("jars")}</div>
 </div></section>
 
 <section class="section section--well" id="reviews"><div class="wrap">${REVIEWS_VERIFIED && REVIEWS.length && p.rating && p.reviews
@@ -225,7 +225,7 @@ function product(p) {
   <div class="deskbar__info"><strong>${esc(p.name)}</strong><span>${esc(p.size)} · ${money(p.price)}</span></div>
   <div class="deskbar__actions">
     <button class="btn btn--ghost" type="button" data-buy-now="${p.id}">Buy it now</button>
-    <button class="btn btn--primary" type="button" data-add="${p.id}">Add to cart — ${money(p.price)}</button>
+    <button class="btn btn--gold" type="button" data-add="${p.id}">Add to cart — ${money(p.price)}</button>
   </div>
 </div></div>
 <div class="buybar" id="buybar"><div class="buybar__info"><strong>${esc(p.name)}</strong><span>${esc(p.size)} · ${money(p.price)}</span></div><div class="cluster" style="flex-wrap:nowrap"><button class="btn btn--ghost btn--sm" type="button" data-buy-now="${p.id}">Buy now</button><button class="btn btn--primary btn--sm" type="button" data-add="${p.id}">Add</button></div></div>`;
@@ -245,12 +245,15 @@ function cart() {
 <div class="wrap page-head"><h1>Your cart</h1></div>
 <section class="section--tight"><div class="wrap cart-layout">
   <div><div data-cart-page></div>
-    <div data-cart-has hidden style="margin-top:var(--s-6)"><div class="field"><label for="note">Gift note or delivery instructions (optional)</label><textarea class="textarea" id="note" name="note" placeholder="“One spoon, warm water, before the phone. Thinking of you.”"></textarea></div></div>
+    <div data-cart-has hidden style="margin-top:var(--s-6)">
+      <div class="field"><label for="note">Gift note or delivery instructions (optional)</label><textarea class="textarea" id="note" name="note" placeholder="“One spoon, warm water, before the phone. Thinking of you.”"></textarea></div>
+      <div class="cart-estimate"><h2 style="font-size:var(--fs-base)">Estimate shipping</h2>${shipCalc()}</div>
+    </div>
   </div>
-  <aside class="cart-layout__side summary"><h2>Summary</h2><div data-cart-summary></div>${promoForm()}<a class="btn btn--primary btn--block" href="/checkout/">Checkout</a><p class="secure">${ICONS.lock} Secure checkout · no account needed</p><hr><h2 style="font-size:var(--fs-base)">Estimate shipping</h2>${shipCalc()}</aside>
+  <aside class="cart-layout__side summary"><h2>Summary</h2><div data-cart-summary></div>${promoForm()}<a class="btn btn--gold btn--block" href="/checkout/">Checkout</a><p class="secure">${ICONS.lock} Secure checkout · no account needed</p></aside>
 </div></section>
 `;
-  return { path: "/cart/", html: page({ title: "Cart", description: "Your Functional Elixirs cart — review your honey-ginger jars, apply a promo code, estimate shipping, and check out with Apple Pay or card.", path: "/cart/", body, noindex: true }) };
+  return { path: "/cart/", html: page({ title: "Cart", description: "Your Functional Elixirs cart — review your honey-ginger jars, apply a promo code, estimate shipping, and check out securely.", path: "/cart/", body, noindex: true }) };
 }
 
 /* ---------------- CHECKOUT ---------------- */
@@ -297,7 +300,7 @@ function checkout() {
     </section>
     <section class="co-section">
       <div class="field"><label for="gift">Gift note <span class="muted">(optional — we never include prices)</span></label><textarea class="textarea" id="gift" name="gift" style="min-height:5rem"></textarea></div>
-      <button class="btn btn--primary btn--block" type="submit" style="min-height:3.25rem">Place order · <span data-total>—</span></button>
+      <button class="btn btn--gold btn--block" type="submit" style="min-height:3.25rem">Place order · <span data-total>—</span></button>
       <p class="small muted center">By placing your order you agree to our <a href="/terms/">Terms</a> and <a href="/privacy/">Privacy Policy</a>. Unopened jars are returnable for a full refund.</p>
     </section>
   </form>

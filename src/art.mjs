@@ -47,10 +47,10 @@ export const photoCount = () => Object.keys(PHOTOS).length;
 /* which file a (product, variant) pair actually resolves to — null when it would be drawn */
 export const resolvedPhoto = (p, variant) => (p?.id === "dipper" ? null : findPhoto(p?.id || "brand", variant));
 
+/* Only photographs that exist. The ritual/garden/terraces entries pointed at the three
+   lifestyle snapshots removed from the home page — nothing rendered them, but the next
+   caller of photo("ritual") would have got a broken image. */
 export const REAL = {
-  ritual: { src: "/assets/img/ritual-teapot-window-light.jpg", w: 480, h: 640, alt: "Pale celadon teapot and cup on a linen-covered wooden table beside a tall window, soft morning light and red curtains" },
-  garden: { src: "/assets/img/tea-table-garden-morning.jpg", w: 480, h: 640, alt: "Teapot and two cups of pale tea on a dark table overlooking a sunlit garden and lake" },
-  terraces: { src: "/assets/img/garden-terraces-green.jpg", w: 640, h: 480, alt: "Green terraced garden with a tall cedar, a pond and two small tents under a moving sky" },
   jars: { src: "/assets/img/honey-ginger-jars-kitchen.jpg", w: 640, h: 640, alt: "A pyramid of Functional Elixirs Honey with Fresh Ginger jars with wooden lids stacked on a marble kitchen counter" },
 };
 

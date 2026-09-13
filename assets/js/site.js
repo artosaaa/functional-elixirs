@@ -12,7 +12,6 @@
   const CFG = {
     freeShipOver: 50,
     lowStockAt: 10,
-    taxRateCA: 0.0875,               // California nexus (edit for your state). Real: use a tax API (Stripe Tax / TaxJar).
     promos: {
       FIRSTJAR:  { type: "pct", value: 15, max: 5, label: "15% off your first jar (up to $5)" },
       MORNING10:  { type: "pct", value: 10, label: "10% off" },
@@ -55,7 +54,15 @@
     clearTimeout(toastTimer); toastTimer = setTimeout(() => t.removeAttribute("data-show"), 2600);
   }
 
-  /* Mini jar thumbnail for cart lines (keeps every page light — no per-product image payload) */
+  /* Cart line thumbnail. A real photograph when the catalogue has one — the shop and
+     product pages already load it, so it costs nothing here. The drawn jar below is
+     the fallback for a product with no photograph, which is why it still exists. */
+  function lineThumb(p) {
+    return p?.thumb
+      ? `<img src="${p.thumb}" alt="" width="80" height="100" loading="lazy" decoding="async">`
+      : miniJar(p);
+  }
+
   function miniJar(p) {
     const h = p?.honey || "#7A3E0F", k = p?.id || "x";
     return `<svg viewBox="0 0 80 100" aria-hidden="true" focusable="false">
@@ -125,7 +132,6 @@
       ];
     },
     daysLabel(d) { if (d[0] === 0) return "Today"; return d[0] === d[1] ? `${d[0]} business days` : `${d[0]}–${d[1]} business days`; },
-    isCA(country, zip) { const n = parseInt(String(zip).slice(0, 3), 10); return country === "US" && n >= 900 && n <= 961; },
   };
 
   /* Wishlist */
@@ -166,7 +172,7 @@
   function lineHTML(i, compact) {
     const p = product(i.id); if (!p) return "";
     return `<div class="line" data-line="${p.id}">
-      <a class="line__media" href="${p.url}" aria-hidden="true" tabindex="-1">${miniJar(p)}</a>
+      <a class="line__media" href="${p.url}" aria-hidden="true" tabindex="-1">${lineThumb(p)}</a>
       <div class="line__body">
         <a class="line__title" href="${p.url}">${esc(p.name)}</a>
         <div class="line__meta">${esc(p.sub)} · ${money(p.price)}</div>
@@ -185,13 +191,12 @@
 
   function totalsHTML(opts = {}) {
     const sub = Cart.subtotal(); const disc = Promo.discount(sub); const promo = Promo.get();
-    const ship = opts.ship; const tax = opts.tax;
-    const total = sub - disc + (ship?.price || 0) + (tax || 0);
+    const ship = opts.ship;
+    const total = sub - disc + (ship?.price || 0);
     return `<div class="totals">
       <div><span>Subtotal</span><span>${money(sub)}</span></div>
       ${disc ? `<div class="discount"><span>${esc(promo.code)} — ${esc(promo.label)}</span><span>−${money(disc)}</span></div>` : ""}
       ${ship ? `<div><span>Shipping · ${esc(ship.name)}</span><span>${ship.price ? money(ship.price) : "Free"}</span></div>` : `<div><span>Shipping</span><span class="muted">${sub >= CFG.freeShipOver || Promo.freeShip() ? "Free" : "Calculated at checkout"}</span></div>`}
-      ${tax !== undefined ? `<div><span>Estimated tax</span><span>${tax ? money(tax) : "—"}</span></div>` : ""}
       <div class="grand"><span>Total</span><span>${money(total)}</span></div>
     </div>`;
   }
@@ -348,7 +353,7 @@
         const sub = Cart.subtotal() || 23.99;
         const rates = Ship.quote(c, z, sub);
         out.innerHTML = `<table class="rate-table" aria-label="Shipping estimates"><thead><tr><th>Method</th><th>Arrives</th><th>Cost</th></tr></thead><tbody>${rates.map((r) => `<tr><td><strong>${esc(r.name)}</strong><br><span class="tiny muted">${esc(r.note)}</span></td><td>${Ship.daysLabel(r.days)}</td><td>${r.price ? money(r.price) : "Free"}</td></tr>`).join("")}</tbody></table>
-          <p class="tiny muted">Estimates for a ${money(sub)} order${Ship.isCA(c, z) ? " · CA sales tax added at checkout" : ""}.</p>`;
+          <p class="tiny muted">Estimates for a ${money(sub)} order.</p>`;
         Checkout.recalc?.();
       };
       calc.addEventListener("submit", (e) => { e.preventDefault(); run(); });
@@ -433,11 +438,10 @@
 
     recalc() {
       const box = $("[data-checkout-totals]"); if (!box) return;
-      const s = Ship.get(); const ship = this.quote(); const sub = Cart.subtotal() - Promo.discount(Cart.subtotal());
-      const tax = Ship.isCA(s.country, s.zip) ? +(sub * CFG.taxRateCA).toFixed(2) : 0;
-      box.innerHTML = totalsHTML({ ship, tax });
-      const total = sub + (ship?.price || 0) + tax; $$("[data-total]").forEach((el) => (el.textContent = money(total)));
-      this._total = total; this._tax = tax; this._ship = ship;
+      const ship = this.quote(); const sub = Cart.subtotal() - Promo.discount(Cart.subtotal());
+      box.innerHTML = totalsHTML({ ship });
+      const total = sub + (ship?.price || 0); $$("[data-total]").forEach((el) => (el.textContent = money(total)));
+      this._total = total; this._ship = ship;
       /* Keep the element's idea of the amount in step with the summary, or Stripe
          refuses the confirmation with a mismatch. */
       try { this.elements?.update({ amount: Math.max(50, Math.round(total * 100)) }); } catch { /* element not mounted yet */ }
@@ -508,7 +512,7 @@
         shipping: { ...(this.quote() || { name: "Standard", days: [4, 7] }), price: quote.shipping },
         items: quote.lines.map((l) => ({ id: l.id, qty: l.qty, name: l.name, price: l.unit })),
         subtotal: quote.subtotal, discount: quote.discount, promo: quote.promo,
-        tax: quote.tax, total: quote.total, status: "pending", guest: !Auth.user(),
+        total: quote.total, status: "pending", guest: !Auth.user(),
       });
     },
   };
@@ -570,7 +574,7 @@
           ${o.address.line1 ? `<address class="small muted" style="font-style:normal;margin-top:.75rem">${esc(o.address.line1)}${o.address.line2 ? "<br>" + esc(o.address.line2) : ""}<br>${esc(o.address.city)}, ${esc(o.address.state)} ${esc(o.address.zip)}</address>` : ""}</div>
         <div class="panel"><div class="panel__head"><h2>Summary</h2><span class="small muted">Paid with ${esc(o.method)}</span></div>
           ${o.items.map((i) => `<div class="order-row"><span>${esc(i.name)} <span class="muted">× ${i.qty}</span></span><span>${money(i.price * i.qty)}</span></div>`).join("")}
-          <div class="totals" style="margin-top:1rem"><div><span>Subtotal</span><span>${money(o.subtotal)}</span></div>${o.discount ? `<div class="discount"><span>${esc(o.promo)}</span><span>−${money(o.discount)}</span></div>` : ""}<div><span>Shipping</span><span>${o.shipping?.price ? money(o.shipping.price) : "Free"}</span></div>${o.tax ? `<div><span>Tax</span><span>${money(o.tax)}</span></div>` : ""}<div class="grand"><span>Total</span><span>${money(o.total)}</span></div></div></div>
+          <div class="totals" style="margin-top:1rem"><div><span>Subtotal</span><span>${money(o.subtotal)}</span></div>${o.discount ? `<div class="discount"><span>${esc(o.promo)}</span><span>−${money(o.discount)}</span></div>` : ""}<div><span>Shipping</span><span>${o.shipping?.price ? money(o.shipping.price) : "Free"}</span></div><div class="grand"><span>Total</span><span>${money(o.total)}</span></div></div></div>
       </div>
       <div class="center" style="margin-top:3rem"><div class="cluster" style="justify-content:center"><a class="btn btn--primary" href="${U('/track-order/')}?q=${encodeURIComponent(o.id)}">Track this order</a><a class="btn btn--ghost" href="${U('/shop/')}">Back to the shop</a></div>
         <p class="small muted" style="margin-top:1.5rem">While you wait: <a href="${U('/recipes/')}">a few ways to use it</a>, or <a href="${U('/faq/')}">how to keep honey at its best</a>.</p></div>`;
