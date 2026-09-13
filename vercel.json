@@ -3,6 +3,9 @@
   "installCommand": "echo no-install",
   "buildCommand": "SITE_URL=\"https://${VERCEL_PROJECT_PRODUCTION_URL}\" node build.mjs && node tools/pack.mjs",
   "outputDirectory": "dist",
+  "functions": {
+    "api/*.js": { "maxDuration": 15 }
+  },
   "cleanUrls": true,
   "trailingSlash": true,
   "headers": [

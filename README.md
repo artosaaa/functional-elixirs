@@ -104,6 +104,13 @@ not just a settings save.
 2. Settings → Payments → **Payment methods**: enable card, Apple Pay, Google Pay, Link.
 3. Settings → Payments → **Payment method domains**: register the live domain, or Apple Pay will not render.
 4. Developers → **Webhooks** → add endpoint `https://<domain>/api/stripe-webhook`, event `payment_intent.succeeded`, then copy the `whsec_…` secret.
+   **Then press "Send test webhook" and check the response is `200`.** This project sets
+   `trailingSlash: true`, which redirects paths without a trailing slash. Browsers follow
+   a 308 and keep the POST body, so the checkout and contact form are unaffected — but
+   **Stripe does not follow redirects on webhook deliveries** and records a `307`/`308` as a
+   failed delivery. If the test webhook comes back as a redirect rather than `200`, register
+   the endpoint as `https://<domain>/api/stripe-webhook/` instead, with the trailing slash.
+   Get this wrong and payments still succeed while no receipt is ever sent.
 5. Settings → Business → Public details: set the statement descriptor, so charges are recognisable and do not turn into chargebacks.
 
 ### How the flow actually works
