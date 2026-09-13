@@ -1284,3 +1284,7 @@ main:has(> :last-child.cta-band) + .footer { margin-top: 0; }
 .p-ingredients .split { align-items: start; }
 .p-ingredients .hero__art { max-width: 26rem; }
 .p-ingredients .prose > h2:first-child { margin-top: 0; }
+
+/* 23n. More bees. The drift layer is absolutely positioned, so any section that
+   hosts one needs a containing block and needs to clip the fly-in/out. */
+.mk-nature, .shop-single-sec, .rcp-head-sec, .about-hero { position: relative; overflow: hidden; }

@@ -1,6 +1,6 @@
 /* Our story · Ingredients & sourcing · Gift guide */
 import { existsSync } from "node:fs";
-import { BEE } from "../site.mjs";
+import { BEE, BEE_FLY, bees } from "../site.mjs";
 import { page, jsonld, breadcrumbs, productCard, faqList, ctaBand, ICONS, esc, money, BRAND, CFG, HERO_URL } from "../layout.mjs";
 import { HERO } from "../products.mjs";
 import { art, altFor, photo } from "../art.mjs";
@@ -17,7 +17,10 @@ function story() {
     ? `<img src="${ARCHIVE}" alt="A photograph from the family album: two children in striped shirts standing at the edge of a large fountain" width="1280" height="1980" fetchpriority="high" decoding="async">`
     : `<img src="/assets/img/about-kitchen-jar.jpg" alt="A jar of Functional Elixirs Honey with Fresh Ginger on the kitchen counter at home" width="750" height="1000" fetchpriority="high" decoding="async">`;
   const body = `${breadcrumbs([{ name: "About us", href: path }])}
-<section class="about-hero"><div class="wrap about-hero__in about-hero__in--story">
+<section class="about-hero">${bees([
+  { top: "16%", from: "104vw", to: "-8vw", dur: 48, delay: 2, size: 1.15, tilt: -8, bob: 1.2 },
+  { top: "72%", from: "-10vw", to: "106vw", dur: 62, delay: 19, size: 0.9, tilt: 6, bob: 1 },
+])}<div class="wrap about-hero__in about-hero__in--story">
   <figure class="about-hero__photo about-hero__photo--archive reveal">${photo}${hasArchive ? `<figcaption>From the family album.</figcaption>` : ""}</figure>
   <div class="about-hero__copy reveal">
     <p class="mk-eyebrow">Our story</p>
@@ -32,7 +35,7 @@ function story() {
 </div></section>
 
 <section class="stripes stripes--band"><div class="wrap"><div class="mk-band reveal">
-  <span class="mk-band__bee" aria-hidden="true">${BEE}</span>
+  <span class="mk-band__bee" aria-hidden="true">${BEE_FLY}</span>
   <div class="mk-band__text"><h2 class="mk-h3">From our mother’s recipe to your daily ritual</h2><p>Functional Elixirs — Nature’s Daily Elixir.</p></div>
   <a class="btn btn--gold" href="/shop/">Shop now</a>
 </div></div></section>`;

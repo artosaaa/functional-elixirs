@@ -1,6 +1,6 @@
 /* Recipes — built from the brand's own "How to enjoy it" notes. Scoop. Stir. Sip. */
 import { page, breadcrumbs, jsonld, esc, HERO_URL, BRAND, ICONS } from "../layout.mjs";
-import { LINE, BEE } from "../site.mjs";
+import { LINE, BEE, BEE_FLY, bees } from "../site.mjs";
 import { existsSync } from "node:fs";
 
 /* Hero photography for the top of this page. The files are the client's commissioned
@@ -68,16 +68,19 @@ const card = (r) => `<article class="recipe reveal" id="${r.id}">
 function recipes() {
   const path = "/recipes/";
   const body = `${breadcrumbs([{ name: "Recipes", href: path }])}
-<div class="wrap page-head page-head--center">
+<section class="rcp-head-sec">${bees([
+  { top: "20%", from: "-8vw", to: "104vw", dur: 40, delay: 1, size: 1.25, tilt: 9, bob: 1.3 },
+  { top: "66%", from: "106vw", to: "-10vw", dur: 56, delay: 13, size: 0.95, tilt: -7, bob: 1 },
+])}<div class="wrap page-head page-head--center">
   <p class="mk-eyebrow">Recipes</p>
   <h1 class="mk-h1 mk-h1--page">Scoop. Stir. Sip.</h1>
   <span class="mk-rule mk-rule--center" aria-hidden="true"></span>
   <p class="lede measure mx-auto">One jar. Two simple ingredients. Endless ways to enjoy — straight from the spoon, stirred into something warm, or drizzled over what you already love.</p>
-</div>
+</div></section>
 ${heroStrip()}
 <div class="wrap"><div class="recipes">${RECIPES.map(card).join("")}</div></div>
 <section class="stripes stripes--band"><div class="wrap"><div class="mk-band reveal">
-  <span class="mk-band__bee" aria-hidden="true">${BEE}</span>
+  <span class="mk-band__bee" aria-hidden="true">${BEE_FLY}</span>
   <div class="mk-band__text"><h2 class="mk-h3">Every recipe starts with the jar</h2><p>Honey with Fresh Ginger, 15 oz — crafted from family tradition.</p></div>
   <a class="btn btn--gold" href="${HERO_URL}">Shop now</a>
 </div></div></section>`;
