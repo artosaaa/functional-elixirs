@@ -21,15 +21,12 @@ function story() {
 
 <section class="about-story"><div class="wrap about-story__in">
   <div class="about-story__text reveal">
-    <p>She began combining honey and fresh ginger as part of her daily routine, looking for natural ways to support how she felt. Over time, she told us how much better she felt — and naturally, we wanted to try it ourselves.</p>
-    <p>We fell in love with more than the taste. For us, it became a daily ritual that leaves us feeling energized yet calm — a sense of balance that simply feels good.</p>
-    <p>What began in our mother’s kitchen became something we genuinely believed was worth sharing.</p>
-    <p>Just two natural ingredients: honey and fresh ginger. Nothing complicated. Delicious, versatile, and rooted in a family tradition we still enjoy today.</p>
+    <p>She began combining honey and fresh ginger as part of her daily routine, looking for natural ways to support how she felt. Over time she told us how much better she felt — and naturally, we wanted to try it ourselves.</p>
+    <p>We fell in love with more than the taste. What began in our mother’s kitchen became something we genuinely believed was worth sharing.</p>
+    <p>Just two natural ingredients: honey and fresh ginger. Nothing complicated, and rooted in a family tradition we still enjoy today.</p>
   </div>
   <figure class="about-story__photo reveal"><img src="/assets/img/honey-ginger-jars-kitchen.jpg" alt="Jars of Functional Elixirs Honey with Fresh Ginger stacked on the kitchen counter, ready to ship" width="1200" height="1200" loading="lazy" decoding="async"><figcaption>Every batch is still jarred by hand.</figcaption></figure>
 </div></section>
-
-<figure class="about-nature reveal"><img src="/assets/img/garden-wide.jpg" alt="A wide green garden with tall trees, a pond and tents under a dramatic sky" width="1600" height="1200" loading="lazy" decoding="async"><figcaption><span class="mk-eyebrow">Inspired by nature</span><span class="about-nature__line">Created with care, in harmony with the earth.</span></figcaption></figure>
 
 <section class="stripes stripes--band"><div class="wrap"><div class="mk-band reveal">
   <span class="mk-band__bee" aria-hidden="true">${BEE}</span>
@@ -37,39 +34,6 @@ function story() {
   <a class="btn btn--gold" href="/shop/">Shop now</a>
 </div></div></section>`;
   return { path, html: page({ title: "About Us — It Started With Our Mom | Functional Elixirs", description: "Functional Elixirs began with our mother’s daily ritual of honey and fresh ginger. Two natural ingredients, a family tradition, and a jar we believed was worth sharing.", path, body, breadcrumbs: [{ name: "About us", href: path }] }) };
-}
-
-function ritual() {
-  const path = "/ritual/"; const p = HERO;
-  const faq = [
-    ["How much should I take?", "One teaspoon is the classic serving. Some mornings want two. It’s food, not medicine — use what tastes right."],
-    ["Warm or hot water?", "Warm — around 120–140°F. Boiling water mutes the fresh ginger. Let the kettle stand a minute, or mix hot with a splash of cold."],
-    ["Can I take it straight?", "Absolutely. Off the spoon is how our mother often took it. Sweet first, then the ginger’s warmth."],
-    ["When is the best time?", "Whenever you’ll actually do it. Morning before the phone is our habit; the evening cup in warm water or rooibos is the other end of the same ritual."],
-    ["Is it suitable for kids?", "Not for infants under 12 months (no honey of any kind). Older children usually love a half-teaspoon in warm milk or on toast."],
-  ];
-  const body = `${head("The ritual", "The ritual", "Scoop. Stir. Sip.", "One jar. Two simple ingredients. Endless ways to enjoy. The whole practice takes ninety seconds — here it is, and eight ways to make it yours.")}
-<section class="section--tight"><div class="wrap split split--reverse">
-  <div class="hero__art reveal" style="box-shadow:var(--shadow-2)">${art("cup", p, { alt: altFor(p, "cup"), anim: true, className: "scene--live" })}</div>
-  <ol class="stack reveal" style="list-style:none;padding:0;--flow:var(--s-5)">
-    <li class="ritual-step" style="border-top:0;padding-top:0"><h3>Scoop</h3><p>One teaspoon of <a href="${HERO_URL}">Honey with Fresh Ginger</a>. Use a dry spoon, or the <a href="/shop/beechwood-honey-dipper/">beechwood dipper</a> — water is the one thing honey doesn’t want.</p></li>
-    <li class="ritual-step"><h3>Stir</h3><p>Into about 8 oz of warm water — not boiling. Stir until the spoon comes up clean and the ginger threads swirl up from the bottom.</p></li>
-    <li class="ritual-step"><h3>Sip</h3><p>Wait thirty seconds. Sweet first, then a slow, clean warmth at the back of the throat. Take the minute; it’s the point.</p></li>
-  </ol>
-</div></section>
-<section class="section section--sage"><div class="wrap">
-  <div class="section-head center"><p class="eyebrow">How to enjoy it</p><h2>Spoon it. Stir it. Drizzle it. Make it yours.</h2><p class="lede mx-auto measure">Enjoy it straight from the spoon or fold it into the foods and drinks you already love.</p></div>
-  <div class="grid grid--4">
-    ${[["By the spoonful", "Enjoy directly from the jar.", ICONS.spoon], ["Morning ritual", "Stir into warm water for a simple start to your day.", ICONS.sun], ["Tea time", "Add to your favourite tea instead of ordinary sweetener.", ICONS.cup], ["With lemon", "Combine with warm water and fresh lemon.", ICONS.drop], ["Breakfast", "Drizzle over oatmeal, yogurt, granola or toast.", ICONS.leaf], ["Smoothies", "Blend a spoonful into your favourite smoothie.", ICONS.refresh], ["In the kitchen", "Salad dressings, marinades, sauces or glazes.", ICONS.root], ["Evening ritual", "Stir into a warm caffeine-free drink for something soothing.", ICONS.moon]].map(([t, d, i]) => `<div class="fact reveal">${i}<div><strong>${t}</strong><span>${d}</span></div></div>`).join("")}
-  </div>
-</div></section>
-<section class="section"><div class="wrap split">
-  <div class="prose reveal"><p class="eyebrow">A note on warmth</p><h2>Why warm, not boiling</h2><p>Fresh ginger carries bright, almost citrusy top notes that fade quickly in boiling water. Somewhere around 130°F the honey dissolves instantly and the ginger stays lively. That one detail is most of the difference between a good cup and a great one.</p><p>The same goes for cooking: add the jar late to glazes and marinades, and not at all to dressings and drinks. <a href="/recipes/">Six things to make →</a></p></div>
-  <div class="marquee-photo reveal">${photo("ritual")}</div>
-</div></section>
-<section class="section section--well"><div class="wrap--narrow"><h2 class="center" style="margin-bottom:var(--s-5)">Ritual questions</h2>${faqList(faq)}</div></section>
-${ctaBand("Start the ritual.", `The 15 oz jar is about six weeks of mornings — ${money(HERO.price)}, free shipping over $${CFG.freeShipOver}.`)}`;
-  return { path, html: page({ title: "The Ritual — Scoop. Stir. Sip. | How to Enjoy Honey with Fresh Ginger", description: "How to enjoy honey with fresh ginger: one teaspoon in warm water, plus eight ways to use the jar — tea, lemon, breakfast, smoothies, glazes and an evening cup.", path, body, jsonld: [jsonld.faq(faq)], breadcrumbs: [{ name: "The ritual", href: path }] }) };
 }
 
 function sourcing() {
@@ -113,11 +77,11 @@ function giftGuide() {
 <section class="section--tight"><div class="wrap gift-tiers">
   <div class="gift-tier reveal"><p class="eyebrow">Under $15</p><h3>The small kindness</h3><ul><li>8 oz everyday jar — ${money(byId["hg-8"].price)}</li><li>Beechwood dipper — ${money(byId.dipper.price)}</li><li>Add a note at checkout</li></ul><a class="btn btn--ghost btn--sm" href="/collections/gifts-under-30/">Shop under $30</a></div>
   <div class="gift-tier reveal" style="border-color:var(--gold-2)"><p class="eyebrow">Under $30</p><h3>The one we give most</h3><ul><li>15 oz signature jar — ${money(HERO.price)}</li><li>Six weeks of mornings</li><li>Ribbon on the lid, and it’s a gift</li></ul><a class="btn btn--primary btn--sm" href="${HERO_URL}">The 15 oz jar</a></div>
-  <div class="gift-tier reveal"><p class="eyebrow">Under $50</p><h3>Ready to hand over</h3><ul><li>The Gift Box — ${money(byId["hg-gift"].price)}: jar, dipper, linen wrap, hand-written card</li><li>The Two-Jar Set — ${money(byId["hg-duo"].price)}, ships free</li></ul><a class="btn btn--ghost btn--sm" href="/shop/honey-with-fresh-ginger-gift-box/">The Gift Box</a></div>
+  <div class="gift-tier reveal"><p class="eyebrow">Under $50</p><h3>Ready to hand over</h3><ul><li>The Gift Box — ${money(byId["hg-gift"].price)}: jar, dipper, linen wrap, hand-written card</li><li>The Two-Jar Set — ${money(byId["hg-duo"].price)}: two jars, one to keep and one to give</li></ul><a class="btn btn--ghost btn--sm" href="/shop/honey-with-fresh-ginger-gift-box/">The Gift Box</a></div>
 </div></section>
 <section class="section"><div class="wrap"><div class="section-head"><p class="eyebrow">Everything giftable</p><h2>All of it wraps well</h2></div><div class="products">${PRODUCTS.filter((p) => p.tags.includes("gift")).map(productCard).join("")}</div></div></section>
 <section class="section section--well"><div class="wrap--prose prose"><h2>Gift notes &amp; shipping direct</h2><p>Enter their address at checkout and write a note — we hand-write it on the card and never include prices. Most US addresses see the box in 2–5 business days; <a href="/shipping/">see rates</a>.</p></div></section>`;
   return { path, html: page({ title: "Gift Guide — Honey with Fresh Ginger Gifts Under $15, $30 and $50", description: "Gift guide for Functional Elixirs: the 8 oz jar and dipper under $15, the 15 oz signature jar under $30, and the hand-wrapped Gift Box and two-jar set under $50. Gift notes included.", path, body, breadcrumbs: [{ name: "Gift guide", href: path }] }) };
 }
 
-export default () => [story(), ritual(), sourcing(), giftGuide()];
+export default () => [story(), sourcing(), giftGuide()];

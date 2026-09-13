@@ -1180,3 +1180,44 @@ main:has(> :last-child.cta-band) + .footer { margin-top: 0; }
 /* the signature lede was set to the hero's narrow measure and broke into four
    short lines in a column twice that wide */
 .mk-signature .mk-lede { max-width: 42ch; }
+
+/* 23g. The "How to enjoy it" facts row -------------------------------------
+   Each cell stacked its value and label with no internal layout, so a value
+   that wrapped to two lines ("8 oz warm", "Tea · oats · glazes") pushed its
+   label down and the labels no longer lined up across the row. The value now
+   takes the slack and the labels sit on one baseline whatever the value does. */
+.brew div {
+  display: flex; flex-direction: column; gap: var(--s-3);
+  padding: var(--s-4) var(--s-3);
+  min-height: 7.5rem;
+}
+.brew strong {
+  flex: 1;
+  display: flex; align-items: center; justify-content: center;
+  font-size: clamp(1.05rem, 1.6vw, var(--fs-lg));
+  line-height: 1.25;
+  text-wrap: balance;          /* breaks "8 oz warm" evenly instead of orphaning a word */
+  hyphens: none;
+}
+.brew small { display: block; }
+@media (max-width: 44em) {
+  .brew { grid-template-columns: repeat(2, 1fr); }
+  .brew div { min-height: 6.5rem; }
+}
+
+/* 23h. Recipes hero photography ---------------------------------------------
+   Three commissioned shots across the top of /recipes/. The first is given more
+   width on desktop so the row reads as a composition rather than three equal
+   tiles; all three share one frame ratio so the jar sits at a consistent size. */
+.rcp-hero { display: grid; gap: var(--s-3); margin-block: clamp(1.5rem, 4vw, 2.5rem) clamp(1.75rem, 4vw, 3rem); }
+@media (min-width: 48em) {
+  .rcp-hero { grid-template-columns: 1.35fr 1fr 1fr; gap: var(--s-4); }
+  /* one shared height, not a per-item ratio: with unequal columns an aspect-ratio
+     makes the wide frame taller and the row ends up ragged along the bottom */
+  .rcp-hero__shot { aspect-ratio: auto; height: clamp(17rem, 24vw, 24rem); }
+}
+.rcp-hero__shot { margin: 0; overflow: hidden; border-radius: 6px; background: var(--cream-3); aspect-ratio: 4 / 3; position: relative; }
+@media (max-width: 47.99em) { .rcp-hero__shot:first-child { aspect-ratio: 16 / 10; } }
+.rcp-hero__shot img { width: 100%; height: 100%; object-fit: cover; display: block; transition: transform .9s var(--ease); }
+.rcp-hero__shot:hover img { transform: scale(1.04); }
+.rcp-hero__shot::after { content: ""; position: absolute; inset: 0; box-shadow: inset 0 0 0 1px rgb(20 19 17 / .06); pointer-events: none; border-radius: inherit; }

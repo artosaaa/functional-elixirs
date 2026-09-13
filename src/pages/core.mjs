@@ -1,6 +1,6 @@
 /* Home · Shop · Product (all SKUs) · Collections · Cart · Checkout · Confirmation · Track */
 import { BEE, BEE_FLY, bees, LINE } from "../site.mjs";
-import { page, jsonld, breadcrumbs, productCard, applePayButton, faqList, ctaBand, stars, ICONS, esc, money, BRAND, CFG, abs, HERO_URL, bundleTiers, valueBullets, guaranteeBlock, REVIEWS_VERIFIED } from "../layout.mjs";
+import { page, jsonld, breadcrumbs, productCard, applePayButton, faqList, ctaBand, stars, ICONS, esc, money, BRAND, CFG, abs, HERO_URL, valueBullets, guaranteeBlock, REVIEWS_VERIFIED } from "../layout.mjs";
 import { PRODUCTS, HERO, COLLECTIONS, byId } from "../products.mjs";
 import { art, altFor, photo } from "../art.mjs";
 
@@ -25,6 +25,10 @@ const USES = [
   ["In the kitchen", "Dressings, marinades, glazes for salmon and roasted roots.", ICONS.root],
   ["Evening ritual", "Stirred into a warm caffeine-free cup to close the day.", ICONS.moon],
 ];
+
+/* keep a "·" separator attached to the word before it, so a wrapped value never
+   starts a line with a lone middot */
+const gluePunct = (t) => String(t).replace(/ · /g, "\u00A0· ");
 
 /* ---------------- HOME ---------------- */
 function home() {
@@ -100,7 +104,7 @@ function shop() {
   ["Is it the same recipe in every jar?", "Yes. Raw honey and fresh ginger root, blended in small batches. Only the amount changes."],
   ["How long does a jar last?", "Honey is naturally shelf-stable. For peak ginger flavour, enjoy within 12 months of opening — see the date on the base."],
 ])}</div></section>`;
-  return { path: "/shop/", html: page({ title: "Shop Honey with Fresh Ginger — 8 oz, 15 oz, sets & gifts", description: "Shop Functional Elixirs Honey with Fresh Ginger: the 15 oz signature jar ($23.99), 8 oz everyday jar, two-jar set, gift box and beechwood dipper. Free US shipping over $40.", path: "/shop/", body, breadcrumbs: [{ name: "Shop", href: "/shop/" }] }) };
+  return { path: "/shop/", html: page({ title: "Shop Honey with Fresh Ginger — 8 oz, 15 oz, sets & gifts", description: "Shop Functional Elixirs Honey with Fresh Ginger: the 15 oz signature jar ($23.99), 8 oz everyday jar, two-jar set, gift box and beechwood dipper. Free US shipping over $50.", path: "/shop/", body, breadcrumbs: [{ name: "Shop", href: "/shop/" }] }) };
 }
 
 function collection(slug) {
@@ -108,7 +112,7 @@ function collection(slug) {
   const body = `${breadcrumbs([{ name: "Shop", href: "/shop/" }, { name: c.title, href: path }])}
 <div class="wrap page-head"><p class="eyebrow">Collection</p><h1>${c.h1}</h1><p class="lede measure--wide">${c.lede}</p></div>
 <section class="section--tight"><div class="wrap"><div class="products">${items.map(productCard).join("")}</div></div></section>
-<section class="section--tight"><div class="wrap--narrow center"><p class="muted">Not sure? Read <a href="/ritual/">how the morning ritual works</a> or browse the <a href="/gift-guide/">gift guide</a>.</p></div></section>${ctaBand()}`;
+<section class="section--tight"><div class="wrap--narrow center"><p class="muted">Not sure? Browse the <a href="/recipes/">recipes</a> or the <a href="/gift-guide/">gift guide</a>.</p></div></section>${ctaBand()}`;
   return { path, html: page({ title: c.title, description: c.description, path, body, breadcrumbs: [{ name: "Shop", href: "/shop/" }, { name: c.title, href: path }] }) };
 }
 
@@ -120,7 +124,7 @@ function product(p) {
     ["Does it fit the jar?", "Yes — the dipper was chosen for the jar’s wide mouth and is short enough to rest inside with the lid off."],
     ["How do I clean it?", "Rinse in warm water and dry upright. No dishwasher. A drop of food-safe mineral oil once a year keeps the wood happy."],
   ] : [
-    ["How do I use it?", `One teaspoon in about 8 oz of warm (not boiling) water is the classic. It’s also a one-for-one swap for sugar in tea, and works in oats, smoothies, dressings and glazes. <a href="/ritual/">The ritual →</a>`],
+    ["How do I use it?", `One teaspoon in about 8 oz of warm (not boiling) water is the classic. It’s also a one-for-one swap for sugar in tea, and works in oats, smoothies, dressings and glazes. <a href="/recipes/">Recipes →</a>`],
     ["Is the ginger fresh?", "Yes — fresh ginger root, never powder or extract. You can see the ginger threads suspended in the honey."],
     ["Does it need refrigeration?", `No. Keep it at room temperature with the lid closed. Raw honey may crystallize; that’s natural — stand the closed jar in warm water for 20–30 minutes and stir.`],
     ["Is it safe for children?", "Honey should not be given to infants under 12 months. For everyone else, it’s food — enjoy it as you would any honey."],
@@ -141,25 +145,24 @@ function product(p) {
     <div class="pdp__price"><span class="price">${money(p.price)}${p.compareAt ? `<s>${money(p.compareAt)}</s>` : ""}</span><span class="stock" data-stock="${p.id}">In stock</span></div>
     <p class="muted">${esc(p.short)}</p>
     <div class="notes">${p.notes.map((n, i) => `<div><small>${(p.type === "Accessory" ? ["Material", "Why", "Fit"] : ["Taste", "Then", "Finish"])[i] || "Note"}</small><strong>${esc(n)}</strong></div>`).join("")}</div>
-    ${p.id === "hg-15" ? bundleTiers(["hg-15", "hg-duo", "hg-trio"], { selected: 0 }) : ""}
     <div class="pdp__actions" data-buy-anchor>
-      ${p.id === "hg-15" ? "" : `<div class="qty" role="group" aria-label="Quantity"><button type="button" data-dec aria-label="Decrease quantity">−</button><input type="number" data-qty-input inputmode="numeric" min="1" max="${Math.max(1, p.stock)}" value="1" aria-label="Quantity"></div>`}
-      <button class="btn btn--primary btn--block" type="button" data-add="${p.id}" ${p.id === "hg-15" ? "data-tier-add" : ""} style="min-height:3.25rem;grid-column:${p.id === "hg-15" ? "1 / -1" : "auto"}">Add to cart — <span data-tier-label>${money(p.price)}</span></button>
+      <div class="qty" role="group" aria-label="Quantity"><button type="button" data-dec aria-label="Decrease quantity">−</button><input type="number" data-qty-input inputmode="numeric" min="1" max="${Math.max(1, p.stock)}" value="1" aria-label="Quantity"></div>
+      <button class="btn btn--primary btn--block" type="button" data-add="${p.id}" style="min-height:3.25rem">Add to cart — ${money(p.price)}</button>
     </div>
     <div class="objections">
       <p><strong>Worried it’s too hot?</strong> It’s honey first. The ginger arrives after, as warmth rather than heat.</p>
       <p><strong>How long does it last?</strong> A 15 oz jar is roughly six weeks of morning spoonfuls — one teaspoon a day.</p>
-      <p><strong>What if I change my mind?</strong> Send the jar back unopened within ${CFG.returnsDays} days and we’ll refund the product price. Return postage is yours. Once a jar is opened we can’t take it back — honey is food.</p>
+      <p><strong>What if I change my mind?</strong> Send the jar back unopened and we’ll refund it in full — there’s no deadline. Return postage is yours. Once a jar is opened we can’t take it back: honey is food.</p>
     </div>
     <p class="urgency" data-dispatch><strong>Ships today</strong> if you order before 1pm PT</p>
     <div class="express">
-      ${applePayButton(`data-express-buy="${p.id}" ${p.id === "hg-15" ? "data-tier-express" : ""} aria-label="Buy now with Apple Pay"`)}
+      ${applePayButton(`data-express-buy="${p.id}" aria-label="Buy now with Apple Pay"`)}
       <div class="express__secondary"><button class="btn btn--gpay" type="button" data-express-buy="${p.id}" aria-label="Buy with Google Pay"><strong style="color:#4285F4">G</strong>&nbsp;Pay</button><button class="btn btn--shop-pay" type="button" data-express-buy="${p.id}" aria-label="Buy with Shop Pay">Shop <span style="font-style:normal;font-weight:400">Pay</span></button></div>
       <p class="express__or">or pay with card at checkout</p>
     </div>
     <div class="ship-snippet">
       <div>${ICONS.truck}<span><strong data-ship-estimate="${p.id}">Arrives in 3–5 business days</strong> · Free shipping over $${CFG.freeShipOver} · <a href="/shipping/">Rates &amp; calculator</a></span></div>
-      <div>${ICONS.refresh}<span>${CFG.returnsDays}-day returns on unopened jars. <a href="/returns/">How returns work.</a></span></div>
+      <div>${ICONS.refresh}<span>Unopened jars returnable for a full refund. <a href="/returns/">How returns work.</a></span></div>
       <div>${ICONS.lock}<span>Secure checkout · Apple Pay, Google Pay, all major cards</span></div>
     </div>
     ${valueBullets()}
@@ -167,12 +170,12 @@ function product(p) {
     <div class="acc">
       <details open><summary>How to enjoy it</summary><div class="acc__body">
         ${p.type === "Accessory"
-          ? `<div class="brew"><div><strong>${esc(p.size)}</strong><small>Length</small></div><div><strong>Beechwood</strong><small>Material</small></div><div><strong>${esc(p.use.also)}</strong><small>Care</small></div></div>`
-          : `<div class="brew"><div><strong>${esc(p.use.spoon)}</strong><small>Scoop</small></div><div><strong>${esc(p.use.water)}</strong><small>Stir into</small></div><div><strong>${esc(p.use.when)}</strong><small>When</small></div><div><strong style="font-size:var(--fs-base)">${esc(p.use.also)}</strong><small>Also</small></div></div>`}
-        <p>${p.type === "Accessory" ? "Twist the dipper in the jar, lift, and let the honey spiral off the end into your cup. Rest it on a small dish between uses." : `Sweet first, then the ginger’s slow warmth. Warm — not boiling — water keeps the fresh ginger bright. <a href="/ritual/">The full ritual, and eight ways to use the jar →</a>`}</p></div></details>
+          ? `<div class="brew"><div><strong>${esc(p.size)}</strong><small>Length</small></div><div><strong>Beechwood</strong><small>Material</small></div><div><strong>${gluePunct(esc(p.use.also))}</strong><small>Care</small></div></div>`
+          : `<div class="brew"><div><strong>${esc(p.use.spoon)}</strong><small>Scoop</small></div><div><strong>${esc(p.use.water)}</strong><small>Stir into</small></div><div><strong>${esc(p.use.when)}</strong><small>When</small></div><div><strong>${gluePunct(esc(p.use.also))}</strong><small>Also</small></div></div>`}
+        <p>${p.type === "Accessory" ? "Twist the dipper in the jar, lift, and let the honey spiral off the end into your cup. Rest it on a small dish between uses." : `Sweet first, then the ginger’s slow warmth. Warm — not boiling — water keeps the fresh ginger bright. <a href="/recipes/">Ways to use the jar →</a>`}</p></div></details>
       <details><summary>Ingredients</summary><div class="acc__body"><p>${esc(p.ingredients)}</p><p>${esc(p.origin)}. No added sugar, colours, flavours or preservatives. Naturally gluten-free. Not suitable for infants under 12 months.</p></div></details>
       <details><summary>Storage</summary><div class="acc__body"><p>Room temperature, lid closed, dry spoon. Raw honey may crystallize over time — that’s natural. Warm the closed jar in a bowl of warm water to restore.</p></div></details>
-      <details><summary>Shipping &amp; returns</summary><div class="acc__body"><p>Ships in 1–2 business days from the USA. Standard $5.95 (free over $${CFG.freeShipOver}), Express $14, local pickup free. Unopened jars can be returned within ${CFG.returnsDays} days for a refund of the product price, with return postage paid by you; opened jars can’t be returned. <a href="/shipping/">Shipping</a> · <a href="/returns/">Returns</a></p></div></details>
+      <details><summary>Shipping &amp; returns</summary><div class="acc__body"><p>Ships in 1–2 business days from the USA. Standard $5.95 (free over $${CFG.freeShipOver}), Express $14, local pickup free. An unopened jar can be returned any time for a full refund, with return postage paid by you; opened jars can’t be returned. <a href="/shipping/">Shipping</a> · <a href="/returns/">Returns</a></p></div></details>
     </div>
   </div>
 </section>
@@ -184,7 +187,7 @@ function product(p) {
 
 <section class="section section--well" id="reviews"><div class="wrap">${REVIEWS_VERIFIED
   ? `<div class="section-head center"><p class="eyebrow">Reviews</p><h2>${p.rating} out of 5</h2><p class="muted">${p.reviews} verified reviews</p></div><div class="grid grid--3">${REVIEWS.slice(0, 3).map(reviewCard).join("")}</div>`
-  : `<div class="wrap--narrow center stack" style="--flow:var(--s-4)"><p class="eyebrow">Returns</p><h2>Unopened jars go back within ${CFG.returnsDays} days.</h2><p class="lede">Return it sealed and we’ll refund the product price; you cover the return postage. An opened jar we can’t accept — honey is food, and a broken seal can’t be resold.</p><p><a class="btn btn--ghost" href="/contact/">Questions first? Write to us</a></p></div>`}</div></section>
+  : `<div class="wrap--narrow center stack" style="--flow:var(--s-4)"><p class="eyebrow">Returns</p><h2>Still sealed? Send it back any time.</h2><p class="lede">Return an unopened jar and we’ll refund it in full, with no deadline; you cover the return postage. An opened jar we can’t accept — honey is food, and a broken seal can’t be resold.</p><p><a class="btn btn--ghost" href="/contact/">Questions first? Write to us</a></p></div>`}</div></section>
 
 <section class="section"><div class="wrap--narrow"><h2 class="center" style="margin-bottom:var(--s-5)">Questions</h2>${faqList(faq)}</div></section>
 
@@ -192,10 +195,10 @@ function product(p) {
 
 <div class="deskbar" id="deskbar"><div class="wrap deskbar__in">
   <div class="deskbar__thumb">${art("front", p, { alt: "" })}</div>
-  <div class="deskbar__info"><strong>${esc(p.name)}</strong><span>${esc(p.size)} · <span data-tier-price>${money(p.price)}</span></span></div>
+  <div class="deskbar__info"><strong>${esc(p.name)}</strong><span>${esc(p.size)} · ${money(p.price)}</span></div>
   <div class="deskbar__actions">
-    ${applePayButton(`data-express-buy="${p.id}" ${p.id === "hg-15" ? "data-tier-express" : ""} aria-label="Buy now with Apple Pay"`).replace('btn--block', '')}
-    <button class="btn btn--primary" type="button" data-add="${p.id}" ${p.id === "hg-15" ? "data-tier-add" : ""}>Add to cart — <span data-tier-label>${money(p.price)}</span></button>
+    ${applePayButton(`data-express-buy="${p.id}" aria-label="Buy now with Apple Pay"`).replace('btn--block', '')}
+    <button class="btn btn--primary" type="button" data-add="${p.id}">Add to cart — ${money(p.price)}</button>
   </div>
 </div></div>
 <div class="buybar" id="buybar"><div class="buybar__info"><strong>${esc(p.name)}</strong><span>${esc(p.size)} · ${money(p.price)}</span></div><div class="cluster" style="flex-wrap:nowrap"><button class="btn btn--apple-pay btn--sm" type="button" data-express-buy="${p.id}" aria-label="Buy with Apple Pay">${ICONS.apple} Pay</button><button class="btn btn--primary btn--sm" type="button" data-add="${p.id}">Add</button></div></div>`;
@@ -238,7 +241,7 @@ function checkout() {
       <div class="express">${applePayButton('data-apple-pay')}<div class="express__secondary"><button class="btn btn--gpay" type="button" data-gpay><strong style="color:#4285F4">G</strong>&nbsp;Pay</button><button class="btn btn--shop-pay" type="button" data-shop-pay>Shop <span style="font-style:normal;font-weight:400">Pay</span></button></div><p class="express__or">or continue below</p></div>
     </section>
     <section class="co-section">
-      <div class="co-section__head"><h2>Contact</h2><p class="small" data-guest-note>Have an account? <a href="/account/login/?next=/checkout/">Log in</a></p><p class="small" data-account-note hidden>Checking out with your account.</p></div>
+      <div class="co-section__head"><h2>Contact</h2><p class="small muted">We’ll email your receipt and tracking here.</p></div>
       <div class="field"><label for="email">Email</label><input class="input" id="email" name="email" type="email" autocomplete="email" required inputmode="email"><p class="error" id="email-err">Enter a valid email so we can send your receipt.</p></div>
       <label class="check"><input type="checkbox" name="news" checked> Email me the monthly note from the kitchen (unsubscribe any time)</label>
     </section>
@@ -284,7 +287,7 @@ function checkout() {
     <section class="co-section">
       <div class="field"><label for="gift">Gift note <span class="muted">(optional — we never include prices)</span></label><textarea class="textarea" id="gift" name="gift" style="min-height:5rem"></textarea></div>
       <button class="btn btn--primary btn--block" type="submit" style="min-height:3.25rem">Place order · <span data-total>—</span></button>
-      <p class="small muted center">By placing your order you agree to our <a href="/terms/">Terms</a> and <a href="/privacy/">Privacy Policy</a>. ${CFG.returnsDays}-day returns on unopened jars.</p>
+      <p class="small muted center">By placing your order you agree to our <a href="/terms/">Terms</a> and <a href="/privacy/">Privacy Policy</a>. Unopened jars are returnable for a full refund.</p>
     </section>
   </form>
   </div>
@@ -302,7 +305,7 @@ function track() {
 <section class="section--tight"><div class="wrap--narrow stack" style="--flow:var(--s-6)">
   <form id="track-form" class="form-card form" novalidate><div class="field"><label for="track-q">Order or tracking number</label><input class="input" id="track-q" name="q" placeholder="FE-ABC123" autocomplete="off" required></div><button class="btn btn--primary" type="submit">Track order</button></form>
   <div data-track-result aria-live="polite"></div>
-  <p class="small muted center">Can’t find your number? <a href="/contact/">Contact us</a> with the email you ordered with — or <a href="/account/">log in</a> to see all your orders.</p>
+  <p class="small muted center">Can’t find your number? <a href="/contact/">Contact us</a> with the email you ordered with.</p>
 </div></section>`;
   return { path: "/track-order/", html: page({ title: "Track your order", description: "Track your Functional Elixirs order by order number or tracking number — see when your honey-ginger jar was packed, shipped, and will arrive.", path: "/track-order/", body, breadcrumbs: [{ name: "Track order", href: "/track-order/" }] }) };
 }

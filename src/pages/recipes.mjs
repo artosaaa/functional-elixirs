@@ -1,6 +1,21 @@
 /* Recipes — built from the brand's own "How to enjoy it" notes. Scoop. Stir. Sip. */
 import { page, breadcrumbs, jsonld, esc, HERO_URL, BRAND, ICONS } from "../layout.mjs";
 import { LINE, BEE } from "../site.mjs";
+import { existsSync } from "node:fs";
+
+/* Hero photography for the top of this page. The files are the client's commissioned
+   product shots; the row renders only for the ones actually present in assets/img/recipes/,
+   so the page is never left with broken images if a file hasn't been added yet. */
+const DIR = new URL("../../assets/img/recipes/", import.meta.url);
+const HERO_SHOTS = [
+  { file: "lemon-ginger-cooler.jpg", alt: "A tall glass of iced honey-ginger lemonade with lemon wheels and mint, the Functional Elixirs jar beside it on a marble counter" },
+  { file: "honey-on-fruit.jpg", alt: "Apple and peach slices spread with Functional Elixirs honey with fresh ginger on a stoneware plate, the jar behind them" },
+  { file: "ginger-tea.jpg", alt: "A steaming striped mug of honey-ginger tea beside the Functional Elixirs jar, fresh ginger root and a gold spoon" },
+].filter((s) => existsSync(new URL(s.file, DIR)));
+
+const heroStrip = () => HERO_SHOTS.length
+  ? `<div class="wrap"><div class="rcp-hero">${HERO_SHOTS.map((s, i) => `<figure class="rcp-hero__shot reveal" style="--d:${i * 90}ms"><img src="/assets/img/recipes/${s.file}" alt="${esc(s.alt)}" width="1300" height="1200" loading="${i === 0 ? "eager" : "lazy"}" ${i === 0 ? 'fetchpriority="high"' : ""} decoding="async"></figure>`).join("")}</div></div>`
+  : "";
 
 const RECIPES = [
   { id: "morning-ritual", icon: LINE.cup, when: "Morning", time: "2 minutes", title: "The Morning Ritual",
@@ -59,6 +74,7 @@ function recipes() {
   <span class="mk-rule mk-rule--center" aria-hidden="true"></span>
   <p class="lede measure mx-auto">One jar. Two simple ingredients. Endless ways to enjoy — straight from the spoon, stirred into something warm, or drizzled over what you already love.</p>
 </div>
+${heroStrip()}
 <div class="wrap"><div class="recipes">${RECIPES.map(card).join("")}</div></div>
 <section class="stripes stripes--band"><div class="wrap"><div class="mk-band reveal">
   <span class="mk-band__bee" aria-hidden="true">${BEE}</span>

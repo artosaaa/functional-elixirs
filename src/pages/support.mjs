@@ -8,7 +8,7 @@ const policy = ({ path, crumb, title, description, h1, lede, body, ld = [] }) =>
 
 const FAQ = [
   ["What exactly is in the jar?", "Raw honey and fresh ginger root. Nothing else — no added sugar, flavourings, colours or preservatives. <a href='/sourcing/'>Ingredients &amp; sourcing</a>."],
-  ["How do I use it?", `One teaspoon in about 8 oz of warm water is the classic. It also replaces sugar in tea one-for-one, and works in oats, smoothies, dressings and glazes. <a href="/ritual/">The ritual</a> has all eight ways.`],
+  ["How do I use it?", `One teaspoon in about 8 oz of warm water is the classic. It also replaces sugar in tea one-for-one, and works in oats, smoothies, dressings and glazes. <a href="/recipes/">Recipes</a> has more ways to use it.`],
   ["How much is in a jar, and how long does it last?", "The signature jar is 15 oz (425 g) — about six weeks of daily teaspoons. The 8 oz jar is about three weeks. Honey is shelf-stable; for peak ginger flavour, enjoy within 12 months of opening."],
   ["Does it need to be refrigerated?", "No. Room temperature, lid closed, dry spoon. Cold speeds crystallization."],
   ["My honey is cloudy / thick / grainy. Is it bad?", `No — raw honey crystallizes naturally. Set the closed jar in warm water for 20–30 minutes and stir.`],
@@ -16,11 +16,11 @@ const FAQ = [
   ["Is it vegan, gluten-free, nut-free?", "It contains honey, so it isn’t vegan. It is naturally gluten-free, dairy-free and nut-free."],
   ["Where is it made?", "Blended and jarred in small batches in the USA."],
   ["How fast will it ship?", `Orders ship in 1–2 business days. Standard delivery is 2–7 business days depending on distance, Express 1–3. Free standard shipping over $${CFG.freeShipOver}. <a href="/shipping/">Rates and calculator</a>.`],
-  ["Can I return it?", `An unopened jar, yes — within ${CFG.returnsDays} days, for a refund of the product price, with return postage paid by you. An opened jar we can’t take back: honey is food. <a href="/returns/">Returns policy</a>.`],
+  ["Can I return it?", `An unopened jar, yes — any time, for a full refund, with return postage paid by you. An opened jar we can’t take back: honey is food. <a href="/returns/">Returns policy</a>.`],
   ["Do you offer Apple Pay?", "Yes — Apple Pay, Google Pay and Shop Pay on the product page, in the cart and at checkout, plus all major cards. Guest checkout is always available."],
   ["Do you ship internationally?", "Canada, the UK and Australia, with tracked rates shown at checkout. Duties and taxes may apply on delivery."],
   ["Can I send it as a gift?", `Yes. Enter their address, add a note at checkout (we hand-write it and never include prices), or choose the <a href="/shop/honey-with-fresh-ginger-gift-box/">Gift Box</a>.`],
-  ["Is there a subscription?", "Not yet. The two-jar set is our low-tech version — it ships free and covers about three months."],
+  ["Is there a subscription?", "Not yet. The two-jar set is our low-tech version — it covers about three months of mornings."],
 ];
 
 function faq() {
@@ -86,14 +86,14 @@ function shipping() {
     <p>Questions about returns? See <a href="/returns/">Returns &amp; exchanges</a>.</p>
   </div>
 </div></section>`;
-  return { path, html: page({ title: "Shipping & Delivery — Rates, Times and Free Shipping over $40", description: "Functional Elixirs shipping: free US standard shipping over $40, $5.95 standard (2–7 days), $14 express (1–3 days), free local pickup, and tracked international rates to Canada, UK and Australia.", path, body, breadcrumbs: [{ name: "Shipping & delivery", href: path }] }) };
+  return { path, html: page({ title: "Shipping & Delivery — Rates, Times and Free Shipping over $50", description: "Functional Elixirs shipping: free US standard shipping over $50, $5.95 standard (2–7 days), $14 express (1–3 days), free local pickup, and tracked international rates to Canada, UK and Australia.", path, body, breadcrumbs: [{ name: "Shipping & delivery", href: path }] }) };
 }
 
 const returns = () => policy({
-  path: "/returns/", crumb: "Returns & exchanges", title: "Returns & Exchanges — Unopened Jars, 30 Days", description: "Functional Elixirs returns: unopened jars can be returned within 30 days for a refund of the product price, with return postage paid by you. Opened jars can’t be returned. Damaged or wrong items are replaced free.",
-  h1: "Returns &amp; exchanges", lede: `Unopened jars go back within ${CFG.returnsDays} days for a refund. Opened ones can’t — honey is food. The detail is below.`, body: `
+  path: "/returns/", crumb: "Returns & exchanges", title: "Returns & Exchanges — Unopened Jars, Full Refund", description: "Functional Elixirs returns: an unopened jar can be returned any time for a full refund, with return postage paid by you. Opened jars can’t be returned. Damaged or wrong items are replaced free.",
+  h1: "Returns &amp; exchanges", lede: "Unopened jars go back for a full refund, with no deadline. Opened ones can’t — honey is food. The detail is below.", body: `
 <h2>Unopened jars</h2>
-<p>If the jar is unopened and its seal is intact, return it within ${CFG.returnsDays} days of delivery for a refund of the product price. Email <a href="mailto:${BRAND.email}">${BRAND.email}</a> with your order number and we’ll send the return address.</p>
+<p>If the jar is unopened and its seal is intact, return it for a full refund of what you paid for it. There’s no deadline — a sealed jar is a sealed jar. Email <a href="mailto:${BRAND.email}">${BRAND.email}</a> with your order number and we’ll send the return address.</p>
 <p><strong>You arrange and pay the return postage.</strong> We don’t send prepaid labels for change-of-mind returns. Pack the jar well — glass travels badly — and keep your tracking number; we can only refund a jar that reaches us intact. Refunds post within 5 business days of arrival, to your original payment method. The original outbound shipping charge isn’t refunded.</p>
 <h2>Opened jars</h2>
 <p>We can’t accept them. Honey is food, and once a seal is broken the jar can’t be resold or given to anyone else — so an opened jar can’t be returned or refunded, including if you simply don’t care for the taste. Please don’t ship one back; we’d have to throw it away and you’d be out the postage too.</p>
@@ -103,9 +103,9 @@ const returns = () => policy({
 <h2>Gifts</h2>
 <p>Gift recipients can exchange an unopened jar or take store credit using the order number or the recipient email; refunds go to the purchaser’s original payment method. We never include prices in gift boxes.</p>
 <h2>Exchanges</h2>
-<p>Want a different size or set? Email us within ${CFG.returnsDays} days. Send the unopened original back at your own cost; once it arrives we’ll ship the replacement and settle any price difference.</p>
+<p>Want a different size or set? Email us. Send the unopened original back at your own cost; once it arrives we’ll ship the replacement and settle any price difference.</p>
 <h2>Not covered</h2>
-<p>Opened jars. Crystallized honey — that’s natural, not a fault; stand the closed jar in warm water for 20–30 minutes and stir. Jars past ${CFG.returnsDays} days. Purchases from third-party retailers (please return to them). Return postage, in every case except our own error.</p>
+<p>Opened jars. Crystallized honey — that’s natural, not a fault; stand the closed jar in warm water for 20–30 minutes and stir. Purchases from third-party retailers (please return to them). Return postage, in every case except our own error.</p>
 <h2>California residents</h2>
 <p>Nothing here limits your rights under California law, including the Consumer Legal Remedies Act. Refunds for returns made under this policy are issued in the original form of payment within the timeframes above.</p>
 <h2>How to start</h2>
@@ -113,28 +113,28 @@ const returns = () => policy({
 });
 
 const privacy = () => policy({
-  path: "/privacy/", crumb: "Privacy policy", title: "Privacy Policy", description: "How Functional Elixirs collects, uses and protects your information — orders, accounts, email, cookies — and your rights under the CCPA/CPRA and other US state privacy laws.",
+  path: "/privacy/", crumb: "Privacy policy", title: "Privacy Policy", description: "How Functional Elixirs collects, uses and protects your information — orders, email, cookies — and your rights under the CCPA/CPRA and other US state privacy laws.",
   h1: "Privacy policy", lede: "We collect what we need to send you honey and reply to your emails. We don’t sell your data. Here’s the detail.", body: `
 <h2>Who we are</h2>
 <p>${BRAND.legal} (“we”) operates this website. Questions about this policy: <a href="mailto:${BRAND.email}">${BRAND.email}</a>.</p>
 <h2>What we collect</h2>
 <ul>
 <li><strong>Order information</strong> — name, shipping and billing address, email, phone (optional), and what you bought. Payment card details go directly to our payment processor (Stripe, Apple Pay, Google Pay or PayPal); we never see or store full card numbers.</li>
-<li><strong>Account information</strong> — if you create an account: name, email, password (hashed), saved addresses, order history, wishlist.</li>
+
 <li><strong>Messages</strong> — what you send us by email or the contact form.</li>
 <li><strong>Newsletter</strong> — your email, if you join.</li>
 <li><strong>Device &amp; usage data</strong> — IP address, browser, pages viewed, referring site, collected via server logs and, if you accept them, analytics cookies. See <a href="/cookies/">Cookies</a>.</li>
 </ul>
 <h2>How we use it</h2>
-<ul><li>To fulfil and deliver orders, send receipts and shipping updates, and handle returns.</li><li>To run your account and remember your cart.</li><li>To answer your messages.</li><li>To send the newsletter if you asked for it (unsubscribe in one click, any time).</li><li>To understand how the site is used and fix what’s broken.</li><li>To prevent fraud and meet legal obligations (tax, accounting).</li></ul>
+<ul><li>To fulfil and deliver orders, send receipts and shipping updates, and handle returns.</li><li>To remember your cart while you shop.</li><li>To answer your messages.</li><li>To send the newsletter if you asked for it (unsubscribe in one click, any time).</li><li>To understand how the site is used and fix what’s broken.</li><li>To prevent fraud and meet legal obligations (tax, accounting).</li></ul>
 <h2>Who we share it with</h2>
 <p>Only service providers who need it to do a job for us: payment processors, shipping carriers and label services, our email provider, our web host, and analytics (if you’ve opted in). Each is bound by contract to use your data only for that job. We do not sell personal information, and we do not “share” it for cross-context behavioural advertising as defined by California law.</p>
 <h2>Cookies</h2>
 <p>Essential cookies and local storage keep your cart and login working. Analytics cookies are off until you accept them in the banner. Details, and how to change your mind, in the <a href="/cookies/">Cookie notice</a>.</p>
 <h2>How long we keep it</h2>
-<p>Order records for 7 years (tax law). Account data until you delete your account. Newsletter email until you unsubscribe. Messages for 2 years. Server logs for 30 days.</p>
+<p>Order records for 7 years (tax law). Newsletter email until you unsubscribe. Messages for 2 years. Server logs for 30 days.</p>
 <h2>Your rights</h2>
-<p>Wherever you live, you can ask us to access, correct or delete your personal information, or to stop sending you marketing. Email <a href="mailto:${BRAND.email}">${BRAND.email}</a>; we respond within 45 days and will verify your identity by matching your request to the email on the account or order.</p>
+<p>Wherever you live, you can ask us to access, correct or delete your personal information, or to stop sending you marketing. Email <a href="mailto:${BRAND.email}">${BRAND.email}</a>; we respond within 45 days and will verify your identity by matching your request to the email on the order.</p>
 <h3>California (CCPA / CPRA)</h3>
 <p>California residents also have the right to know the categories and specific pieces of personal information we’ve collected, the categories of sources, our purposes, and the categories of third parties we’ve disclosed it to; the right to delete; the right to correct; the right to limit use of sensitive personal information (we collect none beyond what’s needed to process a payment); and the right not to be discriminated against for exercising these rights. We do not sell or share personal information, so there is nothing to opt out of — but we honour Global Privacy Control signals regardless. You may designate an authorised agent to make a request on your behalf.</p>
 <h3>Other US states</h3>
@@ -148,16 +148,16 @@ const privacy = () => policy({
 });
 
 const terms = () => policy({
-  path: "/terms/", crumb: "Terms of service", title: "Terms of Service", description: "Terms of service for functionalelixirs.com — ordering, pricing, shipping, returns, accounts, acceptable use, food product notices and governing law.",
+  path: "/terms/", crumb: "Terms of service", title: "Terms of Service", description: "Terms of service for functionalelixirs.com — ordering, pricing, shipping, returns, acceptable use, food product notices and governing law.",
   h1: "Terms of service", lede: "The plain-English agreement between you and us when you use this site or buy a jar.", body: `
 <h2>1. Who’s agreeing</h2><p>These terms are between you and ${BRAND.legal}. By using the site or placing an order you accept them. If you don’t, please don’t use the site.</p>
 <h2>2. Products</h2><p>Our products are foods. Honey with Fresh Ginger contains honey and fresh ginger root and is not intended for infants under 12 months. Batches vary naturally in colour and taste; raw honey may crystallize. Nothing on this site is medical advice; statements about traditional use are not evaluated by the FDA and the product is not intended to diagnose, treat, cure or prevent any disease. If you have a medical condition or allergy, consult your clinician.</p>
 <h2>3. Orders &amp; pricing</h2><p>Prices are in US dollars and exclude shipping and any applicable sales tax, which are shown before you pay. We may correct pricing errors and will tell you before shipping; you can cancel for a full refund. An order is accepted when we email a shipping confirmation. We may decline or cancel orders that look fraudulent, exceed available stock, or are for resale without a wholesale agreement.</p>
 <h2>4. Payment</h2><p>We accept major cards, Apple Pay, Google Pay, Shop Pay and PayPal through PCI-compliant processors. You confirm you’re authorised to use the payment method.</p>
 <h2>5. Shipping</h2><p>Per our <a href="/shipping/">Shipping &amp; delivery</a> page. Delivery windows are estimates. Risk of loss passes to you on delivery to the address you gave us; if something arrives damaged, see returns below.</p>
-<h2>6. Returns</h2><p>Per our <a href="/returns/">Returns &amp; exchanges</a> policy: unopened jars within ${CFG.returnsDays} days, return postage paid by you; opened jars are not returnable.</p>
+<h2>6. Returns</h2><p>Per our <a href="/returns/">Returns &amp; exchanges</a> policy: unopened jars are returnable for a full refund with no time limit, return postage paid by you; opened jars are not returnable.</p>
 <h2>7. Promotions</h2><p>Promo codes are one per order, can’t be applied retroactively, and may be withdrawn at any time. Free-shipping thresholds are calculated on the subtotal after discounts.</p>
-<h2>8. Accounts</h2><p>Keep your password private; you’re responsible for activity under your account. We may close accounts used for fraud or abuse. You can delete your account any time by emailing us.</p>
+<h2>8. Accounts</h2><p>We don’t offer customer accounts at the moment — checkout is guest-only. If that changes, these terms will be updated before any account feature goes live.</p>
 <h2>9. Content &amp; conduct</h2><p>Site content, the Functional Elixirs name and the F·E plaque mark are ours. Don’t copy them commercially without permission. Reviews and messages you send us may be used (with your first name and initial) in our marketing unless you tell us otherwise. Don’t scrape, attack, or misuse the site.</p>
 <h2>10. Disclaimers &amp; liability</h2><p>The site is provided “as is”. To the extent permitted by law, we aren’t liable for indirect or consequential losses, and our total liability for any order is limited to the amount you paid for it. Nothing here limits liability that can’t be limited by law, including for death, personal injury caused by negligence, or fraud, and nothing limits rights you have under consumer protection law in your state.</p>
 <h2>11. Disputes</h2><p>Talk to us first — nearly everything is fixable by email. These terms are governed by the laws of the State of California, without regard to conflict-of-law rules. Any dispute that can’t be resolved informally will be brought in the state or federal courts of California, except that either party may bring individual claims in small-claims court. Class actions are waived to the extent permitted by law.</p>
@@ -189,10 +189,10 @@ function sitemap() {
   const body = `${head("Sitemap", path, "Index", "Sitemap", "Every page on the site. Search engines: see <a href='/sitemap.xml'>/sitemap.xml</a>.")}
 <section class="section--tight"><div class="wrap grid grid--3">
   ${group("Shop", [["All products", "/shop/"], ...PRODUCTS.map((p) => [`${p.name} — ${p.size}`, p.url]), ...Object.entries(COLLECTIONS).map(([s, c]) => [c.title, `/collections/${s}/`]), ["Cart", "/cart/"], ["Checkout", "/checkout/"], ["Track order", "/track-order/"]])}
-  ${group("Functional Elixirs", [["Home", "/"], ["About us", "/about-us/"], ["Recipes", "/recipes/"], ["The ritual", "/ritual/"], ["Ingredients & sourcing", "/sourcing/"], ["Gift guide", "/gift-guide/"]])}
-  ${group("Help & account", [["FAQ", "/faq/"], ["Contact", "/contact/"], ["Shipping & delivery", "/shipping/"], ["Returns & exchanges", "/returns/"], ["Privacy", "/privacy/"], ["Terms", "/terms/"], ["Cookies", "/cookies/"], ["Sign up", "/account/signup/"], ["Log in", "/account/login/"], ["Forgot password", "/account/forgot-password/"], ["Account", "/account/"], ["Addresses", "/account/addresses/"], ["Wishlist", "/account/wishlist/"]])}
+  ${group("Functional Elixirs", [["Home", "/"], ["About us", "/about-us/"], ["Recipes", "/recipes/"], ["Ingredients & sourcing", "/sourcing/"], ["Gift guide", "/gift-guide/"]])}
+  ${group("Help", [["FAQ", "/faq/"], ["Contact", "/contact/"], ["Shipping & delivery", "/shipping/"], ["Returns & exchanges", "/returns/"], ["Privacy", "/privacy/"], ["Terms", "/terms/"], ["Cookies", "/cookies/"]])}
 </div></section>`;
-  return { path, html: page({ title: "Sitemap", description: "All pages on functionalelixirs.com — shop, story, ritual, journal, help and account.", path, body, breadcrumbs: [{ name: "Sitemap", href: path }] }) };
+  return { path, html: page({ title: "Sitemap", description: "All pages on functionalelixirs.com — shop, story, recipes and help.", path, body, breadcrumbs: [{ name: "Sitemap", href: path }] }) };
 }
 
 const notFound = () => ({ path: "/404.html", html: page({ title: "Page not found", description: "That page isn’t here.", path: "/404/", noindex: true, body: `<section class="auth"><div class="wrap center stack" style="--flow:var(--s-5)"><p class="eyebrow">404</p><h1>That page isn’t here.</h1><p class="lede mx-auto measure">The jar, however, is. Try the shop, the ritual, or the journal.</p><div class="cluster" style="justify-content:center"><a class="btn btn--primary" href="${HERO_URL}">The 15 oz jar</a><a class="btn btn--ghost" href="/">Home</a><a class="btn btn--ghost" href="/sitemap/">Sitemap</a></div></div></section>` }) });

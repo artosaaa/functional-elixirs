@@ -10,7 +10,7 @@
 
   /* ---------- 0. Config (mirrors src/site.mjs — keep in sync) ---------- */
   const CFG = {
-    freeShipOver: 40,
+    freeShipOver: 50,
     lowStockAt: 10,
     taxRateCA: 0.0875,               // California nexus (edit for your state). Real: use a tax API (Stripe Tax / TaxJar).
     promos: {
@@ -212,11 +212,14 @@
   function freeShipHTML() {
     const sub = Cart.subtotal(); const left = CFG.freeShipOver - sub; const pct = Math.min(100, (sub / CFG.freeShipOver) * 100);
     const items = Cart.items();
-    /* If the cart is exactly one single jar, the cheapest way to close the gap is the two-jar set — offer it in one tap. */
+    /* If the cart is exactly one single jar, offer the two-jar set in one tap. Whether that
+       also clears the free-shipping threshold depends on CFG, so don't claim it unconditionally. */
     const lone = items.length === 1 && items[0].id === "hg-15" && items[0].qty === 1;
-    const duo = product("hg-duo");
+    const duo = product("hg-duo"); const single = product("hg-15");
+    const duoFree = duo && duo.price >= CFG.freeShipOver ? ", and it ships free" : "";
+    const saving = duo && single ? single.price * 2 - duo.price : 0;
     const upsell = left > 0 && lone && duo && duo.stock > 0
-      ? `<button class="ship-upsell" type="button" data-swap-duo>Make it two jars — ${money(duo.price)}<span>${money(duo.price / 2)} a jar, ${money(23.99 * 2 - duo.price)} less than two bought apart, and it ships free</span></button>`
+      ? `<button class="ship-upsell" type="button" data-swap-duo>Make it two jars — ${money(duo.price)}<span>${money(duo.price / 2)} a jar, ${money(saving)} less than two bought apart${duoFree}</span></button>`
       : "";
     return `<div class="free-ship"><span>${left > 0 ? `You’re <strong>${money(left)}</strong> from free shipping` : `<strong>Free shipping unlocked.</strong>`}</span><div class="free-ship__bar"><i style="width:${pct}%"></i></div>${upsell}</div>`;
   }
@@ -628,28 +631,6 @@
 
   /* ---------- 7b. Selling layer ---------- */
 
-  /* Bundle tiers: the radio picks which SKU the buy buttons add. */
-  function initTiers() {
-    $$("[data-tiers]").forEach((box) => {
-      const sync = () => {
-        const r = $('input[name="tier"]:checked', box); if (!r) return;
-        const p = product(r.value); if (!p) return;
-        $$("[data-tier-add]").forEach((b) => { b.dataset.add = p.id; const l = $("[data-tier-label]", b); if (l) l.textContent = money(p.price); });
-        $$("[data-tier-express]").forEach((b) => (b.dataset.expressBuy = p.id));
-        $$("[data-tier-price]").forEach((el) => (el.textContent = money(p.price)));
-        $$("[data-tier-compare]").forEach((el) => { el.textContent = p.compareAt ? money(p.compareAt) : ""; el.hidden = !p.compareAt; });
-        $$("[data-tier-stock]").forEach((el) => (el.dataset.stock = p.id));
-        $$("[data-tier-ship]").forEach((el) => {
-          const free = p.price >= CFG.freeShipOver;
-          el.innerHTML = free ? "<strong>Ships free.</strong> No minimum to hit." : `Add ${money(CFG.freeShipOver - p.price)} more for free shipping`;
-        });
-        render();
-      };
-      box.addEventListener("change", (e) => { if (e.target.name === "tier") sync(); });
-      sync();
-    });
-  }
-
   /* Same-day dispatch line — honest: counts down to the real 1pm PT cutoff, then rolls to the next business day. */
   function initDispatch() {
     const els = $$("[data-dispatch]"); if (!els.length) return;
@@ -712,7 +693,7 @@
   /* ---------- 8. Boot ---------- */
   document.addEventListener("DOMContentLoaded", () => {
     Drawer.init(); render(); markNav();
-    initPDP(); initTiers(); initDispatch(); initDeskbar(); initCapture(); initShipCalc(); Checkout.init(); initConfirmation(); initTrack(); initAuth(); initAccount(); initContact(); initCookie(); initReveal();
+    initPDP(); initDispatch(); initDeskbar(); initCapture(); initShipCalc(); Checkout.init(); initConfirmation(); initTrack(); initContact(); initCookie(); initReveal();
     window.addEventListener("storage", (e) => { if (e.key?.startsWith("sw_")) render(); }); // multi-tab sync
   });
 

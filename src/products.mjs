@@ -34,12 +34,12 @@ export const PRODUCTS = [
   P({
     id: "hg-duo", slug: "honey-with-fresh-ginger-two-jar-set", sku: "FE-HG-DUO",
     name: "The Two-Jar Set", sub: "2 × 15 oz jars · one for the counter, one for the pantry", label: ["HONEY", "with fresh", "GINGER"], size: "2 × 15 oz",
-    price: 44.99, compareAt: 47.98, stock: 150, badge: "Ships free", rating: 5.0, reviews: 41,
+    price: 44.99, compareAt: 47.98, stock: 150, badge: "Save $2.99", rating: 5.0, reviews: 41,
     honey: "#7A3E0F", art: "open",
-    notes: ["Two months", "of mornings", "Ships free"],
+    notes: ["Two months", "of mornings", "Save $2.99"],
     use: { spoon: "1 tsp", water: "8 oz warm", when: "Daily", also: "Share one" },
     ingredients: "Two 15 oz jars of Honey with Fresh Ginger.", origin: "Blended and jarred in small batches in the USA",
-    short: "Two signature jars, a little less each. Free shipping, and you won’t run out mid-ritual.",
+    short: "Two signature jars, a little less each — and you won’t run out mid-ritual.",
     story: "Most people who try the jar come back for two. This saves them the second trip.",
     tags: ["gift", "set", "value"], featured: true,
   }),
@@ -96,7 +96,7 @@ export const PRODUCTS = [
 export const HERO = PRODUCTS[0];
 export const byId = Object.fromEntries(PRODUCTS.map((p) => [p.id, p]));
 export const COLLECTIONS = {
-  "gifts-under-30": { title: "Gifts under $30", h1: "Gifts under $30", description: "Honey with fresh ginger gifts under $30 — the signature 15 oz jar, the 8 oz everyday jar and the beechwood dipper. Free shipping over $40.", lede: "A jar of honey-ginger is the kind of gift people actually finish. These are the ones we wrap most often.", filter: (p) => p.price < 30 && p.tags.includes("gift") },
+  "gifts-under-30": { title: "Gifts under $30", h1: "Gifts under $30", description: "Honey with fresh ginger gifts under $30 — the signature 15 oz jar, the 8 oz everyday jar and the beechwood dipper. Free shipping over $50.", lede: "A jar of honey-ginger is the kind of gift people actually finish. These are the ones we wrap most often.", filter: (p) => p.price < 30 && p.tags.includes("gift") },
   "for-beginners": { title: "New here? Start here", h1: "Start here", description: "New to Functional Elixirs? Start with the 15 oz signature jar or the 8 oz everyday jar, and the simple daily ritual: scoop, stir, sip.", lede: "Two ingredients and a teaspoon. If you’re new, start with a jar and the ritual — the rest follows.", filter: (p) => p.tags.includes("beginner") },
 };
 
