@@ -3,6 +3,7 @@ import { BEE, BEE_FLY, bees, LINE } from "../site.mjs";
 import { page, jsonld, breadcrumbs, productCard, stripeHead, faqList, ctaBand, stars, ICONS, esc, money, BRAND, CFG, abs, HERO_URL, valueBullets, guaranteeBlock, REVIEWS_VERIFIED } from "../layout.mjs";
 import { PRODUCTS, HERO, byId } from "../products.mjs";
 import { art, altFor, photo, resolvedPhoto } from "../art.mjs";
+import { existsSync } from "node:fs";
 
 /* No testimonials yet, and inventing them is not an option: the card renders a
    name, a city and a "Verified buyer" badge, which is a representation about a
@@ -37,11 +38,18 @@ const gluePunct = (t) => String(t).replace(/ · /g, "\u00A0· ");
 function home() {
   const p = HERO;
   /* three, not four — the two garden-table frames were near-duplicates of each other */
+  /* The three photographs that used to sit here were stock-feeling holiday snapshots
+     — a dim teapot, an English garden with event tents — none of which had anything
+     to do with honey or ginger, and all of which undercut the product photography
+     directly above them. Same treatment as the recipes hero strip: the row renders
+     only for files actually present, so it stays empty until real photographs exist
+     and comes back on its own the moment they are dropped in. */
+  const GALLERY_DIR = new URL("../../assets/img/home/", import.meta.url);
   const gallery = [
-    ["/assets/img/ritual-teapot-window-light.jpg", "A ceramic teapot and cup on a linen-covered table in soft window light"],
-    ["/assets/img/garden-terraces-green.jpg", "Green garden terraces and tall trees under a wide sky"],
-    ["/assets/img/tea-table-garden-morning.jpg", "A teapot and two cups of tea set out on a garden table on a bright morning"],
-  ];
+    ["morning-ritual.jpg", "A spoonful of Functional Elixirs honey with fresh ginger being stirred into a mug of warm water"],
+    ["jar-on-counter.jpg", "The Functional Elixirs jar open on a kitchen counter, the ginger threads visible in the honey"],
+    ["breakfast-drizzle.jpg", "Honey with fresh ginger drizzled over a bowl of oats and fruit"],
+  ].filter(([file]) => existsSync(new URL(file, GALLERY_DIR)));
   const features = [
     [LINE.leaf, "Natural ingredients", "Pure, simple, and sustainably sourced."],
     [LINE.honeycomb, "Functional benefits", "Thoughtfully crafted to support your well-being."],
@@ -87,7 +95,7 @@ function home() {
   { top: "74%", from: "-10vw", to: "106vw", dur: 64, delay: 21, size: 0.9, tilt: 6, bob: 1 },
 ])}<div class="wrap">
   <div class="mk-title reveal"><h2 class="mk-h2">Inspired by nature. Made for you.</h2><span class="mk-rule mk-rule--center" aria-hidden="true"></span></div>
-  <div class="mk-gallery">${gallery.map(([src, alt], i) => `<figure class="reveal" style="--d:${i * 90}ms"><img src="${src}" alt="${esc(alt)}" width="900" height="900" loading="lazy" decoding="async"></figure>`).join("")}</div>
+  ${gallery.length ? `<div class="mk-gallery">${gallery.map(([file, alt], i) => `<figure class="reveal" style="--d:${i * 90}ms"><img src="/assets/img/home/${file}" alt="${esc(alt)}" width="900" height="900" loading="lazy" decoding="async"></figure>`).join("")}</div>` : ""}
   <div class="mk-features">${features.map(([ic, t, d], i) => `<div class="mk-feature reveal" style="--d:${i * 90}ms"><span class="mk-feature__icon">${ic}</span><h3>${t}</h3><p>${d}</p></div>`).join("")}</div>
 </div></section>
 
@@ -122,7 +130,7 @@ ${single ? `<section class="section--tight shop-single-sec">${bees([
     <p class="mk-price"><span class="mk-price__num">${money(p.price)}</span><span class="mk-price__sub" data-stock="${p.id}">In stock</span></p>
     <div class="shop-single__acts">
       <div class="qty" role="group" aria-label="Quantity"><button type="button" data-dec aria-label="Decrease quantity">−</button><input type="number" data-qty-input inputmode="numeric" min="1" max="${Math.max(1, p.stock)}" value="1" aria-label="Quantity"></div>
-      <button class="btn btn--primary" type="button" data-add="${p.id}">Add to cart — ${money(p.price)}</button>
+      <button class="btn btn--gold" type="button" data-add="${p.id}">Add to cart — ${money(p.price)}</button>
     </div>
     <p class="shop-single__more"><a href="${p.url}">Ingredients, storage and the full story →</a></p>
     <div class="shop-single__promise">
@@ -201,7 +209,7 @@ function product(p) {
 
 <section class="section"><div class="wrap split">
   <div class="stack reveal" style="--flow:var(--s-4)"><p class="eyebrow">Why this jar</p><h2>${p.type === "Accessory" ? "Made for the wide mouth." : "From our mother’s counter."}</h2><p class="lede">${esc(p.story)}</p><p><a href="/about-us/">Our story →</a></p></div>
-  <div class="marquee-photo reveal">${photo(p.type === "Accessory" ? "ritual" : "jars")}</div>
+  <div class="marquee-photo reveal">${photo("jars")}</div>
 </div></section>
 
 <section class="section section--well" id="reviews"><div class="wrap">${REVIEWS_VERIFIED && REVIEWS.length && p.rating && p.reviews
@@ -217,7 +225,7 @@ function product(p) {
   <div class="deskbar__info"><strong>${esc(p.name)}</strong><span>${esc(p.size)} · ${money(p.price)}</span></div>
   <div class="deskbar__actions">
     <button class="btn btn--ghost" type="button" data-buy-now="${p.id}">Buy it now</button>
-    <button class="btn btn--primary" type="button" data-add="${p.id}">Add to cart — ${money(p.price)}</button>
+    <button class="btn btn--gold" type="button" data-add="${p.id}">Add to cart — ${money(p.price)}</button>
   </div>
 </div></div>
 <div class="buybar" id="buybar"><div class="buybar__info"><strong>${esc(p.name)}</strong><span>${esc(p.size)} · ${money(p.price)}</span></div><div class="cluster" style="flex-wrap:nowrap"><button class="btn btn--ghost btn--sm" type="button" data-buy-now="${p.id}">Buy now</button><button class="btn btn--primary btn--sm" type="button" data-add="${p.id}">Add</button></div></div>`;
@@ -237,12 +245,15 @@ function cart() {
 <div class="wrap page-head"><h1>Your cart</h1></div>
 <section class="section--tight"><div class="wrap cart-layout">
   <div><div data-cart-page></div>
-    <div data-cart-has hidden style="margin-top:var(--s-6)"><div class="field"><label for="note">Gift note or delivery instructions (optional)</label><textarea class="textarea" id="note" name="note" placeholder="“One spoon, warm water, before the phone. Thinking of you.”"></textarea></div></div>
+    <div data-cart-has hidden style="margin-top:var(--s-6)">
+      <div class="field"><label for="note">Gift note or delivery instructions (optional)</label><textarea class="textarea" id="note" name="note" placeholder="“One spoon, warm water, before the phone. Thinking of you.”"></textarea></div>
+      <div class="cart-estimate"><h2 style="font-size:var(--fs-base)">Estimate shipping</h2>${shipCalc()}</div>
+    </div>
   </div>
-  <aside class="cart-layout__side summary"><h2>Summary</h2><div data-cart-summary></div>${promoForm()}<a class="btn btn--primary btn--block" href="/checkout/">Checkout</a><p class="secure">${ICONS.lock} Secure checkout · no account needed</p><hr><h2 style="font-size:var(--fs-base)">Estimate shipping</h2>${shipCalc()}</aside>
+  <aside class="cart-layout__side summary"><h2>Summary</h2><div data-cart-summary></div>${promoForm()}<a class="btn btn--gold btn--block" href="/checkout/">Checkout</a><p class="secure">${ICONS.lock} Secure checkout · no account needed</p></aside>
 </div></section>
 `;
-  return { path: "/cart/", html: page({ title: "Cart", description: "Your Functional Elixirs cart — review your honey-ginger jars, apply a promo code, estimate shipping, and check out with Apple Pay or card.", path: "/cart/", body, noindex: true }) };
+  return { path: "/cart/", html: page({ title: "Cart", description: "Your Functional Elixirs cart — review your honey-ginger jars, apply a promo code, estimate shipping, and check out securely.", path: "/cart/", body, noindex: true }) };
 }
 
 /* ---------------- CHECKOUT ---------------- */
@@ -289,7 +300,7 @@ function checkout() {
     </section>
     <section class="co-section">
       <div class="field"><label for="gift">Gift note <span class="muted">(optional — we never include prices)</span></label><textarea class="textarea" id="gift" name="gift" style="min-height:5rem"></textarea></div>
-      <button class="btn btn--primary btn--block" type="submit" style="min-height:3.25rem">Place order · <span data-total>—</span></button>
+      <button class="btn btn--gold btn--block" type="submit" style="min-height:3.25rem">Place order · <span data-total>—</span></button>
       <p class="small muted center">By placing your order you agree to our <a href="/terms/">Terms</a> and <a href="/privacy/">Privacy Policy</a>. Unopened jars are returnable for a full refund.</p>
     </section>
   </form>

@@ -14,7 +14,7 @@ export const PRODUCTS = [
     id: "hg-15", slug: "honey-with-fresh-ginger", sku: "FE-HG-15",
     name: "Honey with Fresh Ginger", sub: "15 oz (425 g) glass jar", label: ["HONEY", "with fresh", "GINGER"], size: "15 oz",
     price: 23.99, stock: 240, badge: "Signature", rating: null, reviews: 0,
-    honey: "#7A3E0F", art: "hero",
+    honey: "#7A3E0F", art: "hero", thumb: "/assets/img/product/hero-400.jpg",
     notes: ["Warm honey", "Fresh ginger", "Gentle heat"],
     use: { spoon: "1 tsp", water: "8 oz warm", when: "Morning", also: "Tea · oats · glazes" },
     ingredients: BASE_INGREDIENTS, origin: "Blended and jarred in small batches in the USA",
@@ -27,4 +27,4 @@ export const PRODUCTS = [
 export const HERO = PRODUCTS[0];
 export const byId = Object.fromEntries(PRODUCTS.map((p) => [p.id, p]));
 /* Compact catalog injected into every page for the runtime cart */
-export const catalogJSON = () => JSON.stringify(Object.fromEntries(PRODUCTS.map((p) => [p.id, { id: p.id, name: p.name, sub: p.sub, price: p.price, stock: p.stock, url: p.url, honey: p.honey, size: p.size }])));
+export const catalogJSON = () => JSON.stringify(Object.fromEntries(PRODUCTS.map((p) => [p.id, { id: p.id, name: p.name, sub: p.sub, price: p.price, stock: p.stock, url: p.url, honey: p.honey, size: p.size, thumb: p.thumb || null }])));

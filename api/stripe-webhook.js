@@ -33,7 +33,7 @@ export async function POST(request) {
      own metadata is the lock: set it after sending, and skip if it's already set.
      Without a database this is the honest best available — a tight race could still
      double-send, which costs a duplicate receipt, not a duplicate charge. */
-  if (m.emailed === "1") return ok({ duplicate: true });
+  if (m.emailedCustomer === "1" && (m.emailedShop === "1" || !process.env.ORDERS_EMAIL)) return ok({ duplicate: true });
 
   const money = (v) => Number(v || 0);
   const lines = String(m.lines || "")
@@ -58,7 +58,6 @@ export async function POST(request) {
       discount: money(m.discount),
       promo: m.promo || null,
       shipping: money(m.shipping),
-      tax: money(m.tax),
       total: money(m.total) || pi.amount / 100,
     },
   };
@@ -87,33 +86,61 @@ export async function POST(request) {
   }
 
   const mail = orderEmails(detail);
-  /* Reported back in the 200 body, which Stripe shows in the endpoint's Attempts
-     tab — so "did the shop copy go out?" is answerable from the dashboard without
-     digging through function logs. */
+
+  /* Tracked per recipient, not as one flag. The customer receipt and the shop copy
+     are two separate Resend calls fired back to back, and Resend rate-limits: if the
+     first succeeds and the second is throttled, a single all-or-nothing marker would
+     leave the whole event unmarked, Stripe would retry, and the CUSTOMER would get a
+     second receipt — then a third, since Stripe retries for days. Marking each side
+     as it lands means a retry only sends what is actually still missing. */
   const emailed = [];
-  try {
-    await sendEmail(mail.customer);
-    emailed.push(mail.customer.to);
+  const sent = { customer: m.emailedCustomer === "1", shop: m.emailedShop === "1" };
+  let failure = null;
+
+  if (!sent.customer) {
+    try {
+      await sendEmail(mail.customer);
+      sent.customer = true;
+      emailed.push(mail.customer.to);
+    } catch (e) {
+      console.error("webhook: order", detail.order, "paid but the customer receipt failed:", e.message);
+      failure = `customer receipt: ${e.message}`;
+    }
+  }
+
+  /* The customer's copy matters more than ours, so it goes first and a failure here
+     does not stop us trying theirs on the next attempt. */
+  if (!sent.shop) {
     if (mail.shop.to) {
-      await sendEmail(mail.shop);
-      emailed.push(mail.shop.to);
+      try {
+        await sendEmail(mail.shop);
+        sent.shop = true;
+        emailed.push(mail.shop.to);
+      } catch (e) {
+        console.error("webhook: order", detail.order, "paid but the shop copy failed:", e.message);
+        failure = failure ? `${failure}; shop copy: ${e.message}` : `shop copy: ${e.message}`;
+      }
     } else {
-      /* Silently skipping this used to mean the owner simply never heard about an
-         order and had nothing to tell them why. */
       console.error("webhook: ORDERS_EMAIL is not set — order", detail.order, "was paid and no notification was sent to the shop");
     }
-  } catch (e) {
-    /* A 500 makes Stripe retry with backoff — better than a paid order that silently
-       never produced a receipt. The charge already went through either way. */
-    console.error("webhook: order", detail.order, "paid but email failed:", e.message);
-    return new Response(JSON.stringify({ error: `email failed: ${e.message}`, emailed }), { status: 500, headers: { "Content-Type": "application/json" } });
   }
 
-  try {
-    await stripe(`/payment_intents/${pi.id}`, { metadata: { ...m, emailed: "1" } });
-  } catch (e) {
-    console.error("webhook: could not mark", pi.id, "as emailed:", e.message);
+  /* Record what landed before answering, so a retry never repeats a delivered email. */
+  if (sent.customer || sent.shop) {
+    try {
+      await stripe(`/payment_intents/${pi.id}`, {
+        metadata: { ...m, emailedCustomer: sent.customer ? "1" : "", emailedShop: sent.shop ? "1" : "" },
+      });
+    } catch (e) {
+      console.error("webhook: could not record what was emailed for", pi.id, ":", e.message);
+    }
   }
 
-  return ok({ received: true, order: detail.order, emailed, shopNotified: Boolean(mail.shop.to) });
+  /* A 500 asks Stripe to retry; the markers above mean the retry picks up only the
+     piece that is still missing. The charge already went through either way. */
+  if (failure) {
+    return new Response(JSON.stringify({ error: failure, emailed, sent }), { status: 500, headers: { "Content-Type": "application/json" } });
+  }
+
+  return ok({ received: true, order: detail.order, emailed, customerEmailed: sent.customer, shopNotified: Boolean(mail.shop.to) });
 }

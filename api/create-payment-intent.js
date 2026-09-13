@@ -36,7 +36,7 @@ export async function POST(request) {
 
   let quote;
   try {
-    quote = price({ items: body.items, promo: body.promo, country: address.country, zip: address.postal_code });
+    quote = price({ items: body.items, promo: body.promo });
   } catch (e) {
     return json({ error: e.message }, 400);
   }
@@ -56,7 +56,6 @@ export async function POST(request) {
     discount: String(quote.discount),
     promo: quote.promo || "",
     shipping: String(quote.shipping),
-    tax: String(quote.tax),
     total: String(quote.total),
     address: printable,
   };

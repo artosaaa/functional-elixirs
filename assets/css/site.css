@@ -1346,3 +1346,9 @@ main:has(> :last-child.cta-band) + .footer { margin-top: 0; }
   }
   .bee-drift .bee { animation-duration: calc(var(--dur, 34s) * .05); }
 }
+
+/* ---------- 23s. Cart: estimator beside the items ----------
+   It used to sit in the summary card, which made that column far taller than the
+   items column next to it and left the left half of the page empty on a one-line
+   cart. It reads better next to what is being shipped. */
+.cart-estimate { margin-top: var(--s-6); padding-top: var(--s-5); border-top: 1px solid var(--cream-3); max-width: 26rem; }

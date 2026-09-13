@@ -77,7 +77,6 @@ const totalsRows = (t) => {
   return `${row("Subtotal", money(t.subtotal))}
     ${t.discount ? row(t.promo || "Discount", `−${money(t.discount)}`) : ""}
     ${row("Shipping", t.shipping ? money(t.shipping) : "Free")}
-    ${t.tax ? row("Tax", money(t.tax)) : ""}
     <tr><td colspan="2" style="padding:6px 0 0"><div style="border-top:1px solid ${LINE};font-size:0;line-height:0">&nbsp;</div></td></tr>
     ${row("Total", money(t.total), { strong: true })}`;
 };
@@ -132,7 +131,6 @@ const receiptText = ({ order, lines, totals, address }) =>
     `  Subtotal  ${money(totals.subtotal)}`,
     ...(totals.discount ? [`  ${totals.promo || "Discount"}  -${money(totals.discount)}`] : []),
     `  Shipping  ${totals.shipping ? money(totals.shipping) : "Free"}`,
-    ...(totals.tax ? [`  Tax  ${money(totals.tax)}`] : []),
     `  TOTAL  ${money(totals.total)}`,
     ...(address ? [``, `SHIPPING TO`, ...address.split("\n").map((l) => `  ${l}`)] : []),
     ``,
@@ -209,7 +207,7 @@ export function orderEmails({ order, lines, totals, address, email, name }) {
         `CUSTOMER`,
         `  ${name || "Guest"} <${email}>`,
         ``,
-        `Subtotal ${money(totals.subtotal)}${totals.discount ? ` · ${totals.promo || "Discount"} -${money(totals.discount)}` : ""} · Shipping ${totals.shipping ? money(totals.shipping) : "Free"}${totals.tax ? ` · Tax ${money(totals.tax)}` : ""} · TOTAL ${money(totals.total)}`,
+        `Subtotal ${money(totals.subtotal)}${totals.discount ? ` · ${totals.promo || "Discount"} -${money(totals.discount)}` : ""} · Shipping ${totals.shipping ? money(totals.shipping) : "Free"} · TOTAL ${money(totals.total)}`,
       ].join("\n"),
     },
   };

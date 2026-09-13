@@ -18,7 +18,7 @@ const out = (rel, content) => { const f = join(ROOT, rel); mkdirSync(dirname(f),
 /* Anything not listed here is deleted on every build. "api" holds the serverless
    functions and ".well-known" any domain-verification files — neither is generated,
    so both have to be named or the build wipes them. */
-const KEEP = new Set(["src", "assets", "tools", "api", ".well-known", "node_modules", ".git", ".github", ".vercel", ".claude", "build.mjs", "build.sh", "package.json", "package-lock.json", "vercel.json", "README.md", ".gitignore", "LICENSE"]);
+const KEEP = new Set(["src", "assets", "tools", "api", "brand-source", ".well-known", "node_modules", ".git", ".github", ".vercel", ".claude", "build.mjs", "build.sh", "package.json", "package-lock.json", "vercel.json", "README.md", ".gitignore", "LICENSE"]);
 for (const name of readdirSync(ROOT)) { if (KEEP.has(name)) continue; const p = join(ROOT, name); if (statSync(p).isDirectory() || /\.(html|xml|txt)$/.test(name)) rmSync(p, { recursive: true, force: true }); }
 
 /* BASE lets the same build serve from a subdirectory (GitHub Pages) or a domain root.
@@ -82,6 +82,15 @@ for (const { path, html } of pages) {
    artwork, committed under assets/img — not generated here. */
 out("assets/img/og-default.svg", ogImage(null));
 for (const p of PRODUCTS) out(`assets/img/og-${p.slug}.svg`, ogImage(p));
+/* These are generated, so the catalogue is the only authority on which should exist.
+   Shrinking the catalogue used to leave the old ones behind to be deployed forever. */
+{
+  const keep = new Set(["og-default.svg", ...PRODUCTS.map((p) => `og-${p.slug}.svg`)]);
+  const dir = join(ROOT, "assets/img");
+  for (const name of readdirSync(dir)) {
+    if (name.startsWith("og-") && name.endsWith(".svg") && !keep.has(name)) rmSync(join(dir, name));
+  }
+}
 
 // Sitemap (indexable pages only), robots, RSS
 const noindex = new Set([...RETIRED.map(([from]) => from), "/our-story/", "/cart/", "/checkout/", "/order-confirmation/", "/404.html"]);

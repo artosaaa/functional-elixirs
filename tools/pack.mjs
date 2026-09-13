@@ -7,7 +7,7 @@ const ROOT = process.cwd();
 /* "api" is deliberately skipped: Vercel reads the functions from the repo root.
    Copying them into dist/ would publish the server source — keys, logic and all —
    as plain static files anyone could download. */
-const SKIP = new Set(["dist", "src", "tools", "api", "node_modules", ".git", ".github", ".vercel", ".claude", "build.mjs", "build.sh", "package.json", "package-lock.json", "vercel.json", "README.md", ".gitignore", ".DS_Store"]);
+const SKIP = new Set(["dist", "src", "tools", "api", "brand-source", "node_modules", ".git", ".github", ".vercel", ".claude", "build.mjs", "build.sh", "package.json", "package-lock.json", "vercel.json", "README.md", ".gitignore", ".DS_Store"]);
 rmSync(join(ROOT, "dist"), { recursive: true, force: true });
 mkdirSync(join(ROOT, "dist"));
 let n = 0;
