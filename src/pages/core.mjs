@@ -202,7 +202,7 @@ function product(p) {
         <p>${p.type === "Accessory" ? "Twist the dipper in the jar, lift, and let the honey spiral off the end into your cup. Rest it on a small dish between uses." : `Sweet first, then the ginger’s slow warmth. Warm — not boiling — water keeps the fresh ginger bright. <a href="/recipes/">Ways to use the jar →</a>`}</p></div></details>
       <details><summary>Ingredients</summary><div class="acc__body"><p>${esc(p.ingredients)}</p><p>${esc(p.origin)}. No added sugar, colours, flavours or preservatives. Naturally gluten-free. Not suitable for infants under 12 months.</p></div></details>
       <details><summary>Storage</summary><div class="acc__body"><p>Room temperature, lid closed, dry spoon. Raw honey may crystallize over time — that’s natural. Warm the closed jar in a bowl of warm water to restore.</p></div></details>
-      <details><summary>Shipping &amp; returns</summary><div class="acc__body"><p>Shipped within the US by standard mail — $5.95, free over $${CFG.freeShipOver}, arriving in 2–7 business days. An unopened jar can be returned any time for a full refund, with return postage paid by you; opened jars can’t be returned. <a href="/shipping/">Shipping</a> · <a href="/returns/">Returns</a></p></div></details>
+      <details><summary>Shipping &amp; returns</summary><div class="acc__body"><p>Packed and posted within ${CFG.dispatchDays} business days, then shipped within the US by standard mail — $5.95, free over $${CFG.freeShipOver}, 2–7 business days in transit. An unopened jar can be returned any time for a full refund, with return postage paid by you; opened jars can’t be returned. <a href="/shipping/">Shipping</a> · <a href="/returns/">Returns</a></p></div></details>
     </div>
   </div>
 </section>

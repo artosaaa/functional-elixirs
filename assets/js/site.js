@@ -11,6 +11,7 @@
   /* ---------- 0. Config (mirrors src/site.mjs — keep in sync) ---------- */
   const CFG = {
     freeShipOver: 50,
+    dispatchDays: 3,                 // packed and posted within — mirrors src/site.mjs
     lowStockAt: 10,
     promos: {
       FIRSTJAR:  { type: "pct", value: 15, max: 5, label: "15% off your first jar (up to $5)" },
@@ -241,7 +242,7 @@
       el.classList.remove("stock--low", "stock--out");
       if (p.stock <= 0) { el.textContent = "Sold out — next batch in about 3 weeks"; el.classList.add("stock--out"); }
       else if (p.stock <= CFG.lowStockAt) { el.textContent = `Only ${p.stock} left in this batch`; el.classList.add("stock--low"); }
-      else el.textContent = "In stock";
+      else el.textContent = `In stock — ships within ${CFG.dispatchDays} business days`;
     });
     $$("[data-add]").forEach((b) => { const p = product(b.dataset.add); if (p && p.stock <= 0) { b.disabled = true; b.textContent = "Sold out"; } });
     $$("[data-buy-now]").forEach((b) => { const p = product(b.dataset.buyNow); if (p && p.stock <= 0) b.disabled = true; });
@@ -536,6 +537,22 @@
         const { paymentIntent } = await Stripe(window.__STRIPE_PK__).retrievePaymentIntent(secret);
         status = paymentIntent?.status || null;
       } catch { status = null; }
+    }
+
+    /* Send the receipts from here rather than waiting on the Stripe webhook, which
+       only fires if an endpoint has been registered in the dashboard. The server
+       re-checks with Stripe that this payment really succeeded before sending
+       anything, and records delivery per recipient — so the webhook, a page reload
+       and this call can all happen without anyone getting a second copy.
+
+       Deliberately not blocking the confirmation: the money is taken either way, and
+       a shopper who paid should see their order even if the email is slow. */
+    if (status === "succeeded" && intentId && secret) {
+      fetch(U("/api/send-confirmation"), {
+        method: "POST", headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ paymentIntent: intentId, clientSecret: secret }),
+        keepalive: true,
+      }).catch(() => { /* the webhook is the backstop; nothing useful to say here */ });
     }
 
     if (status && status !== "succeeded") {

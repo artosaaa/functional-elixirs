@@ -15,7 +15,7 @@ const FAQ = [
   ["Is it safe for children and during pregnancy?", "Honey must not be given to infants under 12 months. For older children it’s food. If you’re pregnant or managing a health condition, ask your doctor as you would about any food — we don’t give medical advice."],
   ["Is it vegan, gluten-free, nut-free?", "It contains honey, so it isn’t vegan. It is naturally gluten-free, dairy-free and nut-free."],
   ["Where is it made?", "Blended and jarred in small batches in the USA."],
-  ["How fast will it ship?", `We ship within the US by standard mail — 2–7 business days once the parcel is with the carrier, depending on distance. Free over $${CFG.freeShipOver}. <a href="/shipping/">Rates and calculator</a>.`],
+  ["How fast will it ship?", `We pack and post within ${CFG.dispatchDays} business days, then standard US mail takes 2–7 business days depending on distance. Free over $${CFG.freeShipOver}. <a href="/shipping/">Rates and calculator</a>.`],
   ["Can I return it?", `An unopened jar, yes — any time, for a full refund, with return postage paid by you. An opened jar we can’t take back: honey is food. <a href="/returns/">Returns policy</a>.`],
   ["Do you offer Apple Pay?", "Yes — Apple Pay, Google Pay and Shop Pay on the product page, in the cart and at checkout, plus all major cards. Guest checkout is always available."],
   ["Do you ship internationally?", "Not at the moment — we ship within the United States only."],
@@ -68,10 +68,12 @@ function shipping() {
     <div class="rate-card">
       <div><strong>Standard</strong><span>USPS Ground Advantage / UPS Ground</span></div>
       <div><strong>$5.95</strong><span>Free over $${CFG.freeShipOver}</span></div>
-      <div><strong>2–7 business days</strong><span>West 2–4 · Central 3–5 · East 4–7</span></div>
+      <div><strong>Within ${CFG.dispatchDays} business days</strong><span>Before it goes to the carrier</span></div>
+      <div><strong>2–7 business days</strong><span>In transit · West 2–4 · Central 3–5 · East 4–7</span></div>
     </div>
     <h2>Processing</h2>
-    <p>We pack and post orders as they come in, by regular mail. We don’t ship on US federal holidays. You’ll get a tracking email the moment the label is scanned, and you can always check <a href="/track-order/">Track order</a>.</p>
+    <p><strong>Orders are packed and posted within ${CFG.dispatchDays} business days.</strong> Everything is packed by hand, so most go sooner — that is the outside figure, not the usual one. We don’t ship on US federal holidays.</p>
+    <p>The carrier then takes 2–7 business days depending on distance, so allow up to ten business days in total for the far side of the country. You’ll get a tracking email the moment the label is scanned, and you can always check <a href="/track-order/">Track order</a>.</p>
     <h2>Packaging</h2>
     <p>Glass jars are wrapped in paper and cushioned in a recycled-fibre box. If a jar arrives broken — it happens rarely, but glass is glass — photograph the box and jar and <a href="/contact/">tell us</a>. We’ll send a replacement immediately, no return needed.</p>
     <h2>Addresses &amp; changes</h2>
@@ -81,7 +83,7 @@ function shipping() {
     <p>Questions about returns? See <a href="/returns/">Returns &amp; exchanges</a>.</p>
   </div>
 </div></section>`;
-  return { path, html: page({ title: "Shipping & Delivery — US Standard, Free over $50", description: "Functional Elixirs shipping: standard US shipping $5.95, free over $50, arriving in 2–7 business days. We ship within the United States.", path, body, breadcrumbs: [{ name: "Shipping & delivery", href: path }] }) };
+  return { path, html: page({ title: "Shipping & Delivery — US Standard, Free over $50", description: `Functional Elixirs shipping: packed and posted within ${CFG.dispatchDays} business days, standard US shipping $5.95, free over $${CFG.freeShipOver}, 2–7 business days in transit. We ship within the United States.`, path, body, breadcrumbs: [{ name: "Shipping & delivery", href: path }] }) };
 }
 
 const returns = () => policy({
