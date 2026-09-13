@@ -1323,3 +1323,19 @@ main:has(> :last-child.cta-band) + .footer { margin-top: 0; }
 /* Off-screen rather than display:none — some bots skip hidden fields, and screen
    readers are told to ignore it by aria-hidden on the wrapper. */
 .hp { position: absolute; left: -9999px; width: 1px; height: 1px; overflow: hidden; }
+
+/* ---------- 23r. Bees on small screens ----------
+   The drift timings were tuned on a desktop hero that sits still while you read
+   it: crossings of 34–64s with entry delays up to 21s. On a phone the same page
+   is scrolled past in about ten seconds, so the second and third bee in a
+   section had not begun to move before they were gone. Same choreography, wound
+   forward — shorter crossings, much shorter delays, and a slightly larger bee so
+   it reads at arm's length. */
+@media (max-width: 47.99em) {
+  .bee-drift {
+    width: calc(var(--size, 1.3rem) * 1.35);
+    animation-duration: calc(var(--dur, 34s) * .45);
+    animation-delay: calc(var(--delay, 0s) * .22);
+  }
+  .bee-drift .bee { animation-duration: calc(var(--dur, 34s) * .05); }
+}
