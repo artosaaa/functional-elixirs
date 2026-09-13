@@ -1318,3 +1318,8 @@ main:has(> :last-child.cta-band) + .footer { margin-top: 0; }
   .cookie .btn--sm { min-height: 44px; }
   label.check { min-height: 44px; display: flex; align-items: center; gap: .6rem; }
 }
+
+/* ---------- 23q. Honeypot ---------- */
+/* Off-screen rather than display:none — some bots skip hidden fields, and screen
+   readers are told to ignore it by aria-hidden on the wrapper. */
+.hp { position: absolute; left: -9999px; width: 1px; height: 1px; overflow: hidden; }

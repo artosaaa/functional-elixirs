@@ -74,16 +74,59 @@ Hero copy rises in sequence, art settles · animated **steam** wisps and **bokeh
 
 ---
 
-## 4. Payments — wiring Apple Pay & Stripe for real
+## 4. Payments and email — what is wired and what you must set
 
-The checkout already runs the real browser flows where they exist and falls back to a simulated sheet elsewhere so the whole funnel is testable. Search `REAL:` in `assets/js/site.js` for each hook. Summary:
+Checkout takes real card payments through Stripe, and receipts go out through Resend.
+Neither works until the environment variables below are set: with no publishable key
+the checkout says so plainly and disables the button rather than pretending.
 
-1. **Fastest path (recommended):** Stripe **Express Checkout Element**. Mount it in `.express` on `/checkout/` (and on the PDP for `data-express-buy`). It renders Apple Pay, Google Pay and Link, handles Apple merchant validation, and returns a PaymentMethod. Replace the three card inputs with Stripe's **Payment Element** (`div#card-element`) — card data never touches your DOM (PCI SAQ-A).
-2. **Apple Pay JS directly:** register the domain in Apple Developer → Merchant IDs, host `/.well-known/apple-developer-merchantid-domain-association`, then implement `onvalidatemerchant` server-side (`POST /api/apple-pay/validate` → Apple's validation URL with your merchant cert). The full session skeleton, including `onshippingcontactselected` (re-quote rates from the sheet's postal code) is in `initExpress()`.
-3. **Order creation:** `Checkout.complete()` is the single place an order is created. Replace the `localStorage` write with `POST /api/orders` after the PaymentIntent succeeds; redirect to `/order-confirmation/?order=<id>` as it does now.
-4. **Tax:** `CFG.taxRateCA` estimates CA sales tax by ZIP. Replace with Stripe Tax / TaxJar.
-5. **Shipping:** `Ship.quote()` is zone-based; swap for Shippo / EasyPost rates when you want carrier-live numbers. Keep the shape `{id, name, price, days:[min,max], note}`.
-6. **Auth / account:** `Auth`, `Orders`, `Wish`, and addresses are localStorage mocks with the same method names you'd give an API client. Supabase Auth or Clerk drop in cleanly.
+### Environment variables (Vercel → Project → Settings → Environment Variables)
+
+| Variable | Where it comes from | Scope |
+| --- | --- | --- |
+| `STRIPE_PUBLISHABLE_KEY` | Stripe → Developers → API keys (`pk_…`) | read at **build** time, ends up in the page |
+| `STRIPE_SECRET_KEY` | same page (`sk_…`) — reveal once, never commit | server only |
+| `STRIPE_WEBHOOK_SECRET` | Stripe → Developers → Webhooks → your endpoint (`whsec_…`) | server only |
+| `RESEND_API_KEY` | Resend → API Keys (`re_…`) | server only |
+| `EMAIL_FROM` | e.g. `orders@yourdomain.com` — the domain must be **verified in Resend** (SPF + DKIM) or every send is rejected | server only |
+| `ORDERS_EMAIL` | where the shop's own copy of each order lands | server only |
+| `CONTACT_EMAIL` | contact-form destination; falls back to `ORDERS_EMAIL` | server only |
+
+Use **test** keys (`pk_test_`/`sk_test_`) in Preview and live keys in Production only.
+Scoping both the same lets a preview deploy take real money.
+
+`STRIPE_PUBLISHABLE_KEY` is inlined at build time, so changing it needs a redeploy,
+not just a settings save.
+
+### In the Stripe dashboard
+
+1. Activate the account (business details + payout bank account) — until then you are in test mode.
+2. Settings → Payments → **Payment methods**: enable card, Apple Pay, Google Pay, Link.
+3. Settings → Payments → **Payment method domains**: register the live domain, or Apple Pay will not render.
+4. Developers → **Webhooks** → add endpoint `https://<domain>/api/stripe-webhook`, event `payment_intent.succeeded`, then copy the `whsec_…` secret.
+   **Then press "Send test webhook" and check the response is `200`.** This project sets
+   `trailingSlash: true`, which redirects paths without a trailing slash. Browsers follow
+   a 308 and keep the POST body, so the checkout and contact form are unaffected — but
+   **Stripe does not follow redirects on webhook deliveries** and records a `307`/`308` as a
+   failed delivery. If the test webhook comes back as a redirect rather than `200`, register
+   the endpoint as `https://<domain>/api/stripe-webhook/` instead, with the trailing slash.
+   Get this wrong and payments still succeed while no receipt is ever sent.
+5. Settings → Business → Public details: set the statement descriptor, so charges are recognisable and do not turn into chargebacks.
+
+### How the flow actually works
+
+- `assets/js/site.js` mounts Stripe's **Payment Element** in deferred mode. Card details live inside Stripe's iframe — they never reach this site's DOM or its server (PCI SAQ-A).
+- On submit the browser POSTs product **ids and quantities** to `/api/create-payment-intent`. It never sends an amount. The server re-prices from `src/commerce.mjs` and that is what Stripe charges, so a tampered cart buys nothing cheaper.
+- `stripe.confirmPayment()` redirects to `/order-confirmation/`, which asks Stripe whether the intent actually succeeded before claiming anything.
+- **Receipts are sent from `/api/stripe-webhook`, not the browser**, so a shopper who closes the tab still gets one. The webhook verifies Stripe's signature against the raw body and rejects replays older than five minutes.
+
+### Still approximate
+
+- **Tax:** `TAX_RATE_CA` in `src/commerce.mjs` is one hardcoded 8.75% rate for ZIPs 900–961. Real California rates run 7.25–10.75% by city, and nexus anywhere else collects nothing. Switch on **Stripe Tax** before selling at volume.
+- **Shipping:** `Ship.quote()` is zone-based, not carrier-live. Swap for Shippo / EasyPost keeping the shape `{id, name, price, days:[min,max], note}`.
+- **Inventory:** `stock` in `src/products.mjs` is static. Nothing decrements on a sale.
+- **Duplicate receipts:** the webhook marks the PaymentIntent `emailed=1` to skip Stripe's repeat deliveries. A tight race could still send twice — a duplicate receipt, never a duplicate charge.
+- **Order records:** there is no database. The email is the record, and the shopper's browser keeps a local copy for `/track-order/`.
 
 ---
 

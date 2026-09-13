@@ -15,7 +15,10 @@ const ROOT = new URL(".", import.meta.url).pathname;
 const out = (rel, content) => { const f = join(ROOT, rel); mkdirSync(dirname(f), { recursive: true }); writeFileSync(f, content); return f; };
 
 // Clean previously generated HTML directories (keeps src/, assets/, config)
-const KEEP = new Set(["src", "assets", "tools", "node_modules", ".git", ".github", ".vercel", "build.mjs", "build.sh", "package.json", "vercel.json", "README.md", ".gitignore", "LICENSE"]);
+/* Anything not listed here is deleted on every build. "api" holds the serverless
+   functions and ".well-known" any domain-verification files — neither is generated,
+   so both have to be named or the build wipes them. */
+const KEEP = new Set(["src", "assets", "tools", "api", ".well-known", "node_modules", ".git", ".github", ".vercel", ".claude", "build.mjs", "build.sh", "package.json", "package-lock.json", "vercel.json", "README.md", ".gitignore", "LICENSE"]);
 for (const name of readdirSync(ROOT)) { if (KEEP.has(name)) continue; const p = join(ROOT, name); if (statSync(p).isDirectory() || /\.(html|xml|txt)$/.test(name)) rmSync(p, { recursive: true, force: true }); }
 
 /* BASE lets the same build serve from a subdirectory (GitHub Pages) or a domain root.

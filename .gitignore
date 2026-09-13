@@ -4,3 +4,7 @@ node_modules/
 *.log
 .claude/
 dist/
+
+# secrets — never committed; they live in Vercel env vars
+.env
+.env.*

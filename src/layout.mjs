@@ -54,7 +54,13 @@ export function productCard(p) {
     </div></article>`;
 }
 
-export const applePayButton = (extra = "") => `<button class="btn btn--apple-pay btn--block" type="button" ${extra}>${ICONS.apple}<span>Pay</span><span class="sr-only">with Apple Pay</span></button>`;
+/* Stripe.js, loaded only on the two pages that talk to Stripe. The publishable key
+   is safe in the page by design — it can create payment methods and nothing else.
+   Without STRIPE_PUBLISHABLE_KEY set at build time the checkout tells the shopper
+   it is unavailable rather than pretending to take the order. */
+export const STRIPE_PK = process.env.STRIPE_PUBLISHABLE_KEY || "";
+export const stripeHead = () =>
+  `<script src="https://js.stripe.com/v3/"></script>\n<script>window.__STRIPE_PK__=${JSON.stringify(STRIPE_PK)}</script>`;
 export const faqList = (items) => `<div class="faq-list">${items.map(([q, a]) => `<details><summary>${esc(q)}</summary><div class="faq-a">${a}</div></details>`).join("")}</div>`;
 export const ctaBand = (h = "One jar lasts about six weeks. Start tomorrow morning.", p = `Honey with Fresh Ginger, 15 oz — ${money(HERO_PRICE)}. Free US shipping over $${CFG.freeShipOver}. An unopened jar is returnable for a full refund.`) => `<section class="section--tight"><div class="wrap"><div class="cta-band reveal"><div><h2>${h}</h2><p style="margin-top:.75rem">${p}</p></div><div class="cta-band__actions cluster"><a class="btn btn--on-dark" href="${HERO_URL}">Get the jar — ${money(HERO_PRICE)}</a><a class="btn btn--ghost" style="color:var(--cream);border-color:rgb(246 240 230 / .4)" href="/recipes/">Ways to use it</a></div></div></div></section>`;
 
