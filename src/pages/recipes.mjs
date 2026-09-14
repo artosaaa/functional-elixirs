@@ -1,7 +1,7 @@
 /* Recipes — built from the brand's own "How to enjoy it" notes. Scoop. Stir. Sip. */
 import { page, breadcrumbs, jsonld, esc, HERO_URL, BRAND, ICONS } from "../layout.mjs";
 import { LINE, BEE, BEE_FLY } from "../site.mjs";
-import { readdirSync } from "node:fs";
+import { readdirSync, readFileSync } from "node:fs";
 
 /* Hero photography for the top of this page. The row renders only for the files
    actually present in assets/img/recipes/, so the page is never left with a broken
@@ -12,28 +12,66 @@ import { readdirSync } from "node:fs";
    uploaded photo under the wrong filename should appear, not vanish silently. */
 const DIR = new URL("../../assets/img/recipes/", import.meta.url);
 const EXTS = ["jpg", "jpeg", "png", "webp", "avif"];
-const FILES = (() => { try { return readdirSync(DIR); } catch { return []; } })()
+const stemOf = (f) => f.replace(/\.[^.]+$/, "").toLowerCase();
+const ALL = (() => { try { return readdirSync(DIR); } catch { return []; } })()
   .filter((f) => EXTS.includes(f.split(".").pop().toLowerCase()));
-const named = (stem) => FILES.find((f) => f.replace(/\.[^.]+$/, "").toLowerCase() === stem);
+/* `<stem>-700.jpg` is the narrow variant of another shot, not a shot of its own */
+const FILES = ALL.filter((f) => !/-700$/.test(stemOf(f)));
+const named = (stem) => FILES.find((f) => stemOf(f) === stem);
 const NAMED = [
   { stem: "lemon-ginger-cooler", alt: "A tall glass of iced honey-ginger lemonade with lemon wheels and mint, the Functional Elixirs jar beside it on a marble counter" },
   { stem: "honey-on-fruit", alt: "Apple and peach slices spread with Functional Elixirs honey with fresh ginger on a stoneware plate, the jar behind them" },
   { stem: "ginger-tea", alt: "A steaming striped mug of honey-ginger tea beside the Functional Elixirs jar, fresh ginger root and a gold spoon" },
 ];
+
+/* Real pixel dimensions, so width/height match the file and the browser reserves
+   the right box. Reading them beats hardcoding a size the next upload won't have. */
+function size(file) {
+  try {
+    const b = readFileSync(new URL(file, DIR));
+    if (b[0] === 0x89 && b[1] === 0x50) return { w: b.readUInt32BE(16), h: b.readUInt32BE(20) };  /* PNG */
+    if (b[0] === 0xFF && b[1] === 0xD8) {                                                          /* JPEG */
+      let i = 2;
+      while (i < b.length - 9) {
+        if (b[i] !== 0xFF) { i++; continue; }
+        const m = b[i + 1];
+        if (m >= 0xC0 && m <= 0xCF && m !== 0xC4 && m !== 0xC8 && m !== 0xCC)
+          return { h: b.readUInt16BE(i + 5), w: b.readUInt16BE(i + 7) };
+        if (m === 0xD8 || m === 0xD9 || (m >= 0xD0 && m <= 0xD7)) { i += 2; continue; }
+        i += 2 + b.readUInt16BE(i + 2);
+      }
+    }
+  } catch {}
+  return null;
+}
+
+const shot = (file, alt) => {
+  const small = ALL.find((f) => stemOf(f) === `${stemOf(file)}-700`);
+  const d = size(file) || { w: 1300, h: 1200 };
+  return { file, alt, small, ...d };
+};
+
+/* Hero photography for the top of this page. The row renders only for the files
+   actually present in assets/img/recipes/, so the page is never left with a broken
+   image if one hasn't been added yet.
+
+   The three names above carry written alt text, and any extension works. Anything
+   else dropped in the folder is still picked up, with a plainer description — an
+   uploaded photo under the wrong filename should appear, not vanish silently. */
 const HERO_SHOTS = (() => {
   const shots = [];
-  for (const n of NAMED) { const f = named(n.stem); if (f) shots.push({ file: f, alt: n.alt }); }
+  for (const n of NAMED) { const f = named(n.stem); if (f) shots.push(shot(f, n.alt)); }
   const used = new Set(shots.map((s) => s.file));
   for (const f of FILES.sort()) {
     if (shots.length >= 3) break;
     if (used.has(f)) continue;
-    shots.push({ file: f, alt: "A jar of Functional Elixirs Honey with Fresh Ginger served on a marble counter" });
+    shots.push(shot(f, "A jar of Functional Elixirs Honey with Fresh Ginger served on a marble counter"));
   }
   return shots;
 })();
 
 const heroStrip = () => HERO_SHOTS.length
-  ? `<div class="wrap"><div class="rcp-hero">${HERO_SHOTS.map((s, i) => `<figure class="rcp-hero__shot reveal" style="--d:${i * 90}ms"><img src="/assets/img/recipes/${s.file}" alt="${esc(s.alt)}" width="1300" height="1200" loading="${i === 0 ? "eager" : "lazy"}" ${i === 0 ? 'fetchpriority="high"' : ""} decoding="async"></figure>`).join("")}</div></div>`
+  ? `<div class="wrap"><div class="rcp-hero">${HERO_SHOTS.map((s, i) => `<figure class="rcp-hero__shot reveal" style="--d:${i * 90}ms"><img src="/assets/img/recipes/${s.file}"${s.small ? ` srcset="/assets/img/recipes/${s.small} 700w, /assets/img/recipes/${s.file} ${s.w}w" sizes="(min-width: 56em) 30vw, 92vw"` : ""} alt="${esc(s.alt)}" width="${s.w}" height="${s.h}" loading="${i === 0 ? "eager" : "lazy"}" ${i === 0 ? 'fetchpriority="high"' : ""} decoding="async"></figure>`).join("")}</div></div>`
   : "";
 
 const RECIPES = [
