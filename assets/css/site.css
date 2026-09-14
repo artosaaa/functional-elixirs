@@ -1088,8 +1088,7 @@ body { background: #fff; }
   will-change: transform, opacity;
 }
 .bee-drift .bee { display: block; width: 100%; height: auto; animation: bee-bob calc(var(--dur, 34s) / 9) ease-in-out var(--delay, 0s) infinite alternate; }
-.bee__wing { transform-box: view-box; transform-origin: 32px 20px; animation: bee-wing .17s ease-in-out infinite alternate; }
-.bee__wing--r { animation-delay: .085s; }
+.bee__wing { transform-box: view-box; transform-origin: 32px 20px; }
 
 @keyframes bee-wing { from { transform: rotate(0) scaleY(1); } to { transform: rotate(-14deg) scaleY(.68); } }
 @keyframes bee-bob { from { transform: translateY(calc(var(--bob, 1.1rem) * -.5)) rotate(calc(var(--tilt, 8deg) * -1)); }
@@ -1102,9 +1101,8 @@ body { background: #fff; }
   100% { transform: translateX(var(--to)); opacity: 0; }
 }
 
-/* the CTA band's bee sits still and simply flutters */
+/* the CTA band's bee is a still mark — nothing on the page buzzes or drifts */
 .mk-band__bee .bee { width: 100%; height: 100%; }
-.mk-band__bee .bee { animation: bee-hover 4.5s ease-in-out infinite alternate; }
 @keyframes bee-hover { from { transform: translateY(-.18rem) rotate(-3deg); } to { transform: translateY(.18rem) rotate(3deg); } }
 
 /* the masthead and “inspired by nature” bees wake up on hover/focus only */
@@ -1292,21 +1290,23 @@ main:has(> :last-child.cta-band) + .footer { margin-top: 0; }
 .p-ingredients .hero__art { max-width: 26rem; }
 .p-ingredients .prose > h2:first-child { margin-top: 0; }
 
-/* 23n. More bees. The drift layer is absolutely positioned, so any section that
-   hosts one needs a containing block and needs to clip the fly-in/out. */
+/* 23n. These sections used to host a drifting-bee layer and needed a containing
+   block for it. The bees are gone; the clip stays because the section photos
+   and stripes are still sized to it. */
 .mk-nature, .shop-single-sec, .rcp-head-sec, .about-hero { position: relative; overflow: hidden; }
 
 /* 23o. Mobile pass ----------------------------------------------------------
-   The home signature photo used the same 4:5 contain frame the shop page had,
-   so the jar sat small inside the jpeg's own white margin. Same square centre
-   crop as /shop/ — trims the margin, not the jar. */
-.mk-signature__photo { aspect-ratio: 1 / 1; }
+   The home signature photo is now the counter shot, a 3:4 frame the jar
+   already fills — so match the frame to the source and crop nothing. The
+   square centre crop that lives on /shop/ exists to trim the white margin
+   around the cut-out jpeg, which this photo doesn't have. */
+.mk-signature__photo { aspect-ratio: 3 / 4; }
 .mk-signature__photo img { object-fit: cover; object-position: center; }
 
 @media (max-width: 47.99em) {
   /* 5:4 was tried here and cropped the lid and the base off a 4:5 source; the
      square keeps the whole jar and still trims the jpeg's own white margin */
-  .mk-signature__photo, .shop-single__photo { aspect-ratio: 1 / 1; }
+  .shop-single__photo { aspect-ratio: 1 / 1; }
 
   /* the add-to-cart row wrapped the button under a full-width stepper */
   .shop-single__acts { flex-wrap: nowrap; }

@@ -38,7 +38,6 @@ function contact() {
   <div>
     <div class="contact-card"><strong>Email</strong><a href="mailto:${BRAND.email}">${BRAND.email}</a><span class="muted small">Orders, wholesale, press, and recipe ideas — all welcome.</span></div>
     <div class="contact-card"><strong>Order help</strong><span class="small">Have your order number (FE-XXXXXX) handy. Or <a href="/track-order/">track it yourself</a>.</span></div>
-    <div class="contact-card"><strong>Wholesale &amp; stockists</strong><span class="small">Cafés, farm shops and gift stores: email with “Wholesale” in the subject and we’ll send the sheet.</span></div>
     <div class="contact-card"><strong>Social</strong><span class="small"><a href="${BRAND.social.instagram}" rel="noopener">Instagram</a> · <a href="${BRAND.social.facebook}" rel="noopener">Facebook</a></span></div>
   </div>
   <form id="contact-form" class="form-card form" novalidate>
@@ -201,7 +200,7 @@ const accessibility = () => policy({
   <li><strong>Structure is real, not visual.</strong> Proper headings in order, landmark regions, and lists that are lists — so a screen reader can skim the page the way sighted readers do.</li>
   <li><strong>Images carry text alternatives</strong>, and images that are purely decorative are marked so screen readers skip them rather than reading a filename aloud.</li>
   <li><strong>Every form field has a visible label</strong> tied to it, and errors are described in words rather than by turning a box red.</li>
-  <li><strong>Motion is optional.</strong> If your device is set to Reduce Motion, the drifting bees and all other animation stop. Nothing on this site conveys information by movement alone, and nothing flashes.</li>
+  <li><strong>Motion is optional.</strong> If your device is set to Reduce Motion, every animation on the site stops. Nothing here conveys information by movement alone, and nothing flashes.</li>
   <li><strong>It survives zoom and small screens.</strong> The layout reflows down to a 400-pixel-wide window and at 200% browser zoom without cutting text off or forcing you to scroll sideways.</li>
   <li><strong>Payment happens in Stripe's own checkout field</strong>, which Stripe builds and tests for accessibility — see their <a href="https://stripe.com/legal/accessibility" rel="noopener">accessibility statement</a>.</li>
 </ul>

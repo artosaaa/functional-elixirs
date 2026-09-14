@@ -106,7 +106,7 @@ function footer() {
   return `<footer class="footer"><div class="wrap">
   <div class="footer__grid">
     <div class="footer__brand"><a class="logo logo--dark" href="/"><span class="logo__bee">${BEE}</span><span class="logo__word"><span>Functional</span><span>Elixirs</span></span></a><p>${BRAND.positioning}</p>
-      <div class="footer__promise"><div>${ICONS.truck}<span>Free US shipping over $${CFG.freeShipOver}</span></div><div>${ICONS.refresh}<span>Unopened jars returnable for a full refund — return postage is yours</span></div><div>${ICONS.leaf}<span>Raw honey + fresh ginger · small batches · nothing else</span></div></div></div>
+      <div class="footer__promise"><div>${ICONS.truck}<span>Free US shipping over $${CFG.freeShipOver}</span></div><div>${ICONS.leaf}<span>Raw honey + fresh ginger · small batches · nothing else</span></div></div></div>
     ${col("Functional Elixirs", FOOTER.about)}${col("Help", FOOTER.help)}
   </div>
   <div class="footer__bottom"><div><p>© ${new Date().getFullYear()} ${BRAND.legal} · Made in the USA</p><p class="disclaimer" style="margin-top:.5rem">${BRAND.disclaimer}</p></div><ul>${FOOTER.legal.map(([l, h]) => `<li><a href="${h}">${l}</a></li>`).join("")}</ul><div class="pay-marks" aria-label="Accepted payments"><span>APPLE PAY</span><span>G PAY</span><span>VISA</span><span>MC</span><span>AMEX</span></div></div>
