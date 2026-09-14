@@ -85,7 +85,7 @@
     count() { return this.items().reduce((n, i) => n + i.qty, 0); },
     add(id, qty = 1) {
       const p = product(id); if (!p) return;
-      if (p.stock <= 0) { toast("Sold out — join the waitlist on the product page"); return; }
+      if (p.stock <= 0) { toast("Sold out — this one is between batches"); return; }
       const items = this.items(); const line = items.find((i) => i.id === id);
       const next = Math.min((line?.qty || 0) + qty, p.stock);
       if (line) { if (line.qty === next) toast(`Only ${p.stock} in stock`); line.qty = next; } else items.push({ id, qty: next });
@@ -240,12 +240,12 @@
     $$("[data-stock]").forEach((el) => {
       const p = product(el.dataset.stock); if (!p) return;
       el.classList.remove("stock--low", "stock--out");
-      if (p.stock <= 0) { el.textContent = "Sold out — next batch in about 3 weeks"; el.classList.add("stock--out"); }
+      if (p.stock <= 0) { el.textContent = "Sold out"; el.classList.add("stock--out"); }
       else if (p.stock <= CFG.lowStockAt) { el.textContent = `Only ${p.stock} left in this batch`; el.classList.add("stock--low"); }
       else el.textContent = `In stock — ships within ${CFG.dispatchDays} business days`;
     });
     $$("[data-add]").forEach((b) => { const p = product(b.dataset.add); if (p && p.stock <= 0) { b.disabled = true; b.textContent = "Sold out"; } });
-    $$("[data-buy-now]").forEach((b) => { const p = product(b.dataset.buyNow); if (p && p.stock <= 0) b.disabled = true; });
+    $$("[data-buy-now]").forEach((b) => { const p = product(b.dataset.buyNow); if (p && p.stock <= 0) { b.disabled = true; b.textContent = "Sold out"; } });
 
     // account header hint
     const u = Auth.user();

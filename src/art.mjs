@@ -45,7 +45,7 @@ function findPhoto(pid, variant) {
 }
 export const photoCount = () => Object.keys(PHOTOS).length;
 /* which file a (product, variant) pair actually resolves to — null when it would be drawn */
-export const resolvedPhoto = (p, variant) => (p?.id === "dipper" ? null : findPhoto(p?.id || "brand", variant));
+export const resolvedPhoto = (p, variant) => (p?.id === "dipper" || p?.noPhoto ? null : findPhoto(p?.id || "brand", variant));
 
 /* Only photographs that exist. The ritual/garden/terraces entries pointed at the three
    lifestyle snapshots removed from the home page — nothing rendered them, but the next
@@ -305,10 +305,12 @@ const VARIANTS = {
 
 let n = 0;
 export function art(variant, p, { alt, anim = false, className = "", slot } = {}) {
-  /* the dipper has no photograph; findPhoto() would hand back a honey jar, so draw it instead */
+  /* the dipper has no photograph; findPhoto() would hand back a honey jar, so draw it instead.
+     `noPhoto` is the same idea for a size we have never photographed — better a drawing than
+     the 15 oz jar passing itself off as a 3 oz one. */
   const drawn = p?.id === "dipper";
   if (drawn) variant = "dipper";
-  const src = drawn ? null : slot ? PHOTOS[slot] : findPhoto(p?.id || "brand", variant);
+  const src = drawn || p?.noPhoto ? null : slot ? PHOTOS[slot] : findPhoto(p?.id || "brand", variant);
   if (src) {
     /* the illustration alts describe a scene that no longer exists — describe the photograph */
     const jar = `${p?.name || "Functional Elixirs Honey with Fresh Ginger"}${p?.size ? `, ${p.size}` : ""}`;

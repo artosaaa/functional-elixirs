@@ -104,8 +104,12 @@ function home() {
 function shop() {
   const p = HERO;
   /* One SKU doesn't belong in a four-up grid — it lands as a single stranded tile.
-     Present it instead; the grid comes back on its own if more products are added. */
-  const single = PRODUCTS.length === 1;
+     Present it instead; the grid comes back on its own if more products are added.
+     Sold-out formats don't count towards that: they are listed under the jar you can
+     actually buy rather than competing with it for the top of the page. */
+  const forSale = PRODUCTS.filter((x) => x.stock > 0);
+  const soldOut = PRODUCTS.filter((x) => x.stock <= 0);
+  const single = forSale.length === 1;
   const body = `${breadcrumbs([{ name: "Shop", href: "/shop/" }])}
 <div class="wrap page-head"><p class="eyebrow">Shop</p><h1>Honey with Fresh Ginger.</h1></div>
 ${single ? `<section class="section--tight shop-single-sec"><div class="wrap shop-single">
@@ -123,7 +127,11 @@ ${single ? `<section class="section--tight shop-single-sec"><div class="wrap sho
       <div>${ICONS.truck}<span>Free US shipping over $${CFG.freeShipOver}</span></div>
     </div>
   </div>
-</div></section>` : `<section class="section--tight"><div class="wrap"><div class="products">${PRODUCTS.map(productCard).join("")}</div></div></section>`}
+</div></section>` : `<section class="section--tight"><div class="wrap"><div class="products">${forSale.map(productCard).join("")}</div></div></section>`}
+${soldOut.length ? `<section class="section--tight"><div class="wrap">
+  <div class="section-head"><p class="eyebrow">Not right now</p><h2>Back with the next batch</h2></div>
+  <div class="products products--few">${soldOut.map(productCard).join("")}</div>
+</div></section>` : ""}
 `;
   return { path: "/shop/", html: page({ title: "Shop Honey with Fresh Ginger — 15 oz Jar", description: "Shop Functional Elixirs Honey with Fresh Ginger: the 15 oz signature jar, $23.99. Raw honey and fresh ginger root, nothing else. Free US shipping over $50.", path: "/shop/", body, breadcrumbs: [{ name: "Shop", href: "/shop/" }] }) };
 }
@@ -164,7 +172,7 @@ function product(p) {
     </div>
     <div class="objections">
       <p><strong>Worried it’s too hot?</strong> It’s honey first. The ginger arrives after, as warmth rather than heat.</p>
-      <p><strong>How long does it last?</strong> A 15 oz jar is roughly six weeks of morning spoonfuls — one teaspoon a day.</p>
+      <p><strong>How long does it last?</strong> ${esc(p.lasts)}</p>
       <p><strong>What if I change my mind?</strong> Send the jar back unopened and we’ll refund it in full — there’s no deadline. Return postage is yours. Once a jar is opened we can’t take it back: honey is food.</p>
     </div>
     <div class="express">
