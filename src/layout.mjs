@@ -106,23 +106,26 @@ function footer() {
   return `<footer class="footer"><div class="wrap">
   <div class="footer__grid">
     <div class="footer__brand"><a class="logo logo--dark" href="/"><span class="logo__bee">${BEE}</span><span class="logo__word"><span>Functional</span><span>Elixirs</span></span></a><p>${BRAND.positioning}</p>
-      <div class="footer__promise"><div>${ICONS.truck}<span>Free US shipping over $${CFG.freeShipOver}</span></div><div>${ICONS.refresh}<span>Unopened jars returnable for a full refund — return postage is yours</span></div><div>${ICONS.leaf}<span>Raw honey + fresh ginger · small batches · nothing else</span></div></div></div>
+      <div class="footer__promise"><div>${ICONS.truck}<span>Free US shipping over $${CFG.freeShipOver}</span></div><div>${ICONS.leaf}<span>Raw honey + fresh ginger · small batches · nothing else</span></div></div></div>
     ${col("Functional Elixirs", FOOTER.about)}${col("Help", FOOTER.help)}
   </div>
-  <div class="footer__bottom"><div><p>© ${new Date().getFullYear()} ${BRAND.legal} · Made in the USA</p><p class="disclaimer" style="margin-top:.5rem">${BRAND.disclaimer}</p></div><ul>${FOOTER.legal.map(([l, h]) => `<li><a href="${h}">${l}</a></li>`).join("")}<li><button class="dopt__open" type="button" data-dopt-open aria-expanded="false" aria-controls="display-options">Display options</button></li></ul><div class="pay-marks" aria-label="Accepted payments"><span>APPLE PAY</span><span>G PAY</span><span>VISA</span><span>MC</span><span>AMEX</span></div></div>
+  <div class="footer__bottom"><div><p>© ${new Date().getFullYear()} ${BRAND.legal} · Made in the USA</p><p class="disclaimer" style="margin-top:.5rem">${BRAND.disclaimer}</p></div><ul>${FOOTER.legal.map(([l, h]) => `<li><a href="${h}">${l}</a></li>`).join("")}</ul><div class="pay-marks" aria-label="Accepted payments"><span>APPLE PAY</span><span>G PAY</span><span>VISA</span><span>MC</span><span>AMEX</span></div></div>
 </div>
   <div class="dopt" id="display-options" hidden>
-    <div class="wrap dopt__in">
-      <p class="dopt__title">Display options</p>
+    <div class="dopt__in">
+      <div class="dopt__head"><p class="dopt__title">Display options</p><button class="dopt__close" type="button" data-dopt-close aria-label="Close display options">&times;</button></div>
       <div class="dopt__row">
         <label class="dopt__toggle"><input type="checkbox" data-dopt="text"><span>Larger text</span></label>
         <label class="dopt__toggle"><input type="checkbox" data-dopt="contrast"><span>Higher contrast</span></label>
         <label class="dopt__toggle"><input type="checkbox" data-dopt="motion"><span>Reduce motion</span></label>
       </div>
-      <p class="dopt__note">These change how this site looks on this device only — nothing is sent anywhere. Something still hard to use? <a href="/accessibility/">Tell us</a>.</p>
+      <p class="dopt__note">Kept on this device only — nothing is sent anywhere. Something still hard to use? <a href="/accessibility/">Tell us</a>.</p>
     </div>
   </div>
-</footer>`;
+</footer>
+<button class="dopt-fab" type="button" data-dopt-open aria-expanded="false" aria-controls="display-options" aria-label="Display options — larger text, higher contrast, reduce motion">
+  <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><circle cx="12" cy="4.2" r="1.9"/><path d="M4.2 8.1h15.6M12 8.6v6.2M12 14.8l-3.1 5.6M12 14.8l3.1 5.6"/></svg>
+</button>`;
 }
 
 /* The guarantee, given a name and a position next to the price (offer-strategist rec). */

@@ -1,5 +1,5 @@
 /* Home · Shop · Product (all SKUs) · Collections · Cart · Checkout · Confirmation · Track */
-import { BEE, BEE_FLY, bees, LINE } from "../site.mjs";
+import { BEE, BEE_FLY, LINE } from "../site.mjs";
 import { page, jsonld, breadcrumbs, productCard, stripeHead, faqList, ctaBand, stars, ICONS, esc, money, BRAND, CFG, abs, HERO_URL, valueBullets, guaranteeBlock, REVIEWS_VERIFIED } from "../layout.mjs";
 import { PRODUCTS, HERO, byId } from "../products.mjs";
 import { art, altFor, photo, resolvedPhoto } from "../art.mjs";
@@ -58,11 +58,7 @@ function home() {
   ];
   const trust = [[LINE.no, "No preservatives"], [LINE.drop, "No additives"], [LINE.jar, "Made in small batches"], [LINE.heart, "Made with love"]];
   const body = `
-<section class="mk-hero">${bees([
-  { top: "14%", from: "-8vw", to: "104vw", dur: 34, delay: 0, size: 1.5, tilt: 9, bob: 1.4 },
-  { top: "62%", from: "106vw", to: "-10vw", dur: 46, delay: 6, size: 1.05, tilt: -7, bob: 1 },
-  { top: "38%", from: "-12vw", to: "108vw", dur: 58, delay: 17, size: 0.85, tilt: 5, bob: 1.6 },
-])}<div class="wrap mk-hero__in">
+<section class="mk-hero"><div class="wrap mk-hero__in">
   <div class="mk-hero__copy reveal">
     <p class="mk-eyebrow">Nature’s Daily Elixir</p>
     <h1 class="mk-h1">Honey.<br>Ginger.<br>Wellness.</h1>
@@ -74,13 +70,11 @@ function home() {
 </div></section>
 
 <section class="mk-signature"><div class="wrap mk-signature__in">
-  <figure class="mk-signature__photo reveal"><img src="/assets/img/product/hero-800.jpg" srcset="/assets/img/product/hero-400.jpg 400w, /assets/img/product/hero-800.jpg 800w, /assets/img/product/hero.jpg 1000w" sizes="(min-width: 56em) 34vw, 74vw" alt="The 15 oz Functional Elixirs Honey with Fresh Ginger jar, bamboo lid on, photographed on white" width="1000" height="1250" loading="lazy" decoding="async"></figure>
+  <figure class="mk-signature__photo reveal"><img src="/assets/img/about-kitchen-jar.jpg" sizes="(min-width: 56em) 34vw, 74vw" alt="The 15 oz Functional Elixirs Honey with Fresh Ginger jar, bamboo lid on, on a marble kitchen counter in morning light" width="750" height="1000" loading="lazy" decoding="async"></figure>
   <div class="mk-signature__copy reveal">
     <p class="mk-eyebrow">The signature jar</p>
     <h2 class="mk-h2 mk-h2--left">${esc(p.name)}</h2>
     <span class="mk-rule" aria-hidden="true"></span>
-    <p class="mk-lede">${esc(p.short)}</p>
-    <ul class="mk-notes">${p.notes.map((n) => `<li>${esc(n)}</li>`).join("")}</ul>
     <p class="mk-price"><span class="mk-price__num">${money(p.price)}</span><span class="mk-price__sub">${esc(p.sub)}</span></p>
     <div class="mk-signature__acts">
       <button class="btn btn--gold" type="button" data-add="${p.id}">Add to cart</button>
@@ -90,10 +84,7 @@ function home() {
   </div>
 </div></section>
 
-<section class="mk-nature">${bees([
-  { top: "18%", from: "104vw", to: "-8vw", dur: 52, delay: 3, size: 1.15, tilt: -8, bob: 1.3 },
-  { top: "74%", from: "-10vw", to: "106vw", dur: 64, delay: 21, size: 0.9, tilt: 6, bob: 1 },
-])}<div class="wrap">
+<section class="mk-nature"><div class="wrap">
   <div class="mk-title reveal"><h2 class="mk-h2">Inspired by nature. Made for you.</h2><span class="mk-rule mk-rule--center" aria-hidden="true"></span></div>
   ${gallery.length ? `<div class="mk-gallery">${gallery.map(([file, alt], i) => `<figure class="reveal" style="--d:${i * 90}ms"><img src="/assets/img/home/${file}" alt="${esc(alt)}" width="900" height="900" loading="lazy" decoding="async"></figure>`).join("")}</div>` : ""}
   <div class="mk-features">${features.map(([ic, t, d], i) => `<div class="mk-feature reveal" style="--d:${i * 90}ms"><span class="mk-feature__icon">${ic}</span><h3>${t}</h3><p>${d}</p></div>`).join("")}</div>
@@ -117,16 +108,11 @@ function shop() {
   const single = PRODUCTS.length === 1;
   const body = `${breadcrumbs([{ name: "Shop", href: "/shop/" }])}
 <div class="wrap page-head"><p class="eyebrow">Shop</p><h1>Honey with Fresh Ginger.</h1></div>
-${single ? `<section class="section--tight shop-single-sec">${bees([
-  { top: "12%", from: "-8vw", to: "104vw", dur: 44, delay: 2, size: 1.2, tilt: 8, bob: 1.3 },
-  { top: "70%", from: "106vw", to: "-10vw", dur: 60, delay: 15, size: 0.9, tilt: -6, bob: 1.1 },
-])}<div class="wrap shop-single">
+${single ? `<section class="section--tight shop-single-sec"><div class="wrap shop-single">
   <figure class="shop-single__photo reveal"><img src="/assets/img/product/hero-800.jpg" srcset="/assets/img/product/hero-400.jpg 400w, /assets/img/product/hero-800.jpg 800w, /assets/img/product/hero.jpg 1000w" sizes="(min-width: 56em) 42vw, 88vw" alt="${esc(altFor(p, "hero"))}" width="1000" height="1250" fetchpriority="high" decoding="async"></figure>
   <div class="shop-single__copy reveal">
     <p class="eyebrow">${esc(p.badge || p.type)}</p>
     <p class="shop-single__sub">${esc(p.sub)}</p>
-    <p class="shop-single__lede">${esc(p.short)}</p>
-    <ul class="mk-notes">${p.notes.map((n) => `<li>${esc(n)}</li>`).join("")}</ul>
     <p class="mk-price"><span class="mk-price__num">${money(p.price)}</span><span class="mk-price__sub" data-stock="${p.id}">In stock</span></p>
     <div class="shop-single__acts">
       <div class="qty" role="group" aria-label="Quantity"><button type="button" data-dec aria-label="Decrease quantity">−</button><input type="number" data-qty-input inputmode="numeric" min="1" max="${Math.max(1, p.stock)}" value="1" aria-label="Quantity"></div>
@@ -135,8 +121,6 @@ ${single ? `<section class="section--tight shop-single-sec">${bees([
     <p class="shop-single__more"><a href="${p.url}">Ingredients, storage and the full story →</a></p>
     <div class="shop-single__promise">
       <div>${ICONS.truck}<span>Free US shipping over $${CFG.freeShipOver}</span></div>
-      <div>${ICONS.refresh}<span>Unopened jars returnable for a full refund</span></div>
-      <div>${ICONS.check}<span>Raw honey and fresh ginger root — nothing else</span></div>
     </div>
   </div>
 </div></section>` : `<section class="section--tight"><div class="wrap"><div class="products">${PRODUCTS.map(productCard).join("")}</div></div></section>`}

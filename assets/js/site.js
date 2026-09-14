@@ -746,10 +746,15 @@
       toast(e.target.checked ? `${e.target.nextElementSibling.textContent} on` : `${e.target.nextElementSibling.textContent} off`);
     });
 
+    const close = () => { panel.setAttribute("hidden", ""); btn.setAttribute("aria-expanded", "false"); btn.focus(); };
+    $("[data-dopt-close]", panel)?.addEventListener("click", close);
     /* Escape closes it, and focus goes back to the button that opened it. */
-    panel.addEventListener("keydown", (e) => {
-      if (e.key !== "Escape") return;
-      panel.setAttribute("hidden", ""); btn.setAttribute("aria-expanded", "false"); btn.focus();
+    panel.addEventListener("keydown", (e) => { if (e.key === "Escape") close(); });
+    /* Clicking anywhere else closes it, the way a popover should. */
+    document.addEventListener("click", (e) => {
+      if (panel.hasAttribute("hidden")) return;
+      if (panel.contains(e.target) || btn.contains(e.target)) return;
+      panel.setAttribute("hidden", ""); btn.setAttribute("aria-expanded", "false");
     });
   }
 

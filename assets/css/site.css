@@ -1088,8 +1088,7 @@ body { background: #fff; }
   will-change: transform, opacity;
 }
 .bee-drift .bee { display: block; width: 100%; height: auto; animation: bee-bob calc(var(--dur, 34s) / 9) ease-in-out var(--delay, 0s) infinite alternate; }
-.bee__wing { transform-box: view-box; transform-origin: 32px 20px; animation: bee-wing .17s ease-in-out infinite alternate; }
-.bee__wing--r { animation-delay: .085s; }
+.bee__wing { transform-box: view-box; transform-origin: 32px 20px; }
 
 @keyframes bee-wing { from { transform: rotate(0) scaleY(1); } to { transform: rotate(-14deg) scaleY(.68); } }
 @keyframes bee-bob { from { transform: translateY(calc(var(--bob, 1.1rem) * -.5)) rotate(calc(var(--tilt, 8deg) * -1)); }
@@ -1102,13 +1101,10 @@ body { background: #fff; }
   100% { transform: translateX(var(--to)); opacity: 0; }
 }
 
-/* the CTA band's bee sits still and simply flutters */
+/* the CTA band's bee is a still mark — nothing on the page buzzes or drifts */
 .mk-band__bee .bee { width: 100%; height: 100%; }
-.mk-band__bee .bee { animation: bee-hover 4.5s ease-in-out infinite alternate; }
 @keyframes bee-hover { from { transform: translateY(-.18rem) rotate(-3deg); } to { transform: translateY(.18rem) rotate(3deg); } }
 
-/* the masthead and “inspired by nature” bees wake up on hover/focus only */
-.lockup:hover .lockup__bee svg, .lockup:focus-visible .lockup__bee svg { animation: bee-hover 2.4s ease-in-out infinite alternate; }
 
 @media (prefers-reduced-motion: reduce) {
   .bees { display: none; }
@@ -1292,21 +1288,23 @@ main:has(> :last-child.cta-band) + .footer { margin-top: 0; }
 .p-ingredients .hero__art { max-width: 26rem; }
 .p-ingredients .prose > h2:first-child { margin-top: 0; }
 
-/* 23n. More bees. The drift layer is absolutely positioned, so any section that
-   hosts one needs a containing block and needs to clip the fly-in/out. */
+/* 23n. These sections used to host a drifting-bee layer and needed a containing
+   block for it. The bees are gone; the clip stays because the section photos
+   and stripes are still sized to it. */
 .mk-nature, .shop-single-sec, .rcp-head-sec, .about-hero { position: relative; overflow: hidden; }
 
 /* 23o. Mobile pass ----------------------------------------------------------
-   The home signature photo used the same 4:5 contain frame the shop page had,
-   so the jar sat small inside the jpeg's own white margin. Same square centre
-   crop as /shop/ — trims the margin, not the jar. */
-.mk-signature__photo { aspect-ratio: 1 / 1; }
+   The home signature photo is now the counter shot, a 3:4 frame the jar
+   already fills — so match the frame to the source and crop nothing. The
+   square centre crop that lives on /shop/ exists to trim the white margin
+   around the cut-out jpeg, which this photo doesn't have. */
+.mk-signature__photo { aspect-ratio: 3 / 4; }
 .mk-signature__photo img { object-fit: cover; object-position: center; }
 
 @media (max-width: 47.99em) {
   /* 5:4 was tried here and cropped the lid and the base off a 4:5 source; the
      square keeps the whole jar and still trims the jpeg's own white margin */
-  .mk-signature__photo, .shop-single__photo { aspect-ratio: 1 / 1; }
+  .shop-single__photo { aspect-ratio: 1 / 1; }
 
   /* the add-to-cart row wrapped the button under a full-width stepper */
   .shop-single__acts { flex-wrap: nowrap; }
@@ -1415,3 +1413,43 @@ main:has(> :last-child.cta-band) + .footer { margin-top: 0; }
   transition-duration: .001ms !important; scroll-behavior: auto !important;
 }
 :root[data-motion="off"] .reveal { opacity: 1 !important; transform: none !important; }
+
+/* ---------- 23v. Display options, as a floating button ----------
+   Moved out of the footer: a control someone needs in order to read the page is no
+   use at the bottom of it. Bottom-left, because bottom-right is where the sticky
+   buy bar's button sits and where people expect a chat bubble. Still not an
+   accessibility overlay — the same three attributes on <html>, the site's own CSS
+   doing the work. */
+.dopt-fab {
+  position: fixed; left: var(--s-4); bottom: calc(var(--s-4) + env(safe-area-inset-bottom));
+  z-index: 60; width: 3rem; height: 3rem; border-radius: 50%; cursor: pointer;
+  display: grid; place-items: center; padding: 0;
+  background: var(--navy-3, #1D2B33); color: var(--gold-2, #D4AC54);
+  border: 1px solid rgb(255 255 255 / .16); box-shadow: var(--shadow-2);
+  transition: transform .2s var(--ease), background .2s;
+}
+.dopt-fab:hover { transform: translateY(-2px); background: #14202699; background: #142026; }
+.dopt-fab svg { width: 1.5rem; height: 1.5rem; fill: none; stroke: currentColor; stroke-width: 1.7; stroke-linecap: round; }
+.dopt-fab svg circle { fill: currentColor; stroke: none; }
+/* The sticky buy bar owns the bottom of the screen on a product page; step over it. */
+body:has(.buybar[data-show]) .dopt-fab { bottom: calc(5.25rem + env(safe-area-inset-bottom)); }
+@media (min-width: 56em) { body:has(.buybar[data-show]) .dopt-fab { bottom: calc(var(--s-4) + env(safe-area-inset-bottom)); } }
+@media print { .dopt-fab, .dopt { display: none !important; } }
+
+/* the panel now floats above the button rather than sitting in the footer */
+.dopt {
+  position: fixed; left: var(--s-4); bottom: calc(4.5rem + env(safe-area-inset-bottom));
+  z-index: 61; width: min(22rem, calc(100vw - 2 * var(--s-4)));
+  background: var(--cream-2, #FBF7F0); color: var(--ink);
+  border: 1px solid var(--cream-3); border-radius: var(--r-md, 6px); box-shadow: var(--shadow-3);
+}
+body:has(.buybar[data-show]) .dopt { bottom: calc(9.5rem + env(safe-area-inset-bottom)); }
+@media (min-width: 56em) { body:has(.buybar[data-show]) .dopt { bottom: calc(4.5rem + env(safe-area-inset-bottom)); } }
+.dopt__in { padding: var(--s-4) var(--s-5) var(--s-5); }
+.dopt__head { display: flex; align-items: center; justify-content: space-between; gap: var(--s-3); margin-bottom: var(--s-4); }
+.dopt .dopt__title { color: var(--gold-text, #7E6011); margin: 0; }
+.dopt__close { background: none; border: 0; font-size: 1.5rem; line-height: 1; cursor: pointer; color: var(--ink-soft); padding: .1em .3em; }
+.dopt__row { display: grid; gap: var(--s-2); }
+.dopt .dopt__toggle { color: var(--ink); }
+.dopt .dopt__note { color: var(--ink-mute); margin-top: var(--s-4); }
+.dopt .dopt__note a { color: var(--gold-text, #7E6011); }

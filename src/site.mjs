@@ -139,10 +139,9 @@ export const LINE = {
   heart: L('<path d="M32 54S8 40 8 24a12 12 0 0 1 24-4 12 12 0 0 1 24 4c0 16-24 30-24 30z"/>'),
 };
 
-/* ---------- Flying bee ----------
+/* ---------- Bee mark ----------
    Wings live on their own <g> so CSS can flutter them around the hinge at (32,20).
-   `bees()` returns a decorative, pointer-events-none layer; each bee gets its own
-   duration, delay, scale and drift distance so no two ever line up. */
+   Used as a static mark in the masthead, the CTA band and the recipe list. */
 export const BEE_FLY = `<svg class="bee" viewBox="0 0 64 52" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">
   <g class="bee__wing bee__wing--l"><path d="M29 21c-7-9-17-12-21-7s2 12 13 12"/></g>
   <g class="bee__wing bee__wing--r"><path d="M35 21c7-9 17-12 21-7s-2 12-13 12"/></g>
@@ -152,6 +151,3 @@ export const BEE_FLY = `<svg class="bee" viewBox="0 0 64 52" fill="none" stroke=
   <path d="M29 9l-3-5M35 9l3-5"/>
 </svg>`;
 
-export const bees = (list) => `<div class="bees" aria-hidden="true">${list
-  .map((b) => `<span class="bee-drift" style="--top:${b.top};--from:${b.from};--to:${b.to};--dur:${b.dur}s;--delay:${b.delay}s;--size:${b.size}rem;--tilt:${b.tilt ?? 8}deg;--bob:${b.bob ?? 1.1}rem">${BEE_FLY}</span>`)
-  .join("")}</div>`;
