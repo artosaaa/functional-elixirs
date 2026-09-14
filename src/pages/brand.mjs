@@ -9,16 +9,16 @@ const head = (crumb, eyebrow, h1, lede, center = false) => `${breadcrumbs([{ nam
 
 function story() {
   const path = "/about-us/";
-  /* The family photograph is the page. It falls back to the kitchen shot only so the
-     page is never imageless if the archive scan hasn't been added yet. */
+  /* The family photograph is the page. There is no stand-in: every other photograph
+     in the repo is already doing a job elsewhere, and a borrowed one here was twice
+     rejected. Until the archive scan is added the story runs on its own, centred —
+     no image beats an image nobody wants. Drop the file in and it comes back with
+     its caption, no code change. */
   const ARCHIVE = "/assets/img/about-family-archive.jpg";
   const hasArchive = existsSync(new URL("../../assets/img/about-family-archive.jpg", import.meta.url));
-  const photo = hasArchive
-    ? `<img src="${ARCHIVE}" alt="A photograph from the family album: two children in striped shirts standing at the edge of a large fountain" width="1280" height="1980" fetchpriority="high" decoding="async">`
-    : `<img src="/assets/img/honey-ginger-jars-kitchen.jpg" alt="Jars of Functional Elixirs Honey with Fresh Ginger stacked on the kitchen counter, ready to go out" width="640" height="640" fetchpriority="high" decoding="async">`;
   const body = `${breadcrumbs([{ name: "About us", href: path }])}
-<section class="about-hero"><div class="wrap about-hero__in about-hero__in--story">
-  <figure class="about-hero__photo about-hero__photo--archive reveal">${photo}${hasArchive ? `<figcaption>From the family album.</figcaption>` : ""}</figure>
+<section class="about-hero"><div class="wrap about-hero__in about-hero__in--story ${hasArchive ? "" : "about-hero__in--solo"}">
+  ${hasArchive ? `<figure class="about-hero__photo about-hero__photo--archive reveal"><img src="${ARCHIVE}" alt="A photograph from the family album: two children in striped shirts standing at the edge of a large fountain" width="1280" height="1980" fetchpriority="high" decoding="async"><figcaption>From the family album.</figcaption></figure>` : ""}
   <div class="about-hero__copy reveal">
     <p class="mk-eyebrow">Our story</p>
     <h1 class="mk-h1 mk-h1--page">It started<br>with our mom.</h1>

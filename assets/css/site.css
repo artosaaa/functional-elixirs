@@ -1468,3 +1468,13 @@ body:has(.buybar[data-show]) .dopt { bottom: calc(9.5rem + env(safe-area-inset-b
    min-content — one word per line. A definite flex-basis never asks. */
 .products--few { display: flex; flex-wrap: wrap; justify-content: flex-start; }
 .products--few > .pcard { flex: 0 0 15rem; max-width: 100%; min-width: 0; }
+
+/* 23x. About Us with no photograph. The story is a two-column layout built around
+   a family picture that hasn't been supplied; with nothing to sit beside, the prose
+   is centred and given a reading measure rather than stretched across the page. */
+.about-hero__in--solo { grid-template-columns: minmax(0, 1fr) !important; justify-items: center; text-align: center; }
+.about-hero__in--solo .mk-rule { margin-inline: auto; }
+.about-hero__in--solo .about-hero__prose { justify-items: center; }
+.about-hero__in--solo .about-hero__prose p,
+.about-hero__in--solo .about-hero__prose .mk-lede { margin-inline: auto; }
+.about-hero__in--solo .about-hero__copy { max-width: 42rem; }
