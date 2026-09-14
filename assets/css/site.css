@@ -296,7 +296,7 @@ table { border-collapse: collapse; width: 100%; }
 .hero__tag strong { font-family: var(--serif); font-size: var(--fs-md); font-weight: 400; color: var(--navy-2); }
 
 /* ---------- 9. Product cards + grids ---------- */
-.products { display: grid; gap: var(--s-5) var(--s-4); grid-template-columns: repeat(2, 1fr); container-type: inline-size; }
+.products { display: grid; gap: var(--s-5) var(--s-4); grid-template-columns: repeat(2, 1fr); }
 @media (min-width: 40em) { .products { grid-template-columns: repeat(3, 1fr); gap: var(--s-6) var(--s-5); } }
 @media (min-width: 64em) { .products { grid-template-columns: repeat(4, 1fr); } }
 .products--featured { grid-template-columns: 1fr; }
@@ -963,7 +963,7 @@ body { background: #fff; }
 .mk-h1 { font: 700 clamp(2.1rem, 5.2vw, 3.9rem)/1.08 var(--display); letter-spacing: .02em; text-transform: uppercase; color: #141311; margin-top: var(--s-4); }
 .mk-h1--page { font-size: clamp(1.9rem, 4.2vw, 3rem); margin-top: var(--s-3); }
 .mk-h2 { font: 400 clamp(1.15rem, 2.4vw, 1.7rem)/1.25 var(--display); letter-spacing: .08em; text-transform: uppercase; color: #141311; text-align: center; }
-.mk-h3 { font: 600 clamp(1.05rem, 2vw, 1.35rem)/1.25 var(--display); letter-spacing: .06em; text-transform: uppercase; color: #141311; }
+.mk-h3 { font: 600 clamp(1.2rem, 2vw, 1.35rem)/1.25 var(--display); letter-spacing: .06em; text-transform: uppercase; color: #141311; }
 .mk-rule { display: block; width: 3.25rem; height: 2px; background: var(--gold-btn); margin-top: var(--s-4); }
 .mk-rule--center { margin-inline: auto; }
 .mk-lede { font: 500 clamp(1.1rem, 1.6vw, 1.3rem)/1.5 var(--serif); color: #3C3934; max-width: 30ch; margin-top: var(--s-4); }
@@ -1009,7 +1009,7 @@ body { background: #fff; }
 .mk-trust__in span { display: inline-flex; align-items: center; gap: .6rem; font: 500 .68rem/1 var(--sans); letter-spacing: .2em; text-transform: uppercase; color: #1C1B19; padding-inline: clamp(.9rem, 2.5vw, 1.75rem); }
 .mk-trust__in span + span { border-left: 1px solid #DDD6C8; }
 .mk-trust__in svg { width: 1.25rem; height: 1.25rem; color: #1C1B19; }
-@media (max-width: 40em) { .mk-trust__in span { width: 50%; justify-content: center; border-left: 0 !important; padding-block: .25rem; } }
+@media (max-width: 40em) { .mk-trust__in span { width: 50%; justify-content: center; text-align: center; border-left: 0 !important; padding-block: .25rem; padding-inline: .35rem; gap: .4rem; letter-spacing: .08em; } }
 
 /* --- Recipes page --- */
 .recipes { display: grid; gap: var(--s-5); margin-block: var(--s-6) var(--s-8); }
@@ -1213,14 +1213,18 @@ main:has(> :last-child.cta-band) + .footer { margin-top: 0; }
    width on desktop so the row reads as a composition rather than three equal
    tiles; all three share one frame ratio so the jar sits at a consistent size. */
 .rcp-hero { display: grid; gap: var(--s-3); margin-block: clamp(1.5rem, 4vw, 2.5rem) clamp(1.75rem, 4vw, 3rem); }
+/* Order matters here. The desktop rule below sets `aspect-ratio: auto`, and this
+   base rule has the same specificity — so it has to come first or the 4/3 wins
+   again and every figure is sized ratio x height instead of by its grid track,
+   running the row past the wrap. */
+.rcp-hero__shot { margin: 0; overflow: hidden; border-radius: 6px; background: var(--cream-3); aspect-ratio: 4 / 3; position: relative; }
+@media (max-width: 47.99em) { .rcp-hero__shot:first-child { aspect-ratio: 16 / 10; } }
 @media (min-width: 48em) {
   .rcp-hero { grid-template-columns: 1.35fr 1fr 1fr; gap: var(--s-4); }
   /* one shared height, not a per-item ratio: with unequal columns an aspect-ratio
      makes the wide frame taller and the row ends up ragged along the bottom */
-  .rcp-hero__shot { aspect-ratio: auto; height: clamp(17rem, 24vw, 24rem); }
+  .rcp-hero__shot { aspect-ratio: auto; height: clamp(17rem, 24vw, 24rem); min-width: 0; }
 }
-.rcp-hero__shot { margin: 0; overflow: hidden; border-radius: 6px; background: var(--cream-3); aspect-ratio: 4 / 3; position: relative; }
-@media (max-width: 47.99em) { .rcp-hero__shot:first-child { aspect-ratio: 16 / 10; } }
 .rcp-hero__shot img { width: 100%; height: 100%; object-fit: cover; display: block; transition: transform .9s var(--ease); }
 .rcp-hero__shot:hover img { transform: scale(1.04); }
 .rcp-hero__shot::after { content: ""; position: absolute; inset: 0; box-shadow: inset 0 0 0 1px rgb(20 19 17 / .06); pointer-events: none; border-radius: inherit; }
@@ -1456,5 +1460,11 @@ body:has(.buybar[data-show]) .dopt { bottom: calc(9.5rem + env(safe-area-inset-b
 
 /* 23w. The sold-out row on /shop/ holds one or two cards. The four-up grid would
    pin a single card into a quarter-width corner, so size these by content instead
-   of by column count. */
-.products--few { grid-template-columns: repeat(auto-fit, minmax(11rem, 15rem)); justify-content: start; }
+   of by column count.
+
+   Flex with a definite basis rather than an auto-fit grid: `.pcard` carries
+   `container-type: inline-size`, which makes its inline size independent of its
+   contents, and a grid track that has to resolve such an item can land on
+   min-content — one word per line. A definite flex-basis never asks. */
+.products--few { display: flex; flex-wrap: wrap; justify-content: flex-start; }
+.products--few > .pcard { flex: 0 0 15rem; max-width: 100%; min-width: 0; }
