@@ -63,7 +63,7 @@ const RETIRED = [
   ["/shop/honey-with-fresh-ginger-8oz/", "/shop/honey-with-fresh-ginger/"],
   ["/shop/honey-with-fresh-ginger-two-jar-set/", "/shop/honey-with-fresh-ginger/"],
   ["/shop/honey-with-fresh-ginger-gift-box/", "/shop/honey-with-fresh-ginger/"],
-  ["/shop/honey-with-fresh-ginger-travel-jar/", "/shop/honey-with-fresh-ginger/"],
+  ["/shop/honey-with-fresh-ginger-travel-jar/", "/shop/honey-with-fresh-ginger-travel-pack/"],
   ["/shop/honey-with-fresh-ginger-family-pack/", "/shop/honey-with-fresh-ginger/"],
   ["/shop/beechwood-honey-dipper/", "/shop/"],
   ["/collections/gifts-under-30/", "/shop/"],

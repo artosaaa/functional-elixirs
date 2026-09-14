@@ -1453,3 +1453,8 @@ body:has(.buybar[data-show]) .dopt { bottom: calc(9.5rem + env(safe-area-inset-b
 .dopt .dopt__toggle { color: var(--ink); }
 .dopt .dopt__note { color: var(--ink-mute); margin-top: var(--s-4); }
 .dopt .dopt__note a { color: var(--gold-text, #7E6011); }
+
+/* 23w. The sold-out row on /shop/ holds one or two cards. The four-up grid would
+   pin a single card into a quarter-width corner, so size these by content instead
+   of by column count. */
+.products--few { grid-template-columns: repeat(auto-fit, minmax(11rem, 15rem)); justify-content: start; }

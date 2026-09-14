@@ -1,17 +1,36 @@
 /* Recipes — built from the brand's own "How to enjoy it" notes. Scoop. Stir. Sip. */
 import { page, breadcrumbs, jsonld, esc, HERO_URL, BRAND, ICONS } from "../layout.mjs";
 import { LINE, BEE, BEE_FLY } from "../site.mjs";
-import { existsSync } from "node:fs";
+import { readdirSync } from "node:fs";
 
-/* Hero photography for the top of this page. The files are the client's commissioned
-   product shots; the row renders only for the ones actually present in assets/img/recipes/,
-   so the page is never left with broken images if a file hasn't been added yet. */
+/* Hero photography for the top of this page. The row renders only for the files
+   actually present in assets/img/recipes/, so the page is never left with a broken
+   image if one hasn't been added yet.
+
+   The three names below carry written alt text, and any extension works. Anything
+   else dropped in the folder is still picked up, with a plainer description — an
+   uploaded photo under the wrong filename should appear, not vanish silently. */
 const DIR = new URL("../../assets/img/recipes/", import.meta.url);
-const HERO_SHOTS = [
-  { file: "lemon-ginger-cooler.jpg", alt: "A tall glass of iced honey-ginger lemonade with lemon wheels and mint, the Functional Elixirs jar beside it on a marble counter" },
-  { file: "honey-on-fruit.jpg", alt: "Apple and peach slices spread with Functional Elixirs honey with fresh ginger on a stoneware plate, the jar behind them" },
-  { file: "ginger-tea.jpg", alt: "A steaming striped mug of honey-ginger tea beside the Functional Elixirs jar, fresh ginger root and a gold spoon" },
-].filter((s) => existsSync(new URL(s.file, DIR)));
+const EXTS = ["jpg", "jpeg", "png", "webp", "avif"];
+const FILES = (() => { try { return readdirSync(DIR); } catch { return []; } })()
+  .filter((f) => EXTS.includes(f.split(".").pop().toLowerCase()));
+const named = (stem) => FILES.find((f) => f.replace(/\.[^.]+$/, "").toLowerCase() === stem);
+const NAMED = [
+  { stem: "lemon-ginger-cooler", alt: "A tall glass of iced honey-ginger lemonade with lemon wheels and mint, the Functional Elixirs jar beside it on a marble counter" },
+  { stem: "honey-on-fruit", alt: "Apple and peach slices spread with Functional Elixirs honey with fresh ginger on a stoneware plate, the jar behind them" },
+  { stem: "ginger-tea", alt: "A steaming striped mug of honey-ginger tea beside the Functional Elixirs jar, fresh ginger root and a gold spoon" },
+];
+const HERO_SHOTS = (() => {
+  const shots = [];
+  for (const n of NAMED) { const f = named(n.stem); if (f) shots.push({ file: f, alt: n.alt }); }
+  const used = new Set(shots.map((s) => s.file));
+  for (const f of FILES.sort()) {
+    if (shots.length >= 3) break;
+    if (used.has(f)) continue;
+    shots.push({ file: f, alt: "A jar of Functional Elixirs Honey with Fresh Ginger served on a marble counter" });
+  }
+  return shots;
+})();
 
 const heroStrip = () => HERO_SHOTS.length
   ? `<div class="wrap"><div class="rcp-hero">${HERO_SHOTS.map((s, i) => `<figure class="rcp-hero__shot reveal" style="--d:${i * 90}ms"><img src="/assets/img/recipes/${s.file}" alt="${esc(s.alt)}" width="1300" height="1200" loading="${i === 0 ? "eager" : "lazy"}" ${i === 0 ? 'fetchpriority="high"' : ""} decoding="async"></figure>`).join("")}</div></div>`
