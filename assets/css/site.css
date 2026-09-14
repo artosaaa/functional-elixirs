@@ -1105,8 +1105,6 @@ body { background: #fff; }
 .mk-band__bee .bee { width: 100%; height: 100%; }
 @keyframes bee-hover { from { transform: translateY(-.18rem) rotate(-3deg); } to { transform: translateY(.18rem) rotate(3deg); } }
 
-/* the masthead and “inspired by nature” bees wake up on hover/focus only */
-.lockup:hover .lockup__bee svg, .lockup:focus-visible .lockup__bee svg { animation: bee-hover 2.4s ease-in-out infinite alternate; }
 
 @media (prefers-reduced-motion: reduce) {
   .bees { display: none; }
