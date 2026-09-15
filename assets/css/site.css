@@ -941,8 +941,9 @@ body { background: #fff; }
 .masthead__panel { background: #fff; width: min(100%, 54rem); margin-inline: auto; padding: clamp(1.25rem, 3vw, 2rem) clamp(1rem, 4vw, 3rem); text-align: center; }
 @media (max-width: 40em) { .masthead__panel { width: min(100%, 22rem); } }
 .lockup { display: inline-grid; justify-items: center; gap: .35rem; text-decoration: none; color: var(--ink); }
-.lockup__bee { width: 2.25rem; height: 2.25rem; color: var(--gold-btn); display: block; }
-.lockup__bee svg { width: 100%; height: 100%; }
+/* the real F·E plaque, the same mark that is on the jar — not a generic bee */
+.lockup__mark { display: block; line-height: 0; }
+.lockup__mark .fe-mark { width: clamp(3.25rem, 7vw, 4.5rem); height: auto; display: block; object-fit: contain; }
 .lockup__name { font: 700 clamp(1.35rem, 3.2vw, 2rem)/1.05 var(--display); letter-spacing: .06em; text-transform: uppercase; color: #141311; }
 .lockup__sub { font: 500 clamp(.62rem, 1.4vw, .8rem)/1 var(--sans); letter-spacing: .32em; text-transform: uppercase; color: #2A2824; margin-top: .25rem; }
 .lockup__tag { font: 500 clamp(.55rem, 1.1vw, .66rem)/1 var(--sans); letter-spacing: .26em; text-transform: uppercase; color: #5A554C; margin-top: .55rem; }
@@ -1108,7 +1109,7 @@ body { background: #fff; }
 
 @media (prefers-reduced-motion: reduce) {
   .bees { display: none; }
-  .bee__wing, .mk-band__bee .bee, .bee-drift, .bee-drift .bee, .lockup:hover .lockup__bee svg { animation: none !important; }
+  .bee__wing, .mk-band__bee .bee, .bee-drift, .bee-drift .bee { animation: none !important; }
 }
 
 /* --- 23b. Signature jar — the product, on the home page ------------------- */
@@ -1410,8 +1411,7 @@ main:has(> :last-child.cta-band) + .footer { margin-top: 0; }
 :root[data-motion="off"] .bee__wing,
 :root[data-motion="off"] .mk-band__bee .bee,
 :root[data-motion="off"] .bee-drift,
-:root[data-motion="off"] .bee-drift .bee,
-:root[data-motion="off"] .lockup:hover .lockup__bee svg { animation: none !important; }
+:root[data-motion="off"] .bee-drift .bee { animation: none !important; }
 :root[data-motion="off"] *, :root[data-motion="off"] *::before, :root[data-motion="off"] *::after {
   animation-duration: .001ms !important; animation-iteration-count: 1 !important;
   transition-duration: .001ms !important; scroll-behavior: auto !important;
