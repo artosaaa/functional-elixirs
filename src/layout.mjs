@@ -1,5 +1,5 @@
 /* Page shell: <head> with SEO + JSON-LD, header, footer, cart drawer, cookie notice, runtime catalog */
-import { BRAND, CFG, NAV, FOOTER, SITE_URL, HERO_URL, esc, money, abs, ICONS, stars, logoMark, REVIEWS_VERIFIED, BEE } from "./site.mjs";
+import { BRAND, CFG, NAV, FOOTER, SITE_URL, HERO_URL, esc, money, abs, ICONS, stars, logoMark, REVIEWS_VERIFIED } from "./site.mjs";
 import { PRODUCTS, catalogJSON } from "./products.mjs";
 const HERO_PRICE = PRODUCTS[0].price;
 import { readFileSync } from "node:fs";
@@ -70,7 +70,7 @@ function header(path = "/") {
   return `<a class="skip" href="#main">Skip to content</a>
 <div class="masthead stripes stripes--head"><div class="masthead__panel">
   <a class="lockup" href="/" aria-label="${BRAND.name} — home">
-    <span class="lockup__bee">${BEE}</span>
+    <span class="lockup__mark">${logoMark({ size: 72, wordmark: false })}</span>
     <span class="lockup__name">Functional Elixirs</span>
     <span class="lockup__sub">Honey + Fresh Ginger</span>
     <span class="lockup__tag">Nature’s Daily Elixir</span>
@@ -105,7 +105,7 @@ function footer() {
   const col = (t, items) => `<div><h2>${t}</h2><ul>${items.map(([l, h]) => `<li><a href="${h}">${l}</a></li>`).join("")}</ul></div>`;
   return `<footer class="footer"><div class="wrap">
   <div class="footer__grid">
-    <div class="footer__brand"><a class="logo logo--dark" href="/"><span class="logo__bee">${BEE}</span><span class="logo__word"><span>Functional</span><span>Elixirs</span></span></a><p>${BRAND.positioning}</p>
+    <div class="footer__brand"><a class="logo logo--dark" href="/">${logoMark({ size: 40, wordmark: false })}<span class="logo__word"><span>Functional</span><span>Elixirs</span></span></a><p>${BRAND.positioning}</p>
       <div class="footer__promise"><div>${ICONS.truck}<span>Free US shipping over $${CFG.freeShipOver}</span></div><div>${ICONS.leaf}<span>Raw honey + fresh ginger · small batches · nothing else</span></div></div></div>
     ${col("Functional Elixirs", FOOTER.about)}${col("Help", FOOTER.help)}
   </div>
