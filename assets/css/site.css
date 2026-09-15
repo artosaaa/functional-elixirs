@@ -1210,9 +1210,8 @@ main:has(> :last-child.cta-band) + .footer { margin-top: 0; }
 }
 
 /* 23h. Recipes hero photography ---------------------------------------------
-   Three commissioned shots across the top of /recipes/. The first is given more
-   width on desktop so the row reads as a composition rather than three equal
-   tiles; all three share one frame ratio so the jar sits at a consistent size. */
+   Three shots across the top of /recipes/, on the same column grid as the recipe
+   cards beneath them so the two rows share their vertical edges. */
 .rcp-hero { display: grid; gap: var(--s-3); margin-block: clamp(1.5rem, 4vw, 2.5rem) clamp(1.75rem, 4vw, 3rem); }
 /* Order matters here. The desktop rule below sets `aspect-ratio: auto`, and this
    base rule has the same specificity — so it has to come first or the 4/3 wins
@@ -1221,7 +1220,10 @@ main:has(> :last-child.cta-band) + .footer { margin-top: 0; }
 .rcp-hero__shot { margin: 0; overflow: hidden; border-radius: 6px; background: var(--cream-3); aspect-ratio: 4 / 3; position: relative; }
 @media (max-width: 47.99em) { .rcp-hero__shot:first-child { aspect-ratio: 16 / 10; } }
 @media (min-width: 48em) {
-  .rcp-hero { grid-template-columns: 1.35fr 1fr 1fr; gap: var(--s-4); }
+  /* the same three equal columns and the same gap as the recipe cards below, so
+     every vertical edge lines up; the wider first frame read as a composition
+     on its own but as a misalignment against the grid underneath it */
+  .rcp-hero { grid-template-columns: repeat(3, 1fr); gap: var(--s-5); }
   /* one shared height, not a per-item ratio: with unequal columns an aspect-ratio
      makes the wide frame taller and the row ends up ragged along the bottom */
   .rcp-hero__shot { aspect-ratio: auto; height: clamp(17rem, 24vw, 24rem); min-width: 0; }
