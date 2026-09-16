@@ -1,5 +1,4 @@
 /* Our story · Ingredients & sourcing · Gift guide */
-import { existsSync } from "node:fs";
 import { BEE, BEE_FLY } from "../site.mjs";
 import { page, jsonld, breadcrumbs, productCard, faqList, ctaBand, ICONS, esc, money, BRAND, CFG, HERO_URL } from "../layout.mjs";
 import { HERO } from "../products.mjs";
@@ -9,16 +8,12 @@ const head = (crumb, eyebrow, h1, lede, center = false) => `${breadcrumbs([{ nam
 
 function story() {
   const path = "/about-us/";
-  /* The family photograph is the page. There is no stand-in: every other photograph
-     in the repo is already doing a job elsewhere, and a borrowed one here was twice
-     rejected. Until the archive scan is added the story runs on its own, centred —
-     no image beats an image nobody wants. Drop the file in and it comes back with
-     its caption, no code change. */
-  const ARCHIVE = "/assets/img/about-family-archive.jpg";
-  const hasArchive = existsSync(new URL("../../assets/img/about-family-archive.jpg", import.meta.url));
+  /* The jar in the grass, full frame — the same photograph the home page and the
+     shop lead with, shown here uncropped at its own 3:4. The original is kept in
+     brand-source/photo-jar-in-grass-2026.jpg. */
   const body = `${breadcrumbs([{ name: "About us", href: path }])}
-<section class="about-hero"><div class="wrap about-hero__in about-hero__in--story ${hasArchive ? "" : "about-hero__in--solo"}">
-  ${hasArchive ? `<figure class="about-hero__photo about-hero__photo--archive reveal"><img src="${ARCHIVE}" alt="A photograph from the family album: two children in striped shirts standing at the edge of a large fountain" width="1280" height="1980" fetchpriority="high" decoding="async"><figcaption>From the family album.</figcaption></figure>` : ""}
+<section class="about-hero"><div class="wrap about-hero__in about-hero__in--story">
+  <figure class="about-hero__photo reveal"><img src="/assets/img/jar-in-grass.jpg" srcset="/assets/img/jar-in-grass-720.jpg 720w, /assets/img/jar-in-grass.jpg 1200w" sizes="(min-width: 56em) 32rem, 100vw" alt="A jar of Functional Elixirs Honey with Fresh Ginger lying in bright green grass in full sun, the bamboo lid on and the label facing up" width="1200" height="1600" fetchpriority="high" decoding="async"></figure>
   <div class="about-hero__copy reveal">
     <p class="mk-eyebrow">Our story</p>
     <h1 class="mk-h1 mk-h1--page">It started<br>with our mom.</h1>

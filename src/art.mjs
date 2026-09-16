@@ -304,7 +304,12 @@ const VARIANTS = {
 };
 
 let n = 0;
-export function art(variant, p, { alt, anim = false, className = "", slot } = {}) {
+/* What the photograph actually shows. There is one product photograph — the jar lying in
+   sunlit grass — and every variant resolves to it, so every variant gets this alt. If a
+   different shot is added under another variant name, describe it here. */
+export const photoAlt = (p) => `Functional Elixirs ${p?.name || "Honey with Fresh Ginger"}${p?.size ? ` (${p.size})` : ""} — glass jar with a bamboo lid lying in bright green grass in full sun, label facing up`;
+
+export function art(variant, p, { alt, anim = false, className = "", slot, sizes: sizesOverride } = {}) {
   /* the dipper has no photograph; findPhoto() would hand back a honey jar, so draw it instead.
      `noPhoto` is the same idea for a size we have never photographed — better a drawing than
      the 15 oz jar passing itself off as a 3 oz one. */
@@ -312,17 +317,13 @@ export function art(variant, p, { alt, anim = false, className = "", slot } = {}
   if (drawn) variant = "dipper";
   const src = drawn || p?.noPhoto ? null : slot ? PHOTOS[slot] : findPhoto(p?.id || "brand", variant);
   if (src) {
-    /* the illustration alts describe a scene that no longer exists — describe the photograph */
-    const jar = `${p?.name || "Functional Elixirs Honey with Fresh Ginger"}${p?.size ? `, ${p.size}` : ""}`;
-    alt = variant === "hero" || variant === "front" ? `${jar} — glass jar with a bamboo lid on a marble counter`
-        : variant === "cup" ? `${jar} — the jar photographed from a slightly wider angle on a marble counter`
-        : variant === "open" ? `${jar} — jar on a marble counter` : alt;
-    if (/hg-(duo|trio)/.test(src)) alt = `${jar} — several jars of Honey with Fresh Ginger stacked on a kitchen counter`;
+    /* the illustration alts describe a drawn scene — describe the photograph instead */
+    alt = photoAlt(p);
     const stem = src.replace(/^.*\/(.*)\.[a-z]+$/i, "$1").toLowerCase();
     const set = [400, 800].filter((w) => WIDTHS[`${stem}-${w}`]).map((w) => `${WIDTHS[`${stem}-${w}`]} ${w}w`);
     set.push(`${src} 1000w`);
     /* sizes: cards sit in a 2/3/4-up grid, the hero is roughly half the page */
-    const sizes = anim ? "(min-width: 56em) 46vw, 100vw" : "(min-width: 64em) 22vw, (min-width: 40em) 30vw, 45vw";
+    const sizes = sizesOverride || (anim ? "(min-width: 56em) 46vw, 100vw" : "(min-width: 64em) 22vw, (min-width: 40em) 30vw, 45vw");
     return `<img src="${src}" ${set.length > 1 ? `srcset="${set.join(", ")}" sizes="${sizes}"` : ""} alt="${esc(alt)}" class="${className}" width="1000" height="${variant === "hero" ? 1200 : 1250}" loading="${anim ? "eager" : "lazy"}" ${anim ? 'fetchpriority="high"' : ""} decoding="async" style="width:100%;height:100%;object-fit:cover">`;
   }
   const id = `a${(n++).toString(36)}`; const fn = VARIANTS[variant] || VARIANTS.front;

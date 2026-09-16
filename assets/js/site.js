@@ -331,7 +331,7 @@
       const main = $(".gallery__main", g); const thumbs = $$(".gallery__thumbs button", g); const slides = $$("[data-slide]", g);
       thumbs.forEach((b, i) => b.addEventListener("click", () => { slides.forEach((s, j) => (s.hidden = j !== i)); thumbs.forEach((t, j) => t.setAttribute("aria-current", String(j === i))); }));
       // keyboard arrows on main
-      main?.addEventListener("keydown", (e) => { const cur = thumbs.findIndex((t) => t.getAttribute("aria-current") === "true"); if (e.key === "ArrowRight") thumbs[(cur + 1) % thumbs.length].click(); if (e.key === "ArrowLeft") thumbs[(cur - 1 + thumbs.length) % thumbs.length].click(); });
+      main?.addEventListener("keydown", (e) => { if (thumbs.length < 2) return; const cur = thumbs.findIndex((t) => t.getAttribute("aria-current") === "true"); if (e.key === "ArrowRight") thumbs[(cur + 1) % thumbs.length].click(); if (e.key === "ArrowLeft") thumbs[(cur - 1 + thumbs.length) % thumbs.length].click(); });
     }
     const bar = $("#buybar"); const anchor = $("[data-buy-anchor]");
     if (bar && anchor && "IntersectionObserver" in window) {

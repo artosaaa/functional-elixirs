@@ -1044,14 +1044,16 @@ body { background: #fff; }
 .mk-band { width: 100%; padding-block: clamp(1.5rem, 3.5vw, 2.25rem); }
 .mk-feature p { max-width: 24ch; }
 
-/* 22c. Product imagery on pure white; comp hero; About Us layout */
-.mk-hero__photo { background: #fff; aspect-ratio: 1400 / 1129; box-shadow: none; }
-@media (min-width: 56em) { .mk-hero__photo { aspect-ratio: 1400 / 1129; } }
+/* 22c. Product imagery; comp hero; About Us layout */
+/* the hero photograph is a square crop of the jar in the grass — a square frame at every width shows all of it */
+.mk-hero__photo { background: #fff; aspect-ratio: 1 / 1; box-shadow: none; }
+@media (min-width: 56em) { .mk-hero__photo { aspect-ratio: 1 / 1; } }
 .mk-hero__photo img { object-fit: cover; object-position: center; }
 .pcard__media, .acard__media, .gallery__main, .gallery__thumbs button, .line__media, .deskbar__thumb, .mini-jar { background: #fff !important; box-shadow: none; }
 .pcard__media { border: 1px solid var(--cream-3); }
 .gallery__main { border: 1px solid var(--cream-3); }
-.pcard__media img, .gallery__main img { object-fit: contain; background: #fff; }
+/* the photograph has its own background (grass), so it fills the frame; `contain` was for cut-outs on white */
+.pcard__media img, .gallery__main img { object-fit: cover; }
 
 .about-hero { background: #fff; padding-block: clamp(1.5rem, 4vw, 3rem) clamp(1.5rem, 4vw, 3rem); }
 .about-hero__in { display: grid; gap: var(--s-6); align-items: center; }
@@ -1232,18 +1234,12 @@ main:has(> :last-child.cta-band) + .footer { margin-top: 0; }
 .rcp-hero__shot:hover img { transform: scale(1.04); }
 .rcp-hero__shot::after { content: ""; position: absolute; inset: 0; box-shadow: inset 0 0 0 1px rgb(20 19 17 / .06); pointer-events: none; border-radius: inherit; }
 
-/* 23i. About Us — one section built around the family photograph -------------
+/* 23i. About Us — one section built around the photograph -------------------
    The portrait leads on desktop and the whole story sits beside it, rather than
    splitting into a hero and a second text block. */
 .about-hero__in--story { align-items: center; }
 @media (min-width: 56em) {
   .about-hero__in--story { grid-template-columns: minmax(0, 5fr) minmax(0, 6fr); gap: clamp(2.5rem, 6vw, 5rem); }
-}
-.about-hero__photo--archive { aspect-ratio: auto; border-radius: 6px; background: var(--cream-3); }
-.about-hero__photo--archive img { width: 100%; height: auto; display: block; border-radius: 6px; }
-.about-hero__photo--archive figcaption {
-  margin-top: .7rem; font: 500 .68rem/1 var(--sans); letter-spacing: .18em;
-  text-transform: uppercase; color: var(--gold-text); text-align: center;
 }
 .about-hero__prose { display: grid; gap: 1.1em; margin-top: var(--s-4); }
 .about-hero__prose p { font: 400 clamp(1rem, 1.3vw, 1.12rem)/1.6 var(--serif); color: #3C3934; max-width: 46ch; }
@@ -1255,8 +1251,8 @@ main:has(> :last-child.cta-band) + .footer { margin-top: 0; }
 .shop-single { display: grid; gap: clamp(1.75rem, 4vw, 3rem); align-items: center; margin-block: clamp(1rem, 3vw, 2rem) clamp(2rem, 5vw, 3.5rem); }
 @media (min-width: 56em) { .shop-single { grid-template-columns: minmax(0, 5fr) minmax(0, 6fr); gap: clamp(2.5rem, 6vw, 5rem); } }
 .shop-single__photo { margin: 0; background: #fff; border-radius: 6px; overflow: hidden; aspect-ratio: 1 / 1; }
-/* the source jpeg carries its own white margin; a centre crop trims that rather
-   than the jar, so the product reads larger without a taller frame */
+/* the product photograph is 4:5 with the jar centred; a square centre crop trims
+   grass, never the jar, so the product reads larger without a taller frame */
 .shop-single__photo img { width: 100%; height: 100%; object-fit: cover; object-position: center; display: block; transition: transform .9s var(--ease); }
 .shop-single__photo:hover img { transform: scale(1.03); }
 .shop-single__name { font: 400 clamp(1.6rem, 3.2vw, 2.3rem)/1.15 var(--serif); color: #141311; margin-top: .35rem; }
@@ -1301,16 +1297,14 @@ main:has(> :last-child.cta-band) + .footer { margin-top: 0; }
 .mk-nature, .shop-single-sec, .rcp-head-sec, .about-hero { position: relative; overflow: hidden; }
 
 /* 23o. Mobile pass ----------------------------------------------------------
-   The home signature photo is now the counter shot, a 3:4 frame the jar
-   already fills — so match the frame to the source and crop nothing. The
-   square centre crop that lives on /shop/ exists to trim the white margin
-   around the cut-out jpeg, which this photo doesn't have. */
+   The home signature photo is the 4:5 product photograph; a 3:4 frame trims
+   a sliver of grass from each side and nothing from the jar. */
 .mk-signature__photo { aspect-ratio: 3 / 4; }
 .mk-signature__photo img { object-fit: cover; object-position: center; }
 
 @media (max-width: 47.99em) {
   /* 5:4 was tried here and cropped the lid and the base off a 4:5 source; the
-     square keeps the whole jar and still trims the jpeg's own white margin */
+     square keeps the whole jar and trims only grass */
   .shop-single__photo { aspect-ratio: 1 / 1; }
 
   /* the add-to-cart row wrapped the button under a full-width stepper */
@@ -1470,13 +1464,3 @@ body:has(.buybar[data-show]) .dopt { bottom: calc(9.5rem + env(safe-area-inset-b
    min-content — one word per line. A definite flex-basis never asks. */
 .products--few { display: flex; flex-wrap: wrap; justify-content: flex-start; }
 .products--few > .pcard { flex: 0 0 15rem; max-width: 100%; min-width: 0; }
-
-/* 23x. About Us with no photograph. The story is a two-column layout built around
-   a family picture that hasn't been supplied; with nothing to sit beside, the prose
-   is centred and given a reading measure rather than stretched across the page. */
-.about-hero__in--solo { grid-template-columns: minmax(0, 1fr) !important; justify-items: center; text-align: center; }
-.about-hero__in--solo .mk-rule { margin-inline: auto; }
-.about-hero__in--solo .about-hero__prose { justify-items: center; }
-.about-hero__in--solo .about-hero__prose p,
-.about-hero__in--solo .about-hero__prose .mk-lede { margin-inline: auto; }
-.about-hero__in--solo .about-hero__copy { max-width: 42rem; }
