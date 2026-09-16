@@ -39,7 +39,7 @@ src/layout.mjs         page shell: <head> SEO, JSON-LD graph, header, footer, ca
 src/pages/*.mjs        core · account · brand · journal · support
 assets/css/site.css    design system (tokens → components → motion layer)
 assets/js/site.js      storefront runtime (cart, drawer, promo, shipping, express pay, auth, account, tracking)
-assets/img/            real photos (jars-kitchen, teapot, garden) + generated logo/favicon/OG SVGs
+assets/img/            real photos (jar-in-grass*, jars-kitchen, product/hg-15-hero*) + logo/favicon PNGs + generated OG SVGs
 ```
 
 ---
@@ -216,18 +216,23 @@ Until photos land, the site uses generated SVG scenes of the jar (`src/art.mjs`)
 
 ## 6a. Product photography currently in use
 
-`assets/img/product/` holds crops of **your own phone photos** (IMG_0117 / IMG_0118 / IMG_0079),
-brightened and sharpened. They are real product shots and they beat the illustrations — but the
-originals are only **640 x 640**, so they are upscaled and soft at large sizes.
+One photograph — the jar lying in sunlit grass, shot at 1500 × 2000 — carries the whole site.
+The original is kept in `brand-source/photo-jar-in-grass-2026.jpg` (not published); the crops
+under `assets/img/` are what pages load:
 
-**Reshoot when you can**, at 2000 px or more: jar straight on, label square to camera, on the same
-marble, window light from the side. Then just overwrite these filenames — no code changes:
+| File | Crop | Where it shows |
+|---|---|---|
+| `product/hg-15-hero.jpg` (+ `-400`, `-800`) | tight 4:5 on the jar | shop, product gallery, home "signature jar", ingredients page, product cards, cart thumbnail |
+| `jar-in-grass-square.jpg` (+ `-640`) | 1:1, wider | home hero |
+| `jar-in-grass.jpg` (+ `-720`) | full frame 3:4 | About Us |
 
-| File | Shows |
-|---|---|
-| `hero.jpg` | single jar, portrait — home hero + product page |
-| `front.jpg` | single jar, tighter — product cards |
-| `cup.jpg` | alternate angle |
+Every product variant (`front`, `open`, `cup`) resolves to `hg-15-hero.jpg`, so the product
+gallery shows one frame and no thumbnail strip. To add a second angle, drop `hg-15-front.jpg`
+(or `front.jpg`) in `assets/img/product/`, run `python3 tools/make-images.py`, rebuild — the
+strip comes back on its own. Update `photoAlt()` in `src/art.mjs` so the alt text describes it.
+
+The file names are new on purpose: `/assets/*` is served with a one-year immutable cache, so
+overwriting `hero.jpg` in place would have left returning visitors on the old photo.
 | `hg-duo-front.jpg`, `hg-trio-front.jpg` | several jars together — the set SKUs |
 | `hg-gift-hero.jpg` | the Gift Box (currently a single jar; **replace with an actual gift-box shot** — jar, dipper, linen wrap) |
 

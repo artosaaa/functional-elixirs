@@ -1,5 +1,10 @@
 DROP YOUR PRODUCT PHOTOS IN THIS FOLDER.
 
+Currently here: hg-15-hero.jpg (+ -400/-800) — the 15 oz jar lying in sunlit grass,
+cropped 4:5 from brand-source/photo-jar-in-grass-2026.jpg. Every other variant falls
+back to it. Because /assets/ is cached immutably for a year, give a replacement a NEW
+file name (and update the references) rather than overwriting this one.
+
 The site picks them up automatically on the next build — no code changes.
 
 FILENAMES

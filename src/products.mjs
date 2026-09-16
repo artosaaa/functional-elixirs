@@ -14,7 +14,7 @@ export const PRODUCTS = [
     id: "hg-15", slug: "honey-with-fresh-ginger", sku: "FE-HG-15",
     name: "Honey with Fresh Ginger", sub: "15 oz (425 g) glass jar", label: ["HONEY", "with fresh", "GINGER"], size: "15 oz",
     price: 23.99, stock: 240, badge: "Signature", rating: null, reviews: 0,
-    honey: "#7A3E0F", art: "hero", thumb: "/assets/img/product/hero-400.jpg",
+    honey: "#7A3E0F", art: "hero", thumb: "/assets/img/product/hg-15-hero-400.jpg",
     notes: ["Warm honey", "Fresh ginger", "Gentle heat"],
     use: { spoon: "1 tsp", water: "8 oz warm", when: "Morning", also: "Tea · oats · glazes" },
     ingredients: BASE_INGREDIENTS, origin: "Blended and jarred in small batches in the USA",

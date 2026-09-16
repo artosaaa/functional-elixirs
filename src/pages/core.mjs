@@ -2,7 +2,7 @@
 import { BEE, BEE_FLY, LINE } from "../site.mjs";
 import { page, jsonld, breadcrumbs, productCard, stripeHead, faqList, ctaBand, stars, ICONS, esc, money, BRAND, CFG, abs, HERO_URL, valueBullets, guaranteeBlock, REVIEWS_VERIFIED } from "../layout.mjs";
 import { PRODUCTS, HERO, byId } from "../products.mjs";
-import { art, altFor, photo, resolvedPhoto } from "../art.mjs";
+import { art, altFor, photo, photoAlt, resolvedPhoto } from "../art.mjs";
 import { existsSync } from "node:fs";
 
 /* No testimonials yet, and inventing them is not an option: the card renders a
@@ -66,11 +66,11 @@ function home() {
     <p class="mk-lede">A wholesome blend of raw honey and real ginger — crafted to nourish your body and elevate your every day.</p>
     <a class="btn btn--gold" href="/shop/">Shop now</a>
   </div>
-  <div class="mk-hero__photo reveal"><img src="/assets/img/home-hero.jpg" alt="Functional Elixirs Honey with Fresh Ginger jar beside the F·E plaque, fresh ginger root and white blossom on marble" width="1400" height="1129" fetchpriority="high" decoding="async"></div>
+  <div class="mk-hero__photo reveal"><img src="/assets/img/jar-in-grass-square.jpg" srcset="/assets/img/jar-in-grass-square-640.jpg 640w, /assets/img/jar-in-grass-square.jpg 1200w" sizes="(min-width: 56em) 50vw, 100vw" alt="A jar of Functional Elixirs Honey with Fresh Ginger, bamboo lid on, lying in bright green grass in full sun" width="1200" height="1200" fetchpriority="high" decoding="async"></div>
 </div></section>
 
 <section class="mk-signature"><div class="wrap mk-signature__in">
-  <figure class="mk-signature__photo reveal"><img src="/assets/img/signature-jar.jpg" srcset="/assets/img/signature-jar-480.jpg 480w, /assets/img/signature-jar.jpg 760w" sizes="(min-width: 56em) 34vw, 74vw" alt="The 15 oz Functional Elixirs Honey with Fresh Ginger jar, bamboo lid on, beside the F·E plaque on marble" width="760" height="1009" loading="lazy" decoding="async"></figure>
+  <figure class="mk-signature__photo reveal">${art("hero", p, { alt: altFor(p, "hero"), sizes: "(min-width: 56em) 34vw, 74vw" })}</figure>
   <div class="mk-signature__copy reveal">
     <p class="mk-eyebrow">The signature jar</p>
     <h2 class="mk-h2 mk-h2--left">${esc(p.name)}</h2>
@@ -113,7 +113,7 @@ function shop() {
   const body = `${breadcrumbs([{ name: "Shop", href: "/shop/" }])}
 <div class="wrap page-head"><p class="eyebrow">Shop</p><h1>Honey with Fresh Ginger.</h1></div>
 ${single ? `<section class="section--tight shop-single-sec"><div class="wrap shop-single">
-  <figure class="shop-single__photo reveal"><img src="/assets/img/product/hero-800.jpg" srcset="/assets/img/product/hero-400.jpg 400w, /assets/img/product/hero-800.jpg 800w, /assets/img/product/hero.jpg 1000w" sizes="(min-width: 56em) 42vw, 88vw" alt="${esc(altFor(p, "hero"))}" width="1000" height="1250" fetchpriority="high" decoding="async"></figure>
+  <figure class="shop-single__photo reveal">${art("hero", p, { alt: altFor(p, "hero"), anim: true, sizes: "(min-width: 56em) 42vw, 88vw" })}</figure>
   <div class="shop-single__copy reveal">
     <p class="eyebrow">${esc(p.badge || p.type)}</p>
     <p class="shop-single__sub">${esc(p.sub)}</p>
@@ -144,6 +144,8 @@ function product(p) {
      a four-thumbnail strip reads as a mistake, so keep one frame per distinct image */
   const seenSrc = new Set();
   const variants = allVariants.filter((v) => { const src = resolvedPhoto(p, v); if (!src) return true; if (seenSrc.has(src)) return false; seenSrc.add(src); return true; });
+  /* a thumbnail strip of one is a button that does nothing — with a single frame, show the frame alone */
+  const label = (v) => (resolvedPhoto(p, v) ? photoAlt(p) : altFor(p, v));
   const faq = p.type === "Accessory" ? [
     ["Does it fit the jar?", "Yes — the dipper was chosen for the jar’s wide mouth and is short enough to rest inside with the lid off."],
     ["How do I clean it?", "Rinse in warm water and dry upright. No dishwasher. A drop of food-safe mineral oil once a year keeps the wood happy."],
@@ -158,7 +160,7 @@ function product(p) {
 <section class="wrap pdp">
   <div class="pdp__gallery"><div class="gallery" data-gallery>
     <div class="gallery__main vt-hero" tabindex="0" aria-label="Product images — use arrow keys to browse">${variants.map((v, i) => `<div data-slide ${i ? "hidden" : ""}>${art(v, p, { alt: altFor(p, v), anim: i === 0, className: i === 0 ? "scene--live" : "" })}</div>`).join("")}</div>
-    <div class="gallery__thumbs" role="group" aria-label="Choose image">${variants.map((v, i) => `<button type="button" aria-current="${i === 0}" aria-label="${esc(altFor(p, v))}">${art(v, p, { alt: "" })}</button>`).join("")}</div>
+    ${variants.length > 1 ? `<div class="gallery__thumbs" role="group" aria-label="Choose image">${variants.map((v, i) => `<button type="button" aria-current="${i === 0}" aria-label="${esc(label(v))}">${art(v, p, { alt: "" })}</button>`).join("")}</div>` : ""}
   </div></div>
   <div class="pdp__buy">
     <div class="pdp__title"><p class="eyebrow">${esc(p.type)}${p.badge ? ` · ${esc(p.badge)}` : ""}</p><h1>${esc(p.name)}</h1><p class="sub">${esc(p.sub)}</p></div>
