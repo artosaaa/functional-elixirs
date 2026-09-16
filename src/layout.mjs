@@ -1,5 +1,5 @@
 /* Page shell: <head> with SEO + JSON-LD, header, footer, cart drawer, cookie notice, runtime catalog */
-import { BRAND, CFG, NAV, FOOTER, SITE_URL, HERO_URL, esc, money, abs, ICONS, stars, logoMark, REVIEWS_VERIFIED } from "./site.mjs";
+import { BRAND, CFG, NAV, FOOTER, SITE_URL, HERO_URL, esc, money, abs, ICONS, stars, logoMark, LOGO_SRC, BEE_FLY, REVIEWS_VERIFIED } from "./site.mjs";
 import { PRODUCTS, catalogJSON } from "./products.mjs";
 const HERO_PRICE = PRODUCTS[0].price;
 import { readFileSync } from "node:fs";
@@ -40,6 +40,30 @@ export const jsonld = {
 };
 
 export const breadcrumbs = (items) => `<nav class="breadcrumbs wrap" aria-label="Breadcrumb"><ol><li><a href="/">Home</a></li>${items.map((b, i) => i === items.length - 1 ? `<li aria-current="page">${esc(b.name)}</li>` : `<li><a href="${b.href}">${esc(b.name)}</a></li>`).join("")}</ol></nav>`;
+
+/* One row of the accessibility panel: a native checkbox (kept for keyboard and screen
+   readers, exposed as a switch) with a drawn switch beside it and a one-line
+   description under the name. */
+const doptOpt = (key, name, desc) => `<label class="dopt__opt"><span class="dopt__text"><span class="dopt__name">${name}</span><span class="dopt__desc">${desc}</span></span><input type="checkbox" role="switch" data-dopt="${key}"><span class="dopt__switch" aria-hidden="true"></span></label>`;
+const A11Y_ICON = '<svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><circle cx="12" cy="4.2" r="1.9"/><path d="M4.2 8.1h15.6M12 8.6v6.2M12 14.8l-3.1 5.6M12 14.8l3.1 5.6"/></svg>';
+
+/* The brand intro: a curtain over the first page of a visit — plaque, name, rule,
+   tagline, a bee crossing, then it lifts to show the page already rendered beneath.
+   It is in every page's markup but displayed only when the inline script in <head>
+   sets html[data-intro="on"]: once per session, never under reduced motion or the
+   Reduce-motion switch, and never without JavaScript. site.js schedules the exit. */
+const intro = () => `<div class="intro" id="intro" aria-hidden="true">
+  <div class="intro__panel">
+    <span class="intro__mark"><img class="fe-mark" src="${LOGO_SRC}" width="96" height="96" alt="" decoding="async"></span>
+    <span class="intro__name"><span>Functional</span><span>Elixirs</span></span>
+    <span class="intro__rule"></span>
+    <span class="intro__tag">Nature’s Daily Elixir</span>
+    <span class="intro__bee">${BEE_FLY}</span>
+  </div>
+</div>`;
+/* Decides before first paint whether the intro shows, so a returning visitor never sees
+   it flash. The 3.4 s fallback lifts the curtain even if site.js never arrives. */
+const INTRO_HEAD = `<script>(function(){try{var m=matchMedia("(prefers-reduced-motion: reduce)").matches,o=JSON.parse(localStorage.getItem("sw_display")||"{}").motion,s=sessionStorage.getItem("sw_intro");if(!m&&!o&&!s){document.documentElement.setAttribute("data-intro","on");setTimeout(function(){var i=document.getElementById("intro");if(i)i.classList.add("intro--out")},3400)}}catch(e){}})()</script>`;
 
 export function productCard(p) {
   const badge = p.stock <= 0 ? `<span class="pcard__badge pcard__badge--out">Sold out</span>` : p.stock <= CFG.lowStockAt ? `<span class="pcard__badge pcard__badge--low">Only ${p.stock} left</span>` : p.badge ? `<span class="pcard__badge">${esc(p.badge)}</span>` : "";
@@ -111,20 +135,26 @@ function footer() {
   </div>
   <div class="footer__bottom"><div><p>© ${new Date().getFullYear()} ${BRAND.legal} · Made in the USA</p><p class="disclaimer" style="margin-top:.5rem">${BRAND.disclaimer}</p></div><ul>${FOOTER.legal.map(([l, h]) => `<li><a href="${h}">${l}</a></li>`).join("")}</ul><div class="pay-marks" aria-label="Accepted payments"><span>APPLE PAY</span><span>G PAY</span><span>VISA</span><span>MC</span><span>AMEX</span></div></div>
 </div>
-  <div class="dopt" id="display-options" hidden>
+  <div class="dopt" id="display-options" role="dialog" aria-labelledby="dopt-title" aria-describedby="dopt-sub" hidden>
     <div class="dopt__in">
-      <div class="dopt__head"><p class="dopt__title">Display options</p><button class="dopt__close" type="button" data-dopt-close aria-label="Close display options">&times;</button></div>
-      <div class="dopt__row">
-        <label class="dopt__toggle"><input type="checkbox" data-dopt="text"><span>Larger text</span></label>
-        <label class="dopt__toggle"><input type="checkbox" data-dopt="contrast"><span>Higher contrast</span></label>
-        <label class="dopt__toggle"><input type="checkbox" data-dopt="motion"><span>Reduce motion</span></label>
+      <div class="dopt__head">
+        <span class="dopt__icon" aria-hidden="true">${A11Y_ICON}</span>
+        <div class="dopt__titles"><p class="dopt__title" id="dopt-title">Accessibility</p><p class="dopt__sub" id="dopt-sub">Adjust how this site is displayed. Saved on this device only — nothing is sent anywhere.</p></div>
+        <button class="dopt__close" type="button" data-dopt-close aria-label="Close accessibility options"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
       </div>
-      <p class="dopt__note">Kept on this device only — nothing is sent anywhere. Something still hard to use? <a href="/accessibility/">Tell us</a>.</p>
+      <div class="dopt__list">
+        ${doptOpt("text", "Larger text", "Every word on the page, about a fifth bigger.")}
+        ${doptOpt("contrast", "Higher contrast", "Near-black text and stronger lines throughout.")}
+        ${doptOpt("spacing", "Wider text spacing", "More room between letters, words and lines.")}
+        ${doptOpt("links", "Underline links", "Every link underlined, not only when hovered.")}
+        ${doptOpt("motion", "Reduce motion", "Stops the bees, the reveals and every other animation.")}
+      </div>
+      <div class="dopt__foot"><button class="dopt__reset" type="button" data-dopt-reset>Reset to defaults</button><a href="/accessibility/">Accessibility statement</a></div>
     </div>
   </div>
 </footer>
-<button class="dopt-fab" type="button" data-dopt-open aria-expanded="false" aria-controls="display-options" aria-label="Display options — larger text, higher contrast, reduce motion">
-  <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><circle cx="12" cy="4.2" r="1.9"/><path d="M4.2 8.1h15.6M12 8.6v6.2M12 14.8l-3.1 5.6M12 14.8l3.1 5.6"/></svg>
+<button class="dopt-fab" type="button" data-dopt-open aria-expanded="false" aria-controls="display-options" aria-label="Accessibility options">
+  ${A11Y_ICON}<span class="dopt-fab__tip" aria-hidden="true">Accessibility</span>
 </button>`;
 }
 
@@ -144,6 +174,7 @@ export function page({ title, description, path, body, type = "website", image =
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>${esc(fullTitle)}</title>
+${INTRO_HEAD}
 <meta name="description" content="${esc(description)}">
 <link rel="canonical" href="${url}">
 ${noindex ? `<meta name="robots" content="noindex, nofollow">` : `<meta name="robots" content="index, follow, max-image-preview:large">`}
@@ -175,6 +206,7 @@ ${published ? `<meta property="article:published_time" content="${published}">` 
 ${extraHead}
 </head>
 <body class="${bodyClass}">
+${intro()}
 ${header(path)}
 <main id="main" tabindex="-1">
 ${body}

@@ -145,7 +145,7 @@ function product(p) {
   const seenSrc = new Set();
   const variants = allVariants.filter((v) => { const src = resolvedPhoto(p, v); if (!src) return true; if (seenSrc.has(src)) return false; seenSrc.add(src); return true; });
   /* a thumbnail strip of one is a button that does nothing — with a single frame, show the frame alone */
-  const label = (v) => (resolvedPhoto(p, v) ? photoAlt(p) : altFor(p, v));
+  const label = (v) => { const src = resolvedPhoto(p, v); return src ? photoAlt(p, src) : altFor(p, v); };
   const faq = p.type === "Accessory" ? [
     ["Does it fit the jar?", "Yes — the dipper was chosen for the jar’s wide mouth and is short enough to rest inside with the lid off."],
     ["How do I clean it?", "Rinse in warm water and dry upright. No dishwasher. A drop of food-safe mineral oil once a year keeps the wood happy."],

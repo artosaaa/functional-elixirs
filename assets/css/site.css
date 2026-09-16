@@ -829,13 +829,32 @@ body:has(.capture[data-open]) .capture-backdrop { opacity: 1; visibility: visibl
 
 @media (prefers-reduced-motion: no-preference) {
   /* Primary CTAs — one slow specular pass, like light crossing glass. Long dwell, short sweep. */
-  .hero__ctas .btn--primary, .pdp__actions .btn--primary, .deskbar .btn--primary, .cta-band .btn--on-dark { position: relative; overflow: hidden; isolation: isolate; }
-  .hero__ctas .btn--primary::after, .pdp__actions .btn--primary::after, .deskbar .btn--primary::after, .cta-band .btn--on-dark::after {
+  .hero__ctas .btn--primary, .deskbar .btn--primary, .cta-band .btn--on-dark { position: relative; overflow: hidden; isolation: isolate; }
+  .hero__ctas .btn--primary::after, .deskbar .btn--primary::after, .cta-band .btn--on-dark::after {
     content: ""; position: absolute; inset: 0; pointer-events: none; z-index: 1;
     background: linear-gradient(105deg, transparent 38%, rgb(255 255 255 / .22) 50%, transparent 62%);
     transform: translateX(-130%); animation: sheen 7s cubic-bezier(.4,0,.2,1) infinite;
   }
   @keyframes sheen { 0%, 72% { transform: translateX(-130%); } 100% { transform: translateX(130%); } }
+
+  /* Add to cart — the one button the page exists for. Two slow loops in step: a
+     specular pass across the face, then a gold ring that breathes out and fades.
+     Long dwell between passes so it reads as alive, not as a demand. The sheen is
+     a background layer rather than a clipped pseudo-element so the ring can reach
+     outside the button. Hover, keyboard focus, the success pulse and a sold-out
+     button all stop it; the Reduce-motion switch and the OS setting never start it. */
+  .btn[data-add]:not([disabled]) {
+    position: relative;
+    background-image: linear-gradient(105deg, rgb(255 255 255 / 0) 42%, rgb(255 255 255 / .3) 50%, rgb(255 255 255 / 0) 58%);
+    background-size: 240% 100%; background-repeat: no-repeat; background-position: 120% 0;
+    animation: ctaSheen 4.8s cubic-bezier(.4,0,.2,1) infinite;
+  }
+  .btn[data-add]:not([disabled])::before { content: ""; position: absolute; inset: 0; border-radius: inherit; pointer-events: none; animation: ctaHalo 4.8s ease-out infinite; }
+  @keyframes ctaSheen { 0%, 68% { background-position: 120% 0; } 100% { background-position: -20% 0; } }
+  @keyframes ctaHalo { 0%, 66% { box-shadow: 0 0 0 0 rgb(201 162 39 / .45); } 100% { box-shadow: 0 0 0 .85rem rgb(201 162 39 / 0); } }
+  .btn[data-add]:hover, .btn[data-add]:focus-visible, .btn[data-add][data-added] { animation: none; background-image: none; }
+  .btn[data-add]:hover::before, .btn[data-add]:focus-visible::before, .btn[data-add][data-added]::before { animation: none; }
+  .btn[data-add][data-added] { animation: added .45s var(--ease); }
 
   /* "Most popular" badge — a gold shimmer that reads as foil, not neon */
   .tier__save { background-image: linear-gradient(100deg, rgb(255 255 255 / 0) 34%, rgb(255 255 255 / .38) 50%, rgb(255 255 255 / 0) 66%); background-size: 220% 100%; background-repeat: no-repeat; animation: shimmer 5.5s ease-in-out infinite; }
@@ -968,7 +987,7 @@ body { background: #fff; }
 .mk-rule { display: block; width: 3.25rem; height: 2px; background: var(--gold-btn); margin-top: var(--s-4); }
 .mk-rule--center { margin-inline: auto; }
 .mk-lede { font: 500 clamp(1.1rem, 1.6vw, 1.3rem)/1.5 var(--serif); color: #3C3934; max-width: 30ch; margin-top: var(--s-4); }
-.btn--gold { background: var(--gold-btn); color: #141311; font: 700 .76rem/1 var(--sans); letter-spacing: .18em; text-transform: uppercase; padding: 1.05em 2.3em; border-radius: 3px; min-height: 0; }
+.btn--gold { background: var(--gold-btn); color: #141311; font: 700 .76rem/1 var(--sans); letter-spacing: .18em; text-transform: uppercase; padding: 1.05em 2.3em; border-radius: var(--r-pill); min-height: 0; }
 .btn--gold:hover { background: #B8921F; color: #141311; }
 .mk-hero__copy .btn--gold { margin-top: var(--s-6); }
 
@@ -1366,27 +1385,13 @@ main:has(> :last-child.cta-band) + .footer { margin-top: 0; }
 .rcp-head-sec > :not(.bees),
 .about-hero > :not(.bees) { position: relative; z-index: 1; }
 
-/* ---------- 23u. Display options ----------
+/* ---------- 23u. Accessibility options ----------
    A real control, not an accessibility overlay. Overlays sit on top of a page and
    guess at fixes, frequently breaking the screen readers they claim to help; this
-   changes the site's own CSS and does exactly three things it can actually deliver.
-   Lives in the footer next to the accessibility statement, where a visitor looking
-   for this sort of thing already looks. */
-.dopt__open {
-  background: none; border: 0; padding: 0; cursor: pointer;
-  font: inherit; color: inherit; text-decoration: underline; text-underline-offset: .2em;
-}
-.dopt__open:hover { color: var(--gold-2); }
-.dopt { border-top: 1px solid rgb(255 255 255 / .12); background: rgb(0 0 0 / .18); }
-.dopt__in { padding-block: var(--s-5); }
-.dopt__title { font: 600 var(--fs-xs)/1 var(--sans); letter-spacing: .14em; text-transform: uppercase; color: var(--gold-2); margin-bottom: var(--s-4); }
-.dopt__row { display: flex; flex-wrap: wrap; gap: var(--s-4) var(--s-6); }
-.dopt__toggle { display: inline-flex; align-items: center; gap: .6rem; cursor: pointer; color: var(--cream); font-size: var(--fs-sm); min-height: 44px; }
-.dopt__toggle input { width: 1.1rem; height: 1.1rem; accent-color: var(--gold-2); cursor: pointer; }
-.dopt__note { margin-top: var(--s-4); font-size: var(--fs-xs); color: rgb(255 255 255 / .62); max-width: 52ch; }
-.dopt__note a { color: var(--gold-2); }
+   changes the site's own CSS and does exactly five things it can actually deliver.
+   The panel itself is styled in 23v. */
 
-/* --- what the three toggles actually do --- */
+/* --- what the five switches actually do --- */
 /* Larger text: everything is sized in rem, so one root change scales the whole page
    rather than growing a few hand-picked elements out of proportion. */
 :root[data-text="large"] { font-size: 118%; }
@@ -1414,45 +1419,95 @@ main:has(> :last-child.cta-band) + .footer { margin-top: 0; }
 }
 :root[data-motion="off"] .reveal { opacity: 1 !important; transform: none !important; }
 
-/* ---------- 23v. Display options, as a floating button ----------
+/* Underline links: every link, all the time — buttons and icon controls are not links
+   in the sense that matters here. */
+:root[data-links="underline"] a:not(.btn, .logo, .lockup, .icon-btn, .wish-btn, .dopt-fab) { text-decoration: underline; text-underline-offset: .18em; }
+
+/* Wider text spacing: more air between letters, words and lines, from the body down.
+   Elements that set their own tracking (the uppercase labels) keep it. */
+:root[data-spacing="wide"] body { line-height: 1.6; letter-spacing: .07em; word-spacing: .16em; }
+:root[data-spacing="wide"] p, :root[data-spacing="wide"] li { line-height: 1.7; }
+:root[data-spacing="wide"] .prose p { margin-block-end: 1.5em; }
+
+/* ---------- 23v. Accessibility options, as a floating button ----------
    Moved out of the footer: a control someone needs in order to read the page is no
    use at the bottom of it. Bottom-left, because bottom-right is where the sticky
    buy bar's button sits and where people expect a chat bubble. Still not an
-   accessibility overlay — the same three attributes on <html>, the site's own CSS
-   doing the work. */
+   accessibility overlay — five attributes on <html>, the site's own CSS doing the
+   work. */
 .dopt-fab {
   position: fixed; left: var(--s-4); bottom: calc(var(--s-4) + env(safe-area-inset-bottom));
-  z-index: 60; width: 3rem; height: 3rem; border-radius: 50%; cursor: pointer;
+  z-index: 60; width: 3.25rem; height: 3.25rem; border-radius: 50%; cursor: pointer;
   display: grid; place-items: center; padding: 0;
   background: var(--navy-3, #1D2B33); color: var(--gold-2, #D4AC54);
   border: 1px solid rgb(255 255 255 / .16); box-shadow: var(--shadow-2);
-  transition: transform .2s var(--ease), background .2s;
+  transition: transform .2s var(--ease), background .2s, box-shadow .2s, color .2s;
 }
-.dopt-fab:hover { transform: translateY(-2px); background: #14202699; background: #142026; }
-.dopt-fab svg { width: 1.5rem; height: 1.5rem; fill: none; stroke: currentColor; stroke-width: 1.7; stroke-linecap: round; }
+.dopt-fab:hover, .dopt-fab:focus-visible { transform: translateY(-2px); background: #142026; box-shadow: var(--shadow-3); }
+.dopt-fab[aria-expanded="true"] { background: var(--gold-btn, #C9A227); color: #141311; border-color: transparent; }
+.dopt-fab svg { width: 1.55rem; height: 1.55rem; fill: none; stroke: currentColor; stroke-width: 1.7; stroke-linecap: round; }
 .dopt-fab svg circle { fill: currentColor; stroke: none; }
+/* a dot on the button while any option is on, so a page that looks different is explained at a glance */
+.dopt-fab[data-active]::after { content: ""; position: absolute; top: .1rem; right: .1rem; width: .75rem; height: .75rem; border-radius: 50%; background: var(--gold-btn, #C9A227); border: 2px solid var(--navy-3, #1D2B33); }
+.dopt-fab[aria-expanded="true"][data-active]::after { background: #141311; border-color: var(--gold-btn, #C9A227); }
+/* the word slides out beside the button on hover and keyboard focus; the button's own label already reads it out */
+.dopt-fab__tip { position: absolute; left: calc(100% + .6rem); top: 50%; transform: translate(-.35rem, -50%); white-space: nowrap; padding: .5em .85em; border-radius: var(--r-pill); background: var(--navy-3, #1D2B33); color: var(--cream); font: 500 .72rem/1 var(--sans); letter-spacing: .1em; text-transform: uppercase; box-shadow: var(--shadow-1); opacity: 0; pointer-events: none; transition: opacity .2s var(--ease), transform .2s var(--ease); }
+.dopt-fab:hover .dopt-fab__tip, .dopt-fab:focus-visible .dopt-fab__tip { opacity: 1; transform: translate(0, -50%); }
+.dopt-fab[aria-expanded="true"] .dopt-fab__tip { opacity: 0; }
 /* The sticky buy bar owns the bottom of the screen on a product page; step over it. */
 body:has(.buybar[data-show]) .dopt-fab { bottom: calc(5.25rem + env(safe-area-inset-bottom)); }
 @media (min-width: 56em) { body:has(.buybar[data-show]) .dopt-fab { bottom: calc(var(--s-4) + env(safe-area-inset-bottom)); } }
+/* Below the width where the cookie notice spans the whole bottom edge, it would cover this
+   button. While the notice shows, both button and panel step up over it, by the height
+   initCookie() measured into --cookie-h. */
+@media (max-width: 47.99em) {
+  body:has(.cookie[data-show]) .dopt-fab { bottom: calc(var(--cookie-h, 7rem) + var(--s-3) + var(--s-3) + env(safe-area-inset-bottom)); }
+  body:has(.cookie[data-show]) .dopt { bottom: calc(var(--cookie-h, 7rem) + var(--s-3) + var(--s-3) + 4rem + env(safe-area-inset-bottom)); }
+}
 @media print { .dopt-fab, .dopt { display: none !important; } }
 
-/* the panel now floats above the button rather than sitting in the footer */
+/* the panel floats above the button: a titled dialog, one switch per row, a reset */
 .dopt {
-  position: fixed; left: var(--s-4); bottom: calc(4.5rem + env(safe-area-inset-bottom));
-  z-index: 61; width: min(22rem, calc(100vw - 2 * var(--s-4)));
+  position: fixed; left: var(--s-4); bottom: calc(4.75rem + env(safe-area-inset-bottom));
+  z-index: 61; width: min(24rem, calc(100vw - 2 * var(--s-4)));
+  max-height: calc(100vh - 6rem - env(safe-area-inset-bottom)); overflow: auto;
   background: var(--cream-2, #FBF7F0); color: var(--ink);
-  border: 1px solid var(--cream-3); border-radius: var(--r-md, 6px); box-shadow: var(--shadow-3);
+  border: 1px solid var(--cream-3); border-radius: 14px; box-shadow: var(--shadow-3);
 }
-body:has(.buybar[data-show]) .dopt { bottom: calc(9.5rem + env(safe-area-inset-bottom)); }
-@media (min-width: 56em) { body:has(.buybar[data-show]) .dopt { bottom: calc(4.5rem + env(safe-area-inset-bottom)); } }
-.dopt__in { padding: var(--s-4) var(--s-5) var(--s-5); }
-.dopt__head { display: flex; align-items: center; justify-content: space-between; gap: var(--s-3); margin-bottom: var(--s-4); }
-.dopt .dopt__title { color: var(--gold-text, #7E6011); margin: 0; }
-.dopt__close { background: none; border: 0; font-size: 1.5rem; line-height: 1; cursor: pointer; color: var(--ink-soft); padding: .1em .3em; }
-.dopt__row { display: grid; gap: var(--s-2); }
-.dopt .dopt__toggle { color: var(--ink); }
-.dopt .dopt__note { color: var(--ink-mute); margin-top: var(--s-4); }
-.dopt .dopt__note a { color: var(--gold-text, #7E6011); }
+body:has(.buybar[data-show]) .dopt { bottom: calc(9.75rem + env(safe-area-inset-bottom)); }
+@media (min-width: 56em) { body:has(.buybar[data-show]) .dopt { bottom: calc(4.75rem + env(safe-area-inset-bottom)); } }
+.dopt__in { padding: var(--s-4); }
+.dopt__head { display: flex; align-items: flex-start; gap: var(--s-3); padding: var(--s-2) var(--s-2) var(--s-4); }
+.dopt__icon { flex: 0 0 auto; width: 2.4rem; height: 2.4rem; border-radius: 50%; display: grid; place-items: center; background: var(--navy-3, #1D2B33); color: var(--gold-2, #D4AC54); }
+.dopt__icon svg { width: 1.3rem; height: 1.3rem; fill: none; stroke: currentColor; stroke-width: 1.7; stroke-linecap: round; }
+.dopt__icon svg circle { fill: currentColor; stroke: none; }
+.dopt__titles { flex: 1 1 auto; min-width: 0; }
+.dopt__title { font: 600 var(--fs-xs)/1 var(--sans); letter-spacing: .14em; text-transform: uppercase; color: var(--gold-text, #7E6011); margin: .4rem 0 .35rem; }
+.dopt__sub { font-size: var(--fs-xs); color: var(--ink-mute); line-height: 1.45; margin: 0; }
+.dopt__close { flex: 0 0 auto; width: 2.25rem; height: 2.25rem; border-radius: 50%; display: grid; place-items: center; background: none; border: 1px solid transparent; cursor: pointer; color: var(--ink-soft); padding: 0; transition: background .2s, color .2s; }
+.dopt__close:hover { background: var(--cream-3); color: var(--ink); }
+.dopt__close svg { width: 1.05rem; height: 1.05rem; fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round; }
+.dopt__list { display: grid; border-top: 1px solid var(--cream-3); }
+.dopt__opt { position: relative; display: grid; grid-template-columns: minmax(0, 1fr) auto; align-items: center; gap: var(--s-4); min-height: 44px; padding: .8rem var(--s-2); border-bottom: 1px solid var(--cream-3); cursor: pointer; transition: background .15s; }
+.dopt__opt:hover { background: rgb(0 0 0 / .03); }
+.dopt__text { display: grid; gap: .2rem; }
+.dopt__name { font: 500 var(--fs-sm)/1.3 var(--sans); color: var(--ink); }
+.dopt__desc { font-size: var(--fs-xs); color: var(--ink-mute); line-height: 1.4; }
+/* the native checkbox stays in the tree for keyboard and screen readers; the switch beside it is drawn */
+.dopt__opt input { position: absolute; width: 1px; height: 1px; margin: -1px; padding: 0; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; border: 0; }
+.dopt__switch { width: 2.75rem; height: 1.6rem; border-radius: var(--r-pill); background: #C8BFAE; position: relative; transition: background .2s var(--ease); }
+.dopt__switch::after { content: ""; position: absolute; top: .2rem; left: .2rem; width: 1.2rem; height: 1.2rem; border-radius: 50%; background: #fff; box-shadow: 0 1px 3px rgb(0 0 0 / .25); transition: transform .2s var(--ease); }
+.dopt__opt input:checked + .dopt__switch { background: var(--gold-btn, #C9A227); }
+.dopt__opt input:checked + .dopt__switch::after { transform: translateX(1.15rem); }
+.dopt__opt input:focus-visible + .dopt__switch { box-shadow: var(--ring); }
+.dopt__foot { display: flex; align-items: center; justify-content: space-between; gap: var(--s-3); padding: var(--s-4) var(--s-2) 0; font-size: var(--fs-xs); }
+.dopt__reset { background: none; border: 0; padding: .3em 0; cursor: pointer; font: 500 var(--fs-xs)/1 var(--sans); color: var(--ink-soft); text-decoration: underline; text-underline-offset: .2em; }
+.dopt__reset:hover { color: var(--ink); }
+.dopt__foot a { color: var(--gold-text, #7E6011); }
+@media (prefers-reduced-motion: no-preference) {
+  .dopt:not([hidden]) { animation: doptIn .22s var(--ease); }
+  @keyframes doptIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: none; } }
+}
 
 /* 23w. The sold-out row on /shop/ holds one or two cards. The four-up grid would
    pin a single card into a quarter-width corner, so size these by content instead
@@ -1464,3 +1519,42 @@ body:has(.buybar[data-show]) .dopt { bottom: calc(9.5rem + env(safe-area-inset-b
    min-content — one word per line. A definite flex-basis never asks. */
 .products--few { display: flex; flex-wrap: wrap; justify-content: flex-start; }
 .products--few > .pcard { flex: 0 0 15rem; max-width: 100%; min-width: 0; }
+
+/* ==========================================================================
+   24. Brand intro — a curtain over the first page of a visit
+   Plaque scales in, the name tracks in word by word, the gold rule draws, the
+   tagline settles, a bee crosses the card, and the whole sheet lifts away. The
+   page is fully rendered beneath it the entire time. Displayed only when the
+   inline <head> script sets html[data-intro="on"] (once per session, motion
+   allowed, JavaScript running); without that attribute it is display:none, so a
+   browser with scripts off never sees it.
+   ========================================================================== */
+.intro { display: none; }
+html[data-intro="on"] .intro { display: grid; }
+.intro {
+  position: fixed; inset: 0; z-index: 200; place-items: center; padding: var(--s-5);
+  background: repeating-linear-gradient(90deg, color-mix(in srgb, var(--stripe) 55%, #fff) 0 2.5rem, #fff 2.5rem 5rem);
+  transition: transform .7s cubic-bezier(.7, 0, .3, 1), opacity .45s ease .25s; will-change: transform;
+}
+.intro--out { transform: translateY(-102%); opacity: 0; pointer-events: none; }
+.intro__panel {
+  position: relative; overflow: hidden; display: grid; justify-items: center; gap: .45rem;
+  width: min(100%, 34rem); padding: clamp(2.25rem, 6vw, 3.5rem) clamp(1.5rem, 5vw, 3rem);
+  background: #fff; box-shadow: 0 0 0 1px rgb(20 19 17 / .04), var(--shadow-3); text-align: center;
+}
+.intro__mark img { width: clamp(4rem, 9vw, 5.5rem); height: auto; display: block; animation: introMark .8s var(--ease) .1s both; }
+.intro__name { display: grid; gap: .12em; margin-top: .6rem; font: 700 clamp(1.5rem, 4vw, 2.3rem)/1.05 var(--display); text-transform: uppercase; color: #141311; }
+.intro__name span { display: block; animation: introWord .9s cubic-bezier(.2, .7, .2, 1) both; }
+.intro__name span:nth-child(1) { animation-delay: .35s; }
+.intro__name span:nth-child(2) { animation-delay: .5s; }
+.intro__rule { display: block; width: 3.5rem; height: 2px; margin-top: .75rem; background: var(--gold-btn); transform: scaleX(0); animation: introRule .6s var(--ease) .95s both; }
+.intro__tag { margin-top: .6rem; font: 500 clamp(.6rem, 1.2vw, .7rem)/1 var(--sans); letter-spacing: .3em; text-transform: uppercase; color: #5A554C; animation: introTag .6s var(--ease) 1.1s both; }
+.intro__bee { position: absolute; top: 16%; left: -3rem; width: 2.2rem; color: var(--gold-btn); opacity: 0; pointer-events: none; animation: introBee 1.4s ease-in-out .6s both; }
+.intro__bee .bee { display: block; width: 100%; height: auto; --bob: .5rem; --tilt: 6deg; animation: bee-bob .28s ease-in-out infinite alternate; }
+.intro__bee .bee__wing { animation: bee-wing .12s ease-in-out infinite alternate; }
+@keyframes introMark { from { opacity: 0; transform: scale(.7); } to { opacity: 1; transform: none; } }
+@keyframes introWord { from { opacity: 0; transform: translateY(14px); letter-spacing: .34em; } to { opacity: 1; transform: none; letter-spacing: .08em; } }
+@keyframes introRule { to { transform: scaleX(1); } }
+@keyframes introTag { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }
+@keyframes introBee { 0% { transform: translate(0, 0); opacity: 0; } 12% { opacity: 1; } 88% { opacity: 1; } 100% { transform: translate(42rem, -1.4rem); opacity: 0; } }
+@media (prefers-reduced-motion: reduce) { .intro { display: none !important; } }
