@@ -5,6 +5,9 @@ cropped 4:5 from brand-source/photo-jar-in-grass-2026.jpg. Every other variant f
 back to it. Because /assets/ is cached immutably for a year, give a replacement a NEW
 file name (and update the references) rather than overwriting this one.
 
+Also here: hg-3-front.jpg (+ -400/-800) — the Travel Pack listing, cut 4:5 from the
+square studio shot on beige (brand-source/photo-travel-pack-studio-2026.jpg).
+
 The site picks them up automatically on the next build — no code changes.
 
 FILENAMES

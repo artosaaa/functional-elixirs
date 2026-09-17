@@ -70,7 +70,7 @@ function home() {
 </div></section>
 
 <section class="mk-signature"><div class="wrap mk-signature__in">
-  <figure class="mk-signature__photo reveal">${art("hero", p, { alt: altFor(p, "hero"), sizes: "(min-width: 56em) 34vw, 74vw" })}</figure>
+  <figure class="mk-signature__photo reveal"><img src="/assets/img/jar-on-marble.jpg" srcset="/assets/img/jar-on-marble-640.jpg 640w, /assets/img/jar-on-marble.jpg 1200w" sizes="(min-width: 56em) 34vw, 74vw" alt="The 15 oz Functional Elixirs Honey with Fresh Ginger jar on a round marble plinth, sliced ginger to its left and a honey dipper dripping to its right, palm shadows on the warm wall behind" width="1200" height="1200" loading="lazy" decoding="async"></figure>
   <div class="mk-signature__copy reveal">
     <p class="mk-eyebrow">The signature jar</p>
     <h2 class="mk-h2 mk-h2--left">${esc(p.name)}</h2>
@@ -145,7 +145,7 @@ function product(p) {
   const seenSrc = new Set();
   const variants = allVariants.filter((v) => { const src = resolvedPhoto(p, v); if (!src) return true; if (seenSrc.has(src)) return false; seenSrc.add(src); return true; });
   /* a thumbnail strip of one is a button that does nothing — with a single frame, show the frame alone */
-  const label = (v) => (resolvedPhoto(p, v) ? photoAlt(p) : altFor(p, v));
+  const label = (v) => { const src = resolvedPhoto(p, v); return src ? photoAlt(p, src) : altFor(p, v); };
   const faq = p.type === "Accessory" ? [
     ["Does it fit the jar?", "Yes — the dipper was chosen for the jar’s wide mouth and is short enough to rest inside with the lid off."],
     ["How do I clean it?", "Rinse in warm water and dry upright. No dishwasher. A drop of food-safe mineral oil once a year keeps the wood happy."],

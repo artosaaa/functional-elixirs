@@ -708,11 +708,16 @@
   function initCookie() {
     const c = $("#cookie"); if (!c) return;
     if (store.get("sw_cookie", null)) return; c.setAttribute("data-show", "");
-    $$("button", c).forEach((b) => b.addEventListener("click", () => { store.set("sw_cookie", { choice: b.dataset.cookie, at: Date.now() }); c.removeAttribute("data-show"); }));
+    /* On narrow screens the notice spans the bottom edge and would sit on the accessibility
+       button; the CSS lifts that button by the notice's measured height while it shows. */
+    const root = document.documentElement;
+    const measure = () => root.style.setProperty("--cookie-h", `${c.offsetHeight}px`);
+    measure(); window.addEventListener("resize", measure);
+    $$("button", c).forEach((b) => b.addEventListener("click", () => { store.set("sw_cookie", { choice: b.dataset.cookie, at: Date.now() }); c.removeAttribute("data-show"); root.style.removeProperty("--cookie-h"); window.removeEventListener("resize", measure); }));
   }
 
   /* Display options — larger text, higher contrast, reduced motion.
-     Deliberately not an accessibility overlay: these set three attributes on <html>
+     Deliberately not an accessibility overlay: these set five attributes on <html>
      and the site's own CSS does the rest, so nothing is layered over the page and
      no screen reader is second-guessed. The choice is remembered on this device
      only, in localStorage — it is never sent anywhere. */
@@ -720,7 +725,7 @@
     const btn = $("[data-dopt-open]"), panel = $("#display-options");
     if (!btn || !panel) return;
     const KEY = "sw_display";
-    const ATTR = { text: ["data-text", "large"], contrast: ["data-contrast", "high"], motion: ["data-motion", "off"] };
+    const ATTR = { text: ["data-text", "large"], contrast: ["data-contrast", "high"], spacing: ["data-spacing", "wide"], links: ["data-links", "underline"], motion: ["data-motion", "off"] };
     const root = document.documentElement;
 
     const saved = store.get(KEY, {});
@@ -729,6 +734,8 @@
         if (prefs[k]) root.setAttribute(attr, on); else root.removeAttribute(attr);
         const box = $(`[data-dopt="${k}"]`, panel); if (box) box.checked = Boolean(prefs[k]);
       }
+      /* a dot on the button while anything is switched on, so a changed page is explained at a glance */
+      btn.toggleAttribute("data-active", Object.keys(ATTR).some((k) => prefs[k]));
     };
     apply(saved);
 
@@ -743,8 +750,10 @@
       const key = e.target?.dataset?.dopt; if (!key) return;
       const prefs = { ...store.get(KEY, {}), [key]: e.target.checked };
       store.set(KEY, prefs); apply(prefs);
-      toast(e.target.checked ? `${e.target.nextElementSibling.textContent} on` : `${e.target.nextElementSibling.textContent} off`);
+      const name = e.target.closest(".dopt__opt")?.querySelector(".dopt__name")?.textContent || "Option";
+      toast(e.target.checked ? `${name} on` : `${name} off`);
     });
+    $("[data-dopt-reset]", panel)?.addEventListener("click", () => { store.set(KEY, {}); apply({}); toast("Display reset to defaults"); $("input", panel)?.focus(); });
 
     const close = () => { panel.setAttribute("hidden", ""); btn.setAttribute("aria-expanded", "false"); btn.focus(); };
     $("[data-dopt-close]", panel)?.addEventListener("click", close);
@@ -806,9 +815,30 @@
     });
   }
 
+  /* ---------- 7b. Brand intro ----------
+     The curtain is displayed only when the inline <head> script set html[data-intro="on"]
+     (first page of the session, motion allowed). This schedules its exit and lets a click
+     or a key end it early; the head script carries a hard fallback of its own, so the page
+     is never stuck behind it if this file fails to load. */
+  function initIntro() {
+    const el = $("#intro"); if (!el) return;
+    if (document.documentElement.getAttribute("data-intro") !== "on") { el.remove(); return; }
+    try { sessionStorage.setItem("sw_intro", "1"); } catch {}
+    let done = false;
+    const out = () => {
+      if (done) return; done = true;
+      el.classList.add("intro--out");
+      el.addEventListener("transitionend", () => el.remove(), { once: true });
+      setTimeout(() => el.remove(), 1000);
+    };
+    setTimeout(out, 2200);
+    el.addEventListener("click", out);
+    document.addEventListener("keydown", out, { once: true });
+  }
+
   /* ---------- 8. Boot ---------- */
   document.addEventListener("DOMContentLoaded", () => {
-    Drawer.init(); render(); markNav();
+    initIntro(); Drawer.init(); render(); markNav();
     initPDP(); initDeskbar(); initCapture(); initShipCalc(); Checkout.init(); initConfirmation(); initTrack(); initContact(); initCookie(); initDisplayOptions(); initReveal();
     window.addEventListener("storage", (e) => { if (e.key?.startsWith("sw_")) render(); }); // multi-tab sync
   });

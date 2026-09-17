@@ -304,10 +304,17 @@ const VARIANTS = {
 };
 
 let n = 0;
-/* What the photograph actually shows. There is one product photograph — the jar lying in
-   sunlit grass — and every variant resolves to it, so every variant gets this alt. If a
-   different shot is added under another variant name, describe it here. */
-export const photoAlt = (p) => `Functional Elixirs ${p?.name || "Honey with Fresh Ginger"}${p?.size ? ` (${p.size})` : ""} — glass jar with a bamboo lid lying in bright green grass in full sun, label facing up`;
+/* What each photograph actually shows, keyed by file stem (the -400/-800 suffix is
+   stripped). A file added without an entry here gets the plain description. */
+const PHOTO_ALTS = {
+  "hg-15-hero": "glass jar with a bamboo lid lying in bright green grass in full sun, label facing up",
+  "hg-3-front": "glass jar with a bamboo lid standing on a warm beige backdrop beside a knob of fresh ginger root",
+};
+export const photoAlt = (p, src) => {
+  const jar = `Functional Elixirs ${p?.name || "Honey with Fresh Ginger"}${p?.size ? ` (${p.size})` : ""}`;
+  const stem = String(src || "").replace(/^.*\/(.*?)(-\d+)?\.[a-z]+$/i, "$1").toLowerCase();
+  return `${jar} — ${PHOTO_ALTS[stem] || "glass jar with a bamboo lid"}`;
+};
 
 export function art(variant, p, { alt, anim = false, className = "", slot, sizes: sizesOverride } = {}) {
   /* the dipper has no photograph; findPhoto() would hand back a honey jar, so draw it instead.
@@ -318,7 +325,7 @@ export function art(variant, p, { alt, anim = false, className = "", slot, sizes
   const src = drawn || p?.noPhoto ? null : slot ? PHOTOS[slot] : findPhoto(p?.id || "brand", variant);
   if (src) {
     /* the illustration alts describe a drawn scene — describe the photograph instead */
-    alt = photoAlt(p);
+    alt = photoAlt(p, src);
     const stem = src.replace(/^.*\/(.*)\.[a-z]+$/i, "$1").toLowerCase();
     const set = [400, 800].filter((w) => WIDTHS[`${stem}-${w}`]).map((w) => `${WIDTHS[`${stem}-${w}`]} ${w}w`);
     set.push(`${src} 1000w`);
