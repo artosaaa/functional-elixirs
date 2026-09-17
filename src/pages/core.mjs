@@ -122,7 +122,7 @@ ${single ? `<section class="section--tight shop-single-sec"><div class="wrap sho
       <div class="qty" role="group" aria-label="Quantity"><button type="button" data-dec aria-label="Decrease quantity">−</button><input type="number" data-qty-input inputmode="numeric" min="1" max="${Math.max(1, p.stock)}" value="1" aria-label="Quantity"></div>
       <button class="btn btn--gold" type="button" data-add="${p.id}">Add to cart — ${money(p.price)}</button>
     </div>
-    <p class="shop-single__more"><a href="${p.url}">Ingredients, storage and the full story →</a></p>
+    <p class="shop-single__more"><a href="${p.url}">Ingredients, storage and the full story <span class="arrow" aria-hidden="true">→</span></a></p>
     <div class="shop-single__promise">
       <div>${ICONS.truck}<span>Free US shipping over $${CFG.freeShipOver}</span></div>
     </div>
@@ -150,7 +150,7 @@ function product(p) {
     ["Does it fit the jar?", "Yes — the dipper was chosen for the jar’s wide mouth and is short enough to rest inside with the lid off."],
     ["How do I clean it?", "Rinse in warm water and dry upright. No dishwasher. A drop of food-safe mineral oil once a year keeps the wood happy."],
   ] : [
-    ["How do I use it?", `One teaspoon in about 8 oz of warm (not boiling) water is the classic. It’s also a one-for-one swap for sugar in tea, and works in oats, smoothies, dressings and glazes. <a href="/recipes/">Recipes →</a>`],
+    ["How do I use it?", `One teaspoon in about 8 oz of warm (not boiling) water is the classic. It’s also a one-for-one swap for sugar in tea, and works in oats, smoothies, dressings and glazes. <a href="/recipes/">Recipes <span class="arrow" aria-hidden="true">→</span></a>`],
     ["Is the ginger fresh?", "Yes — fresh ginger root, never powder or extract. You can see the ginger threads suspended in the honey."],
     ["Does it need refrigeration?", `No. Keep it at room temperature with the lid closed. Raw honey may crystallize; that’s natural — stand the closed jar in warm water for 20–30 minutes and stir.`],
     ["Is it safe for children?", "Honey should not be given to infants under 12 months. For everyone else, it’s food — enjoy it as you would any honey."],
@@ -193,7 +193,7 @@ function product(p) {
         ${p.type === "Accessory"
           ? `<div class="brew"><div><strong>${esc(p.size)}</strong><small>Length</small></div><div><strong>Beechwood</strong><small>Material</small></div><div><strong>${gluePunct(esc(p.use.also))}</strong><small>Care</small></div></div>`
           : `<div class="brew"><div><strong>${esc(p.use.spoon)}</strong><small>Scoop</small></div><div><strong>${esc(p.use.water)}</strong><small>Stir into</small></div><div><strong>${esc(p.use.when)}</strong><small>When</small></div><div><strong>${gluePunct(esc(p.use.also))}</strong><small>Also</small></div></div>`}
-        <p>${p.type === "Accessory" ? "Twist the dipper in the jar, lift, and let the honey spiral off the end into your cup. Rest it on a small dish between uses." : `Sweet first, then the ginger’s slow warmth. Warm — not boiling — water keeps the fresh ginger bright. <a href="/recipes/">Ways to use the jar →</a>`}</p></div></details>
+        <p>${p.type === "Accessory" ? "Twist the dipper in the jar, lift, and let the honey spiral off the end into your cup. Rest it on a small dish between uses." : `Sweet first, then the ginger’s slow warmth. Warm — not boiling — water keeps the fresh ginger bright. <a href="/recipes/">Ways to use the jar <span class="arrow" aria-hidden="true">→</span></a>`}</p></div></details>
       <details><summary>Ingredients</summary><div class="acc__body"><p>${esc(p.ingredients)}</p><p>${esc(p.origin)}. No added sugar, colours, flavours or preservatives. Naturally gluten-free. Not suitable for infants under 12 months.</p></div></details>
       <details><summary>Storage</summary><div class="acc__body"><p>Room temperature, lid closed, dry spoon. Raw honey may crystallize over time — that’s natural. Warm the closed jar in a bowl of warm water to restore.</p></div></details>
       <details><summary>Shipping &amp; returns</summary><div class="acc__body"><p>Packed and posted within ${CFG.dispatchDays} business days, then shipped within the US by standard mail — $5.95, free over $${CFG.freeShipOver}, 2–7 business days in transit. An unopened jar can be returned any time for a full refund, with return postage paid by you; opened jars can’t be returned. <a href="/shipping/">Shipping</a> · <a href="/returns/">Returns</a></p></div></details>
@@ -202,7 +202,7 @@ function product(p) {
 </section>
 
 <section class="section"><div class="wrap split">
-  <div class="stack reveal" style="--flow:var(--s-4)"><p class="eyebrow">Why this jar</p><h2>${p.type === "Accessory" ? "Made for the wide mouth." : "From our mother’s counter."}</h2><p class="lede">${esc(p.story)}</p><p><a href="/about-us/">Our story →</a></p></div>
+  <div class="stack reveal" style="--flow:var(--s-4)"><p class="eyebrow">Why this jar</p><h2>${p.type === "Accessory" ? "Made for the wide mouth." : "From our mother’s counter."}</h2><p class="lede">${esc(p.story)}</p><p><a href="/about-us/">Our story <span class="arrow" aria-hidden="true">→</span></a></p></div>
   <div class="marquee-photo reveal">${photo("jars")}</div>
 </div></section>
 
