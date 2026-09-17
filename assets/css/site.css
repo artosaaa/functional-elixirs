@@ -275,8 +275,10 @@ table { border-collapse: collapse; width: 100%; }
 .mobile-nav[data-open] { transform: none; visibility: visible; }
 .mobile-nav__top { display: flex; justify-content: space-between; align-items: center; }
 .mobile-nav nav { display: grid; gap: var(--s-2); }
-.mobile-nav nav a { font-family: var(--serif); font-size: var(--fs-lg); text-decoration: none; padding: .35em 0; border-bottom: 1px solid var(--cream-3); }
-.mobile-nav__foot { margin-top: auto; display: grid; gap: var(--s-3); font-size: var(--fs-sm); }
+/* the menu links carry the masthead's display face at full weight, so they read as
+   headings rather than as a list of body text */
+.mobile-nav nav a { font: 700 var(--fs-lg)/1.25 var(--display, var(--serif)); letter-spacing: .06em; text-transform: uppercase; color: #141311; text-decoration: none; padding: .45em 0; border-bottom: 1px solid var(--cream-3); }
+.mobile-nav__foot { margin-top: auto; display: grid; gap: var(--s-3); font-size: var(--fs-sm); font-weight: 600; }
 
 /* ---------- 8. Hero ---------- */
 .hero { position: relative; overflow: clip; padding-block: clamp(2rem, 5vw, 4rem) 0; }
