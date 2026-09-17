@@ -1316,9 +1316,11 @@ main:has(> :last-child.cta-band) + .footer { margin-top: 0; }
 .mk-nature, .shop-single-sec, .rcp-head-sec, .about-hero { position: relative; overflow: hidden; }
 
 /* 23o. Mobile pass ----------------------------------------------------------
-   The home signature photo is the 4:5 product photograph; a 3:4 frame trims
-   a sliver of grass from each side and nothing from the jar. */
-.mk-signature__photo { aspect-ratio: 3 / 4; }
+   The home signature photo is the square studio shot — jar on a marble plinth,
+   ginger slices one side, a dipper the other — and a square frame shows all of
+   it. (The hero above is the grass photograph, so the page no longer shows one
+   picture twice.) */
+.mk-signature__photo { aspect-ratio: 1 / 1; }
 .mk-signature__photo img { object-fit: cover; object-position: center; }
 
 @media (max-width: 47.99em) {
