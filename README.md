@@ -225,7 +225,7 @@ under `assets/img/` are what pages load:
 | `product/hg-15-hero.jpg` (+ `-400`, `-800`) | tight 4:5 on the jar | shop, product gallery, ingredients page, product cards, cart thumbnail |
 | `jar-on-marble.jpg` (+ `-640`) | 1:1, the square studio shot as supplied (jar on a marble plinth, ginger slices, dipper) | home "signature jar" section — original in `brand-source/photo-jar-on-marble-2026.jpg` |
 | `jar-in-grass-square.jpg` (+ `-640`) | 1:1, wider | home hero |
-| `jar-in-grass.jpg` (+ `-720`) | full frame 3:4 | About Us |
+| `about-family-archive.jpg` (+ `-720`) | the family album scan, whole, at its own ratio | About Us, with the caption "From the family album." — original in `brand-source/photo-family-archive.jpg` |
 | `product/hg-3-front.jpg` (+ `-400`, `-800`) | 4:5 cut from a square studio shot on beige | Travel Pack card and page (its label reads 15 oz; the original is `brand-source/photo-travel-pack-studio-2026.jpg`) |
 
 Every product variant (`front`, `open`, `cup`) resolves to `hg-15-hero.jpg`, so the product

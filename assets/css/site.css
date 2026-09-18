@@ -1262,6 +1262,13 @@ main:has(> :last-child.cta-band) + .footer { margin-top: 0; }
 @media (min-width: 56em) {
   .about-hero__in--story { grid-template-columns: minmax(0, 5fr) minmax(0, 6fr); gap: clamp(2.5rem, 6vw, 5rem); }
 }
+/* the archive scan is shown whole, at its own aspect ratio, with a small caption beneath */
+.about-hero__photo--archive { aspect-ratio: auto; border-radius: 6px; background: var(--cream-3); }
+.about-hero__photo--archive img { width: 100%; height: auto; display: block; border-radius: 6px; }
+.about-hero__photo--archive figcaption {
+  margin-top: .7rem; font: 500 .68rem/1 var(--sans); letter-spacing: .18em;
+  text-transform: uppercase; color: var(--gold-text, #7E6011); text-align: center;
+}
 .about-hero__prose { display: grid; gap: 1.1em; margin-top: var(--s-4); }
 .about-hero__prose p { font: 400 clamp(1rem, 1.3vw, 1.12rem)/1.6 var(--serif); color: #3C3934; max-width: 46ch; }
 .about-hero__prose .mk-lede { font-weight: 500; font-size: clamp(1.1rem, 1.5vw, 1.28rem); color: #2A2824; max-width: 34ch; margin-top: 0; }
