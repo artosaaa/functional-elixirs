@@ -1,5 +1,5 @@
 /* Our story · Ingredients & sourcing · Gift guide */
-import { BEE, BEE_FLY } from "../site.mjs";
+import { BEE, BEE_FLY, bees } from "../site.mjs";
 import { page, jsonld, breadcrumbs, productCard, faqList, ctaBand, ICONS, esc, money, BRAND, CFG, HERO_URL } from "../layout.mjs";
 import { HERO } from "../products.mjs";
 import { art, altFor, photo } from "../art.mjs";
@@ -8,12 +8,15 @@ const head = (crumb, eyebrow, h1, lede, center = false) => `${breadcrumbs([{ nam
 
 function story() {
   const path = "/about-us/";
-  /* The jar in the grass, full frame — the same photograph the home page and the
-     shop lead with, shown here uncropped at its own 3:4. The original is kept in
-     brand-source/photo-jar-in-grass-2026.jpg. */
+  /* The family photograph the page was built around: two children at the edge of a
+     fountain, from the album. Shown at its own aspect ratio with its caption; the
+     original scan is kept in brand-source/photo-family-archive.jpg. */
   const body = `${breadcrumbs([{ name: "About us", href: path }])}
-<section class="about-hero"><div class="wrap about-hero__in about-hero__in--story">
-  <figure class="about-hero__photo reveal"><img src="/assets/img/jar-in-grass.jpg" srcset="/assets/img/jar-in-grass-720.jpg 720w, /assets/img/jar-in-grass.jpg 1200w" sizes="(min-width: 56em) 32rem, 100vw" alt="A jar of Functional Elixirs Honey with Fresh Ginger lying in bright green grass in full sun, the bamboo lid on and the label facing up" width="1200" height="1600" fetchpriority="high" decoding="async"></figure>
+<section class="about-hero">${bees([
+  { top: "16%", from: "104vw", to: "-8vw", dur: 48, delay: 2, size: 1.15, tilt: -8, bob: 1.2 },
+  { top: "72%", from: "-10vw", to: "106vw", dur: 62, delay: 19, size: 0.9, tilt: 6, bob: 1 },
+])}<div class="wrap about-hero__in about-hero__in--story">
+  <figure class="about-hero__photo about-hero__photo--archive reveal"><img src="/assets/img/about-family-archive.jpg" srcset="/assets/img/about-family-archive-720.jpg 720w, /assets/img/about-family-archive.jpg 1200w" sizes="(min-width: 56em) 32rem, 100vw" alt="A photograph from the family album: two children in striped shirts and white dungarees standing at the edge of a large fountain, statues and jets of water behind them" width="1200" height="1888" fetchpriority="high" decoding="async"><figcaption>From the family album.</figcaption></figure>
   <div class="about-hero__copy reveal">
     <p class="mk-eyebrow">Our story</p>
     <h1 class="mk-h1 mk-h1--page">It started<br>with our mom.</h1>

@@ -5,8 +5,13 @@ cropped 4:5 from brand-source/photo-jar-in-grass-2026.jpg. Every other variant f
 back to it. Because /assets/ is cached immutably for a year, give a replacement a NEW
 file name (and update the references) rather than overwriting this one.
 
-Also here: hg-3-front.jpg (+ -400/-800) — the Travel Pack listing, cut 4:5 from the
-square studio shot on beige (brand-source/photo-travel-pack-studio-2026.jpg).
+Also here: hg-3-front.v2.jpg (+ -400/-800) — the Travel Pack listing, cut 4:5 from the
+square studio shot on beige (brand-source/photo-travel-pack-3oz-2026.jpg).
+
+The `.v2` is a cache-busting version, not a variant: /assets/ is served with a one-year
+immutable cache, so a reshot photo needs a NEW file name or returning visitors keep the
+old picture. art.mjs strips `.v<N>`, so hg-3-front.v2.jpg resolves exactly as
+hg-3-front.jpg did. Reshoot again -> hg-3-front.v3.jpg, and nothing else changes.
 
 The site picks them up automatically on the next build — no code changes.
 
