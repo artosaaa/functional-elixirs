@@ -74,7 +74,7 @@ function home() {
 </div></section>
 
 <section class="mk-signature"><div class="wrap mk-signature__in">
-  <figure class="mk-signature__photo reveal"><img src="/assets/img/jar-on-marble.jpg" srcset="/assets/img/jar-on-marble-640.jpg 640w, /assets/img/jar-on-marble.jpg 1200w" sizes="(min-width: 56em) 34vw, 74vw" alt="The 15 oz Functional Elixirs Honey with Fresh Ginger jar on a round marble plinth, sliced ginger to its left and a honey dipper dripping to its right, palm shadows on the warm wall behind" width="1200" height="1200" loading="lazy" decoding="async"></figure>
+  <figure class="mk-signature__photo reveal"><img src="/assets/img/jar-on-board.jpg" srcset="/assets/img/jar-on-board-720.jpg 720w, /assets/img/jar-on-board.jpg 1200w" sizes="(min-width: 56em) 34vw, 74vw" alt="The 15 oz Functional Elixirs Honey with Fresh Ginger jar on a dark wooden board in a warm kitchen, a honey dipper trailing honey to its left and fresh ginger root, cut to show the flesh, to its right" width="1200" height="1600" loading="lazy" decoding="async"></figure>
   <div class="mk-signature__copy reveal">
     <p class="mk-eyebrow">The signature jar</p>
     <h2 class="mk-h2 mk-h2--left">${esc(p.name)}</h2>
