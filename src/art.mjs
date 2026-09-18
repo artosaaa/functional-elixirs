@@ -31,7 +31,12 @@ try {
   if (existsSync(PHOTO_DIR)) {
     for (const f of readdirSync(PHOTO_DIR)) {
       const m = /^(.*?)\.(jpe?g|png|webp|avif)$/i.exec(f); if (!m) continue;
-      const key = m[1].toLowerCase();
+      /* `<name>.v2.jpg` replaces `<name>.jpg` at a new URL: /assets/ is served with a
+         one-year immutable cache, so a corrected photo must not reuse the old file name
+         or returning visitors keep the old picture. The version is stripped here (and
+         from the srcset stem below), so the site resolves it exactly as it resolved the
+         file it replaces — no other code has to know a photo was reshot. */
+      const key = m[1].toLowerCase().replace(/\.v\d+(?=(-(400|800))?$)/, "");
       if (/-(400|800)$/.test(key)) { WIDTHS[key] = `/assets/img/product/${f}`; continue; }
       PHOTOS[key] = `/assets/img/product/${f}`;
     }
@@ -312,7 +317,7 @@ const PHOTO_ALTS = {
 };
 export const photoAlt = (p, src) => {
   const jar = `Functional Elixirs ${p?.name || "Honey with Fresh Ginger"}${p?.size ? ` (${p.size})` : ""}`;
-  const stem = String(src || "").replace(/^.*\/(.*?)(-\d+)?\.[a-z]+$/i, "$1").toLowerCase();
+  const stem = String(src || "").replace(/^.*\/(.*?)(-\d+)?\.[a-z]+$/i, "$1").toLowerCase().replace(/\.v\d+$/, "");
   return `${jar} — ${PHOTO_ALTS[stem] || "glass jar with a bamboo lid"}`;
 };
 
@@ -326,7 +331,7 @@ export function art(variant, p, { alt, anim = false, className = "", slot, sizes
   if (src) {
     /* the illustration alts describe a drawn scene — describe the photograph instead */
     alt = photoAlt(p, src);
-    const stem = src.replace(/^.*\/(.*)\.[a-z]+$/i, "$1").toLowerCase();
+    const stem = src.replace(/^.*\/(.*)\.[a-z]+$/i, "$1").toLowerCase().replace(/\.v\d+$/, "");
     const set = [400, 800].filter((w) => WIDTHS[`${stem}-${w}`]).map((w) => `${WIDTHS[`${stem}-${w}`]} ${w}w`);
     set.push(`${src} 1000w`);
     /* sizes: cards sit in a 2/3/4-up grid, the hero is roughly half the page */

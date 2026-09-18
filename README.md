@@ -227,7 +227,9 @@ under `assets/img/` are what pages load:
 | `jar-on-marble.jpg` (+ `-640`) | 1:1, the square studio shot as supplied (jar on a marble plinth, ginger slices, dipper) | home "signature jar" section — original in `brand-source/photo-jar-on-marble-2026.jpg` |
 | `jar-in-grass-square.jpg` (+ `-640`) | 1:1, wider | home hero |
 | `about-family-archive.jpg` (+ `-720`) | the family album scan, whole, at its own ratio | About Us, with the caption "From the family album." — original in `brand-source/photo-family-archive.jpg` |
-| `product/hg-3-front.jpg` (+ `-400`, `-800`) | 4:5 cut from a square studio shot on beige | Travel Pack card and page (its label reads 15 oz; the original is `brand-source/photo-travel-pack-studio-2026.jpg`) |
+| `product/hg-3-front.v2.jpg` (+ `-400`, `-800`) | 4:5 cut from a square studio shot on beige | Travel Pack card and page — the 3 oz jar, labelled to match the listing (original in `brand-source/photo-travel-pack-3oz-2026.jpg`) |
+
+A `.v<N>` in a product photo's name is a **cache-busting version, not a variant**: `/assets/` is served with a one-year immutable cache, so a reshot photo needs a new file name or returning visitors keep the old one. `src/art.mjs` strips `.v<N>` when indexing, so `hg-3-front.v2.jpg` resolves exactly as `hg-3-front.jpg` did — reshoot again and it is `hg-3-front.v3.jpg`, with no other change anywhere.
 
 Every product variant (`front`, `open`, `cup`) resolves to `hg-15-hero.jpg`, so the product
 gallery shows one frame and no thumbnail strip. To add a second angle, drop `hg-15-front.jpg`

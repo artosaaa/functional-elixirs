@@ -24,12 +24,12 @@ export const PRODUCTS = [
   }),
   P({
     /* Sold out and listed on purpose — the shop shows it so people know it exists.
-       Its photograph is assets/img/product/hg-3-front.jpg, the studio shot on beige
-       supplied for this listing. The label in that shot reads 15 oz (425 g). */
+       Its photograph is assets/img/product/hg-3-front.v2.jpg, the studio shot on beige
+       supplied for this listing — the jar in it is the 3 oz one, labelled to match. */
     id: "hg-3", slug: "honey-with-fresh-ginger-travel-pack", sku: "FE-HG-03",
     name: "Travel Pack", sub: "3 oz (85 g) · fits a carry-on", label: ["HONEY", "with fresh", "GINGER"], size: "3 oz",
     price: 7.99, stock: 0, badge: "Sold out",
-    honey: "#7A3E0F", art: "front", thumb: "/assets/img/product/hg-3-front-400.jpg",
+    honey: "#7A3E0F", art: "front", thumb: "/assets/img/product/hg-3-front.v2-400.jpg",
     notes: ["Carry-on size", "One week", "Pocket-sized"],
     use: { spoon: "1 tsp", water: "8 oz warm", when: "On the road", also: "Hotel tea" },
     ingredients: BASE_INGREDIENTS, origin: "Blended and jarred in small batches in the USA",
