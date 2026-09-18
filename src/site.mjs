@@ -142,6 +142,14 @@ export const LINE = {
 /* ---------- Bee mark ----------
    Wings live on their own <g> so CSS can flutter them around the hinge at (32,20).
    Used as a static mark in the masthead, the CTA band and the recipe list. */
+/* bees() returns a decorative, pointer-events-none layer of bees that drift across a
+   section behind its content. Each bee gets its own lane (top), direction (from/to),
+   speed (dur), start offset (delay), size, tilt and bob. The CSS in section 23a does
+   the flying; reduced motion and the Reduce-motion switch hide the whole layer. */
+export const bees = (list) => `<div class="bees" aria-hidden="true">${list
+  .map((b) => `<span class="bee-drift" style="--top:${b.top};--from:${b.from};--to:${b.to};--dur:${b.dur}s;--delay:${b.delay}s;--size:${b.size}rem;--tilt:${b.tilt ?? 8}deg;--bob:${b.bob ?? 1.1}rem">${BEE_FLY}</span>`)
+  .join("")}</div>`;
+
 export const BEE_FLY = `<svg class="bee" viewBox="0 0 64 52" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">
   <g class="bee__wing bee__wing--l"><path d="M29 21c-7-9-17-12-21-7s2 12 13 12"/></g>
   <g class="bee__wing bee__wing--r"><path d="M35 21c7-9 17-12 21-7s-2 12-13 12"/></g>
