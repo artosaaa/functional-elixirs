@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Checkout | Functional Elixirs</title>
 <script>(function(){try{var m=matchMedia("(prefers-reduced-motion: reduce)").matches,o=JSON.parse(localStorage.getItem("sw_display")||"{}").motion,s=sessionStorage.getItem("sw_intro");if(!m&&!o&&!s){document.documentElement.setAttribute("data-intro","on");setTimeout(function(){var i=document.getElementById("intro");if(i)i.classList.add("intro--out")},3400)}}catch(e){}})()</script>
-<meta name="description" content="Secure checkout — card, Apple Pay, Google Pay or Link. Guest checkout with live shipping rates.">
+<meta name="description" content="Secure checkout — Apple Pay, Google Pay or card. Guest checkout with live shipping rates.">
 <link rel="canonical" href="https://functional-elixirs-iskakanmarketingvercel.vercel.app/checkout/">
 <meta name="robots" content="noindex, nofollow">
 <meta name="theme-color" content="#FFFFFF">
@@ -16,24 +16,23 @@
 <link rel="icon" href="/assets/img/favicon-32.png" sizes="32x32" type="image/png">
 <link rel="icon" href="/assets/img/favicon-64.png" sizes="64x64" type="image/png">
 <link rel="apple-touch-icon" href="/assets/img/apple-touch-icon.png">
-<link rel="preload" href="/assets/css/site.css?v=1c82c926" as="style">
-<link rel="stylesheet" href="/assets/css/site.css?v=1c82c926">
+<link rel="preload" href="/assets/css/site.css?v=b5e9d1f2" as="style">
+<link rel="stylesheet" href="/assets/css/site.css?v=b5e9d1f2">
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="Functional Elixirs">
 <meta property="og:locale" content="en_US">
 <meta property="og:title" content="Checkout | Functional Elixirs">
-<meta property="og:description" content="Secure checkout — card, Apple Pay, Google Pay or Link. Guest checkout with live shipping rates.">
+<meta property="og:description" content="Secure checkout — Apple Pay, Google Pay or card. Guest checkout with live shipping rates.">
 <meta property="og:url" content="https://functional-elixirs-iskakanmarketingvercel.vercel.app/checkout/">
 <meta property="og:image" content="https://functional-elixirs-iskakanmarketingvercel.vercel.app/assets/img/og-default.svg">
 <meta property="og:image:width" content="1200"><meta property="og:image:height" content="630">
-<meta property="og:image:alt" content="Secure checkout — card, Apple Pay, Google Pay or Link. Guest checkout with live shipping rates.">
+<meta property="og:image:alt" content="Secure checkout — Apple Pay, Google Pay or card. Guest checkout with live shipping rates.">
 
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="Checkout | Functional Elixirs">
-<meta name="twitter:description" content="Secure checkout — card, Apple Pay, Google Pay or Link. Guest checkout with live shipping rates.">
+<meta name="twitter:description" content="Secure checkout — Apple Pay, Google Pay or card. Guest checkout with live shipping rates.">
 <meta name="twitter:image" content="https://functional-elixirs-iskakanmarketingvercel.vercel.app/assets/img/og-default.svg">
 <script type="application/ld+json">[{"@context":"https://schema.org","@type":"Organization","@id":"https://functional-elixirs-iskakanmarketingvercel.vercel.app/#organization","name":"Functional Elixirs LLC","alternateName":"Functional Elixirs","url":"https://functional-elixirs-iskakanmarketingvercel.vercel.app","logo":"https://functional-elixirs-iskakanmarketingvercel.vercel.app/assets/img/logo.png","email":"info@functionalelixirs.com","foundingDate":"2023","slogan":"Nature’s Daily Elixir.","description":"Rich raw honey infused with real fresh ginger — two ingredients, one daily ritual, from our mother’s kitchen to yours.","address":{"@type":"PostalAddress","addressRegion":"CA","addressCountry":"US"},"sameAs":["https://instagram.com/functionalelixirs","https://facebook.com/functionalelixirs"],"contactPoint":[{"@type":"ContactPoint","contactType":"customer service","email":"info@functionalelixirs.com","availableLanguage":"English","hoursAvailable":"Mo-Fr 09:00-17:00"}]},{"@context":"https://schema.org","@type":"WebSite","@id":"https://functional-elixirs-iskakanmarketingvercel.vercel.app/#website","url":"https://functional-elixirs-iskakanmarketingvercel.vercel.app","name":"Functional Elixirs","publisher":{"@id":"https://functional-elixirs-iskakanmarketingvercel.vercel.app/#organization"}}]</script>
-<script src="https://js.stripe.com/v3/"></script>
 <script>window.__STRIPE_PK__=""</script>
 </head>
 <body class="">
@@ -78,8 +77,20 @@
 <div class="wrap page-head"><div class="steps" aria-label="Checkout progress"><span>Cart</span><span aria-current="step">Information &amp; payment</span><span>Confirmation</span></div><h1>Checkout</h1></div>
 <section class="section--tight"><div class="wrap">
   <div class="empty" data-checkout-empty hidden><p>Your cart is empty.</p><a class="btn btn--ghost btn--sm" href="/shop/">Shop the jar</a></div>
-  <div class="checkout">
+  <div class="checkout" data-checkout>
   <aside class="checkout__side summary"><h2>Order summary</h2><div data-summary-lines></div><form class="promo" data-promo-form novalidate><label class="sr-only" for="promo">Promo code</label><input class="input" id="promo" name="code" placeholder="Promo code" autocomplete="off"><button class="btn btn--soft" type="submit">Apply</button></form><p class="promo-msg" aria-live="polite"></p><div data-checkout-totals></div><p class="secure"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg> Payments encrypted end-to-end. We never store card numbers.</p></aside>
+  <div class="checkout__main">
+  <!-- One button: Apple Pay on a device that has it, Google Pay everywhere else.
+       The wallet sheet hands over the email and delivery address, so the form below
+       stays folded away. It opens on its own when this browser has no wallet, and on
+       request for anyone who would rather type a card. -->
+  <section class="co-wallet" data-co-wallet hidden>
+    <h2>Pay</h2>
+    <div class="wallet wallet--cart" data-wallet="cart"><div class="wallet__btn" data-wallet-btn></div><p class="wallet__msg" data-wallet-msg role="status" aria-live="polite"></p></div>
+    <p class="co-wallet__note small muted">Your wallet fills in your email and delivery address — nothing to type. By paying you agree to our <a href="/terms/">Terms</a> and <a href="/privacy/">Privacy Policy</a>.</p>
+    <button class="btn btn--link co-wallet__alt" type="button" data-card-open aria-controls="checkout-form" aria-expanded="false">Pay by card instead</button>
+    <p class="express__or co-wallet__or">or pay by card</p>
+  </section>
   <form id="checkout-form" class="form" novalidate>
     <section class="co-section">
       <div class="co-section__head"><h2>Contact</h2><p class="small muted">We’ll email your receipt and tracking here.</p></div>
@@ -104,14 +115,14 @@
       <p class="small muted">Live estimate for your ZIP. Free standard shipping on orders over $50. <a href="/shipping/">Shipping details</a></p>
     </section>
     <section class="co-section">
-      <h2>Payment</h2>
-      <!-- Stripe's Payment Element. Card, Apple Pay, Google Pay and Link render here
-           according to what is enabled in the Stripe dashboard and what the shopper's
-           browser supports. Card details live inside Stripe's iframe: they never touch
-           this page's DOM or our server, which is what keeps us in PCI SAQ-A. -->
+      <h2>Card</h2>
+      <!-- Stripe's Payment Element, card only — wallets have their own button above, and
+           nothing else the dashboard may have switched on (Klarna, Cash App, bank debit,
+           Link) is offered. Card details live inside Stripe's iframe: they never touch
+           this page's DOM or our server, which is what keeps us in PCI SAQ-A. The billing
+           address is the shipping address above; there is no separate one to ask for. -->
       <div id="payment-element" data-payment-element></div>
       <p class="field-note small muted" data-payment-status role="status" aria-live="polite">Loading secure payment…</p>
-      <label class="check"><input type="checkbox" name="billing_same" checked> Billing address same as shipping</label>
     </section>
     <section class="co-section">
       <div class="field"><label for="gift">Gift note <span class="muted">(optional — we never include prices)</span></label><textarea class="textarea" id="gift" name="gift" style="min-height:5rem"></textarea></div>
@@ -119,6 +130,7 @@
       <p class="small muted center">By placing your order you agree to our <a href="/terms/">Terms</a> and <a href="/privacy/">Privacy Policy</a>. Unopened jars are returnable for a full refund.</p>
     </section>
   </form>
+  </div>
   </div>
 </div></section>
 </main>
@@ -160,6 +172,6 @@
 <div class="cookie" id="cookie" role="region" aria-label="Cookie notice"><p>Essential cookies only, unless you say otherwise. <a href="/cookies/">Details</a></p><div class="cluster"><button class="btn btn--primary btn--sm" type="button" data-cookie="all">Accept all</button><button class="btn btn--ghost btn--sm" type="button" data-cookie="essential">Essential only</button></div></div>
 <script type="application/json" id="sw-catalog">{"hg-15":{"id":"hg-15","name":"Honey with Fresh Ginger","sub":"15 oz (425 g) glass jar","price":23.99,"stock":240,"url":"/shop/honey-with-fresh-ginger/","honey":"#7A3E0F","size":"15 oz","thumb":"/assets/img/product/hg-15-hero-400.jpg"},"hg-3":{"id":"hg-3","name":"Travel Pack","sub":"3 oz (85 g) · fits a carry-on","price":7.99,"stock":0,"url":"/shop/honey-with-fresh-ginger-travel-pack/","honey":"#7A3E0F","size":"3 oz","thumb":"/assets/img/product/hg-3-front.v2-400.jpg"}}</script>
 <script>window.__BRAND_EMAIL__="info@functionalelixirs.com"</script>
-<script src="/assets/js/site.js?v=93bce1c5" defer></script>
+<script src="/assets/js/site.js?v=aab84ce0" defer></script>
 </body>
 </html>

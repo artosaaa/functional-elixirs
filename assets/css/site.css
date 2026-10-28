@@ -1635,3 +1635,37 @@ html[data-intro="on"] .intro { display: grid; }
   .btn[data-add][data-added]::before { animation: ctaBurst .6s ease-out; }
   .btn[data-add][data-added], .btn[data-add][data-added]:hover { background-color: var(--sage-2); background-image: none; border-color: var(--sage-2); color: #fff; }
 }
+
+/* ==========================================================================
+   26. One wallet button
+   Apple Pay or Google Pay under each add-to-cart, laid over the "Buy it now" it
+   replaces: the two share one grid cell, so the page keeps its shape whether or not
+   a wallet turns up, and nothing jumps when it does. Stripe draws the button in its
+   own iframe — black, Apple's and Google's marks — and only the pill shape is ours.
+   ========================================================================== */
+.wallet { display: grid; margin-top: var(--s-3); }
+.wallet > .wallet__fallback, .wallet > .wallet__btn { grid-area: 1 / 1; }
+.wallet__btn { min-height: 48px; opacity: 0; visibility: hidden; transform: translateY(4px); transition: opacity .35s var(--ease), transform .35s var(--ease), visibility 0s linear .35s; }
+.wallet[data-ready] .wallet__btn { opacity: 1; visibility: visible; transform: none; transition-delay: 0s; }
+.wallet[data-ready] .wallet__fallback { visibility: hidden; }
+.wallet__msg { margin-top: var(--s-2); font-size: var(--fs-xs); line-height: 1.4; color: var(--error); }
+.wallet__msg:empty { display: none; }
+
+/* Home: the add button and the wallet stack as one column beside the story link */
+.mk-signature__buy { display: grid; width: min(100%, 21rem); }
+.mk-signature__buy > .btn { width: 100%; }
+
+/* Checkout: while the wallet is being looked for, a quiet pill holds its place */
+.wallet--cart { margin-top: 0; }
+.wallet--cart:not([data-ready])::before { content: ""; grid-area: 1 / 1; height: 48px; border-radius: var(--r-pill); background: linear-gradient(90deg, var(--cream-3) 25%, var(--cream-2) 50%, var(--cream-3) 75%); background-size: 200% 100%; animation: walletWait 1.4s linear infinite; }
+@keyframes walletWait { from { background-position: 100% 0; } to { background-position: -100% 0; } }
+.co-wallet { display: grid; gap: var(--s-4); padding-bottom: var(--s-6); }
+.co-wallet h2 { font-size: var(--fs-lg); }
+.co-wallet__note { margin: 0; }
+.co-wallet__note a { color: var(--navy); }
+.co-wallet__alt { justify-self: start; font-size: var(--fs-sm); }
+.co-wallet__or { display: none; }
+.checkout[data-pay="wait"] #checkout-form, .checkout[data-pay="wallet"] #checkout-form { display: none; }
+.checkout[data-pay="card"] .co-wallet__alt { display: none; }
+.checkout[data-pay="card"] .co-wallet__or { display: flex; margin-top: var(--s-3); }
+.pdp__actions .wallet { grid-column: 1 / -1; margin-top: 0; }

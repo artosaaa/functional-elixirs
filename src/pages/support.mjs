@@ -17,7 +17,7 @@ const FAQ = [
   ["Where is it made?", "Blended and jarred in small batches in the USA."],
   ["How fast will it ship?", `We pack and post within ${CFG.dispatchDays} business days, then standard US mail takes 2–7 business days depending on distance. Free over $${CFG.freeShipOver}. <a href="/shipping/">Rates and calculator</a>.`],
   ["Can I return it?", `An unopened jar, yes — any time, for a full refund, with return postage paid by you. An opened jar we can’t take back: honey is food. <a href="/returns/">Returns policy</a>.`],
-  ["Do you offer Apple Pay?", "Yes — Apple Pay, Google Pay and Shop Pay on the product page, in the cart and at checkout, plus all major cards. Guest checkout is always available."],
+  ["Do you offer Apple Pay?", "Yes — one tap, right under the add-to-cart button and at checkout: Apple Pay on iPhone and iPad and in Safari on a Mac, Google Pay everywhere else. Any major card works too, and guest checkout is always available."],
   ["Do you ship internationally?", "Not at the moment — we ship within the United States only."],
   ["Can I send it as a gift?", `Yes. Enter their address and add a note at checkout — we hand-write it and never include prices in the parcel.`],
   ["Is there a subscription?", "Not yet. Order another jar whenever you’re running low — that’s the low-tech version."],
@@ -115,7 +115,7 @@ const privacy = () => policy({
 <p>${BRAND.legal} (“we”) operates this website. Questions about this policy: <a href="mailto:${BRAND.email}">${BRAND.email}</a>.</p>
 <h2>What we collect</h2>
 <ul>
-<li><strong>Order information</strong> — name, shipping and billing address, email, phone (optional), and what you bought. Payment card details go directly to our payment processor (Stripe, Apple Pay, Google Pay or PayPal); we never see or store full card numbers.</li>
+<li><strong>Order information</strong> — name, shipping and billing address, email, phone (optional), and what you bought. Payment card details go directly to our payment processor (Stripe, through a card, Apple Pay or Google Pay); we never see or store full card numbers.</li>
 
 <li><strong>Messages</strong> — what you send us by email or the contact form.</li>
 <li><strong>Newsletter</strong> — your email, if you join.</li>
@@ -149,7 +149,7 @@ const terms = () => policy({
 <h2>1. Who’s agreeing</h2><p>These terms are between you and ${BRAND.legal}. By using the site or placing an order you accept them. If you don’t, please don’t use the site.</p>
 <h2>2. Products</h2><p>Our products are foods. Honey with Fresh Ginger contains honey and fresh ginger root and is not intended for infants under 12 months. Batches vary naturally in colour and taste; raw honey may crystallize. Nothing on this site is medical advice; statements about traditional use are not evaluated by the FDA and the product is not intended to diagnose, treat, cure or prevent any disease. If you have a medical condition or allergy, consult your clinician.</p>
 <h2>3. Orders &amp; pricing</h2><p>Prices are in US dollars and exclude shipping and any applicable sales tax, which are shown before you pay. We may correct pricing errors and will tell you before shipping; you can cancel for a full refund. An order is accepted when we email a shipping confirmation. We may decline or cancel orders that look fraudulent, exceed available stock, or are for resale without a wholesale agreement.</p>
-<h2>4. Payment</h2><p>We accept major cards, Apple Pay, Google Pay, Shop Pay and PayPal through PCI-compliant processors. You confirm you’re authorised to use the payment method.</p>
+<h2>4. Payment</h2><p>We accept major cards, Apple Pay and Google Pay through Stripe, a PCI-compliant processor. You confirm you’re authorised to use the payment method.</p>
 <h2>5. Shipping</h2><p>Per our <a href="/shipping/">Shipping &amp; delivery</a> page. Delivery windows are estimates. Risk of loss passes to you on delivery to the address you gave us; if something arrives damaged, see returns below.</p>
 <h2>6. Returns</h2><p>Per our <a href="/returns/">Returns &amp; exchanges</a> policy: unopened jars are returnable for a full refund with no time limit, return postage paid by you; opened jars are not returnable.</p>
 <h2>7. Promotions</h2><p>Promo codes are one per order, can’t be applied retroactively, and may be withdrawn at any time. Free-shipping thresholds are calculated on the subtotal after discounts.</p>
@@ -172,7 +172,7 @@ const cookies = () => policy({
 <h2>Analytics (only if you accept)</h2>
 <p>If you click “Accept all” we load a privacy-respecting analytics script to count visits and see which pages help. No cross-site tracking, no ad networks. Click “Essential only” and nothing loads.</p>
 <h2>Payment providers</h2>
-<p>When you pay, Stripe, Apple Pay, Google Pay or PayPal may set their own cookies for fraud prevention. Those are governed by their policies.</p>
+<p>When you pay, Stripe, Apple Pay or Google Pay may set their own cookies for fraud prevention. Those are governed by their policies.</p>
 <h2>Changing your mind</h2>
 <p>Clear this site’s data in your browser settings and the banner reappears. Or email <a href="mailto:${BRAND.email}">${BRAND.email}</a>. Browsers also let you block cookies entirely; the cart may not work if you do.</p>
 <p>More in the <a href="/privacy/">Privacy policy</a>.</p>`,

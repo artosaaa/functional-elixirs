@@ -78,13 +78,23 @@ export function productCard(p) {
     </div></article>`;
 }
 
-/* Stripe.js, loaded only on the two pages that talk to Stripe. The publishable key
-   is safe in the page by design — it can create payment methods and nothing else.
-   Without STRIPE_PUBLISHABLE_KEY set at build time the checkout tells the shopper
-   it is unavailable rather than pretending to take the order. */
+/* Stripe.js, loaded only on pages that take a payment: the checkout, the
+   confirmation, and every page with a wallet button under its add-to-cart. Async,
+   so a product page paints without waiting on it; site.js waits for it instead
+   (whenStripe), and the onerror flag tells it not to wait for a script a blocker
+   already killed. The publishable key is safe in the page by design — it can create
+   payment methods and nothing else. Without STRIPE_PUBLISHABLE_KEY set at build time
+   no script loads: wallet buttons stay hidden, "Buy it now" stays, and the checkout
+   says card payment is unavailable rather than pretending to take the order. */
 export const STRIPE_PK = process.env.STRIPE_PUBLISHABLE_KEY || "";
 export const stripeHead = () =>
-  `<script src="https://js.stripe.com/v3/"></script>\n<script>window.__STRIPE_PK__=${JSON.stringify(STRIPE_PK)}</script>`;
+  `${STRIPE_PK ? `<script id="stripe-js" src="https://js.stripe.com/v3/" async onerror="this.dataset.failed=1"></script>\n` : ""}<script>window.__STRIPE_PK__=${JSON.stringify(STRIPE_PK)}</script>`;
+/* The wallet slot under an add-to-cart button. "Buy it now" sits in it from the
+   start, so the page has the same shape with or without a wallet; site.js lays the
+   Apple Pay or Google Pay button over it once Stripe says one is available here. */
+export const walletSlot = (p, { label = "Buy it now" } = {}) => p.stock > 0
+  ? `<div class="wallet" data-wallet="${p.id}"><button class="btn btn--ghost btn--block wallet__fallback" type="button" data-buy-now="${p.id}">${label}</button><div class="wallet__btn" data-wallet-btn></div><p class="wallet__msg" data-wallet-msg role="status" aria-live="polite"></p></div>`
+  : "";
 export const faqList = (items) => `<div class="faq-list">${items.map(([q, a]) => `<details><summary>${esc(q)}</summary><div class="faq-a">${a}</div></details>`).join("")}</div>`;
 export const ctaBand = (h = "One jar lasts about six weeks. Start tomorrow morning.", p = `Honey with Fresh Ginger, 15 oz — ${money(HERO_PRICE)}. Free US shipping over $${CFG.freeShipOver}. An unopened jar is returnable for a full refund.`) => `<section class="section--tight"><div class="wrap"><div class="cta-band reveal"><div><h2>${h}</h2><p style="margin-top:.75rem">${p}</p></div><div class="cta-band__actions cluster"><a class="btn btn--on-dark" href="${HERO_URL}">Get the jar — ${money(HERO_PRICE)}</a><a class="btn btn--ghost" style="color:var(--cream);border-color:rgb(246 240 230 / .4)" href="/recipes/">Ways to use it</a></div></div></div></section>`;
 
