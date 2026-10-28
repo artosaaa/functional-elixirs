@@ -47,6 +47,22 @@
   const product = (id) => catalog[id];
   const uid = (p) => p + Date.now().toString(36).toUpperCase().slice(-6) + Math.random().toString(36).slice(2, 5).toUpperCase();
 
+  /* Stripe.js loads async (src/layout.mjs) so a product page paints without it. This
+     waits for it: one Stripe instance for the page, or null when there is no key, a
+     blocker killed the script, or it simply never arrived. */
+  let stripeP = null;
+  function whenStripe() {
+    return (stripeP ||= new Promise((done) => {
+      const pk = window.__STRIPE_PK__, tag = $("#stripe-js");
+      const make = () => { try { done(window.Stripe ? window.Stripe(pk) : null); } catch { done(null); } };
+      if (!pk || !tag || tag.dataset.failed) return done(null);
+      if (window.Stripe) return make();
+      tag.addEventListener("load", make, { once: true });
+      tag.addEventListener("error", () => done(null), { once: true });
+      setTimeout(make, 10000);
+    }));
+  }
+
   let toastTimer;
   function toast(msg) {
     let t = $("#toast");
@@ -134,6 +150,19 @@
     },
     daysLabel(d) { if (d[0] === 0) return "Today"; return d[0] === d[1] ? `${d[0]} business days` : `${d[0]}–${d[1]} business days`; },
   };
+
+  /* The sums src/commerce.mjs does, for any list of lines — the cart, or one jar
+     bought straight from its page. Rounded the way the server rounds, because the
+     wallet sheet shows this figure and the server's own has to come out the same. */
+  function priceOf(items, code) {
+    const r2 = (n) => Math.round(n * 100) / 100;
+    const sub = r2(items.reduce((s, i) => s + r2((product(i.id)?.price || 0) * i.qty), 0));
+    const rule = CFG.promos[code];
+    const disc = rule?.type === "pct" ? r2(Math.min(rule.max ?? Infinity, (sub * rule.value) / 100)) : rule?.type === "amt" ? Math.min(rule.value, sub) : 0;
+    const ship = sub >= CFG.freeShipOver || rule?.type === "ship" ? 0 : CFG.rates.standard.price;
+    const total = r2(r2(sub - disc) + ship);
+    return { sub, disc, ship, total, cents: Math.round(total * 100), code: rule ? code : null };
+  }
 
   /* Wishlist */
   const Wish = {
@@ -281,8 +310,8 @@
     if (t.dataset.add !== undefined) { const q = parseInt($("[data-qty-input]")?.value || "1", 10) || 1; Cart.add(t.dataset.add, q); t.setAttribute("data-added", ""); setTimeout(() => t.removeAttribute("data-added"), 900); }
     else if (t.dataset.buyNow !== undefined) {
       /* Buy now: add the jar (qty from the selector if present) and go straight to
-         checkout, where the Payment Element offers card and whichever wallets the
-         shopper's browser and our Stripe account both support. */
+         checkout. It is also what sits under add-to-cart when this browser has no
+         wallet — the wallet button covers it when there is one. */
       e.preventDefault(); const p = product(t.dataset.buyNow); if (!p || p.stock <= 0) return;
       const q = parseInt($("[data-qty-input]")?.value || "1", 10) || 1;
       const items = Cart.items(); const line = items.find((i) => i.id === p.id);
@@ -364,12 +393,143 @@
     });
   }
 
-  /* Checkout — Stripe Payment Element.
-     The amount shown here is only ever a preview. /api/create-payment-intent
-     recomputes the price from the catalog and that is what gets charged, so
-     nothing the browser says about money is trusted. */
+  /* Express pay — one Apple Pay or Google Pay button (Stripe's Express Checkout Element).
+     One wallet, never a row of them: Apple Pay where the device has it, Google Pay
+     everywhere else; Link, PayPal, Klarna and Amazon Pay are switched off. The sheet
+     collects the email and the delivery address, so a product page can take the whole
+     order without the checkout form. As with the card form, the amount is a preview:
+     the server prices the order again, and if its figure differs from the one the
+     sheet showed, the payment is refused rather than charged. */
+  const APPLE = (() => { try { return !!(window.ApplePaySession && ApplePaySession.canMakePayments()); } catch { return false; } })();
+  const WALLET_NAME = { apple_pay: "Apple Pay", google_pay: "Google Pay" };
+
+  /* A pending record keyed by the PaymentIntent, so /order-confirmation/ can render
+     the order after the redirect. Marked paid only once Stripe says it was. An order
+     taken from a product page leaves the cart alone (fromCart: false) — the cart may
+     hold something else entirely. */
+  function parkOrder(quote, { email, name, address: a = {}, method, fromCart }) {
+    const days = Ship.quote(a.country || "US", a.zip, quote.subtotal)[0].days;
+    Orders.add({
+      id: quote.order, intentId: quote.intentId, tracking: null, placed: Date.now(), method, fromCart,
+      email: email || "", name: (name || "").trim() || "Guest",
+      address: { line1: a.line1 || "", line2: a.line2 || "", city: a.city || "", state: a.state || "", zip: a.zip || "", country: a.country || "US" },
+      shipping: { name: CFG.rates.standard.name, days, price: quote.shipping },
+      items: quote.lines.map((l) => ({ id: l.id, qty: l.qty, name: l.name, price: l.unit })),
+      subtotal: quote.subtotal, discount: quote.discount, promo: quote.promo,
+      total: quote.total, status: "pending", guest: !Auth.user(),
+    });
+  }
+
+  const Express = {
+    /* Mount the button in one slot. `lines()` is what it buys, read again at every
+       tap so the quantity stepper and the cart are always current. Resolves to
+       { refresh } once mounted, or null when there is nothing to mount. */
+    async mount(slot, { lines, fromCart = false, onAvailable = () => {} }) {
+      const stripe = await whenStripe();
+      const box = slot && $("[data-wallet-btn]", slot), msg = slot && $("[data-wallet-msg]", slot);
+      if (!stripe || !box) { onAvailable(false); return null; }
+      const say = (t) => { if (msg) msg.textContent = t || ""; };
+      const sheet = () => {
+        const items = lines().filter((i) => product(i.id) && i.qty > 0);
+        const q = priceOf(items, Promo.get()?.code);
+        const days = Ship.quote("US", Ship.get().zip, q.sub)[0].days;
+        return {
+          items, q,
+          lineItems: [
+            ...items.map((i) => ({ name: `${product(i.id).name}${i.qty > 1 ? ` × ${i.qty}` : ""}`, amount: Math.round(product(i.id).price * i.qty * 100) })),
+            ...(q.disc ? [{ name: `Promo ${q.code}`, amount: -Math.round(q.disc * 100) }] : []),
+          ],
+          shippingRates: [{
+            id: "standard", amount: Math.round(q.ship * 100), displayName: q.ship ? "Standard shipping" : "Free standard shipping",
+            deliveryEstimate: { minimum: { unit: "business_day", value: days[0] }, maximum: { unit: "business_day", value: days[1] } },
+          }],
+        };
+      };
+      let s = sheet();
+      let elements, ece;
+      try {
+        elements = stripe.elements({ mode: "payment", amount: Math.max(50, s.q.cents), currency: "usd", allowedPaymentMethodTypes: ["card"], appearance: { variables: { borderRadius: "999px" } } });
+        ece = elements.create("expressCheckout", {
+          buttonHeight: 48,
+          buttonType: { applePay: "buy", googlePay: "buy" },
+          buttonTheme: { applePay: "black", googlePay: "black" },
+          paymentMethods: { applePay: APPLE ? "always" : "never", googlePay: APPLE ? "never" : "always", link: "never", paypal: "never", amazonPay: "never", klarna: "never" },
+          layout: { maxColumns: 1, maxRows: 1 },
+          emailRequired: true, shippingAddressRequired: true, allowedShippingCountries: ["US"],
+          lineItems: s.lineItems, shippingRates: s.shippingRates,
+        });
+      } catch { onAvailable(false); return null; }
+
+      /* Buttons appear a beat after mounting, or not at all. Only then does the slot
+         lay the wallet over "Buy it now" (or the checkout fold its card form away). */
+      let heard = false;
+      const shown = (pm) => { const ok = !!(pm && (pm.applePay || pm.googlePay)); slot.toggleAttribute("data-ready", ok); onAvailable(ok); };
+      ece.on("availablepaymentmethodschange", (e) => { heard = true; shown(e.paymentMethods); });
+      ece.on("ready", (e) => { if (!heard) shown(e.availablePaymentMethods); });
+      ece.on("loaderror", () => shown(null));
+
+      /* The tap. Read the stepper or the cart again and size the sheet to match. The
+         sheet must open within a second, so nothing here waits on the network. */
+      ece.on("click", (e) => {
+        say(""); s = sheet();
+        if (!s.items.length || s.q.cents < 50) { e.reject(); return; }
+        elements.update({ amount: s.q.cents });
+        e.resolve({ lineItems: s.lineItems, shippingRates: s.shippingRates });
+      });
+
+      ece.on("confirm", async (e) => {
+        /* Anything that goes wrong before Stripe is asked to charge goes back to the
+           sheet as a failure, so it closes saying so instead of spinning. */
+        const refuse = (text, reason = "fail") => { e.paymentFailed({ reason, message: text }); say(text); };
+        try {
+          const { error: invalid } = await elements.submit();
+          if (invalid) return refuse(invalid.message);
+          const to = e.shippingAddress || {}, a = to.address || {}, b = e.billingDetails || {};
+          const res = await fetch(U("/api/create-payment-intent"), {
+            method: "POST", headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              items: s.items.map((i) => ({ id: i.id, qty: i.qty })), promo: s.q.code,
+              email: b.email, first: to.name || b.name || "", last: "",
+              address: a.line1, address2: a.line2, city: a.city, state: a.state, zip: a.postal_code, country: a.country || "US",
+            }),
+          });
+          const quote = await res.json().catch(() => ({}));
+          if (!res.ok) return refuse(quote.error || "We couldn’t start the payment, so nothing was charged. Please try again.", /address/i.test(quote.error || "") ? "invalid_shipping_address" : "fail");
+          if (quote.amount !== s.q.cents) return refuse("The price changed while you were paying, so nothing was charged. Refresh the page and try again.");
+          parkOrder(quote, {
+            email: b.email, name: to.name || b.name, method: WALLET_NAME[e.expressPaymentType] || "Card", fromCart,
+            address: { line1: a.line1, line2: a.line2, city: a.city, state: a.state, zip: a.postal_code, country: a.country },
+          });
+          const { error } = await stripe.confirmPayment({ elements, clientSecret: quote.clientSecret, confirmParams: { return_url: `${location.origin}${U("/order-confirmation/")}` } });
+          /* Only returns on failure — success leaves for return_url. */
+          if (error) say(error.message || "That payment didn’t go through, so nothing was charged.");
+        } catch (err) { refuse(err?.message || "That payment didn’t go through, so nothing was charged."); }
+      });
+
+      ece.mount(box);
+      return { refresh() { s = sheet(); if (s.q.cents >= 50) try { elements.update({ amount: s.q.cents }); } catch { /* not mounted yet */ } } };
+    },
+  };
+
+  /* The wallet button under each add-to-cart: buys exactly that jar, in the quantity on
+     the stepper (capped at the 10 src/commerce.mjs allows), and leaves the cart alone. */
+  function initWallets() {
+    $$("[data-wallet]").forEach((slot) => {
+      const p = product(slot.dataset.wallet); if (!p || p.stock <= 0) return; // "cart" is the checkout's own
+      const qty = () => Math.max(1, Math.min(parseInt($("[data-qty-input]")?.value || "1", 10) || 1, p.stock, 10));
+      Express.mount(slot, { lines: () => [{ id: p.id, qty: qty() }] }).then((w) => {
+        if (w) ["input", "change"].forEach((t) => document.addEventListener(t, (e) => { if (e.target.matches?.("[data-qty-input]")) w.refresh(); }));
+      });
+    });
+  }
+
+  /* Checkout. The wallet button comes first; the card form under it opens on its own
+     when this browser has no wallet, or when the shopper asks for it. The amount shown
+     is only ever a preview: /api/create-payment-intent recomputes the price from the
+     catalog and that is what gets charged, so nothing the browser says about money is
+     trusted. */
   const Checkout = {
-    stripe: null, elements: null, _intentId: null,
+    stripe: null, elements: null, wallet: null, _intentId: null, _card: false,
 
     init() {
       const form = $("#checkout-form"); if (!form) return;
@@ -393,7 +553,22 @@
       if (!zip.value && Ship.get().zip) zip.value = Ship.get().zip;
       drawRates();
 
-      this.mountPayment();
+      /* Wait for the wallet, briefly. With one, the page is the summary and a single
+         button. Without one — no key, a blocker, a browser with no wallet — the card
+         form opens; six seconds is the longest anyone looks at the placeholder. */
+      const root = $("[data-checkout]"), box = $("[data-co-wallet]"), alt = $("[data-card-open]");
+      const mode = (m) => { root.dataset.pay = m; alt?.setAttribute("aria-expanded", String(m === "card")); if (m === "card") this.mountPayment(); };
+      mode("wait"); box.hidden = false;
+      const timer = setTimeout(() => { if (root.dataset.pay === "wait") { box.hidden = true; mode("card"); } }, 6000);
+      alt?.addEventListener("click", () => { mode("card"); $('[name="email"]', form)?.focus(); });
+      Express.mount($('[data-wallet="cart"]'), {
+        lines: () => Cart.items(), fromCart: true,
+        onAvailable: (ok) => {
+          clearTimeout(timer); box.hidden = !ok;
+          if (ok && root.dataset.pay === "wait") mode("wallet");
+          if (!ok && root.dataset.pay !== "card") mode("card");
+        },
+      }).then((w) => { this.wallet = w; });
 
       form.addEventListener("submit", (e) => { e.preventDefault(); this.pay(form); });
     },
@@ -406,27 +581,37 @@
 
     /* Deferred-intent Elements: the element is mounted against an amount, and the
        PaymentIntent itself is only created when the shopper actually submits. No
-       abandoned intents piling up in the dashboard for every visitor who looks. */
-    mountPayment() {
+       abandoned intents piling up in the dashboard for every visitor who looks.
+       Mounted only once the card form is actually opened. */
+    async mountPayment() {
+      if (this._card) return; this._card = true;
       const mount = $("[data-payment-element]"); if (!mount) return;
-      const pk = window.__STRIPE_PK__;
-      if (!window.Stripe || !pk) {
+      const stripe = await whenStripe();
+      if (!stripe) {
         this.status(`Card payment isn’t available on this page right now. Email ${CONTACT} and we’ll take your order by hand.`, true);
         $('#checkout-form [type="submit"]').disabled = true;
         return;
       }
       try {
-        this.stripe = Stripe(pk);
-        this.elements = this.stripe.elements({
+        this.stripe = stripe;
+        this.elements = stripe.elements({
           mode: "payment",
           amount: Math.max(50, Math.round((this._total ?? Cart.subtotal()) * 100)),
           currency: "usd",
+          allowedPaymentMethodTypes: ["card"],
+          /* The site's own fields, as near as an iframe allows: the system sans, cream
+             inputs with linen borders, navy focus ring, the same rounded corners. */
           appearance: {
-            theme: "flat",
-            variables: { colorPrimary: "#7A3E0F", colorBackground: "#ffffff", colorText: "#2b2620", colorDanger: "#a2361f", fontFamily: "Georgia, 'Times New Roman', serif", borderRadius: "2px", spacingUnit: "4px" },
+            theme: "stripe",
+            variables: { colorPrimary: "#1D2B33", colorBackground: "#FBF7F0", colorText: "#241F1A", colorTextSecondary: "#5C534B", colorTextPlaceholder: "#857A70", colorDanger: "#9B3B2C", fontFamily: '-apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", Inter, Roboto, "Helvetica Neue", Arial, sans-serif', fontSizeBase: "16px", borderRadius: "18px", spacingUnit: "4px" },
+            rules: {
+              ".Input": { border: "1px solid #E4D9C7", boxShadow: "none", padding: "13px 15px" },
+              ".Input:focus": { borderColor: "#1D2B33", boxShadow: "0 0 0 3px rgba(29, 43, 51, .12)" },
+              ".Label": { fontWeight: "500", color: "#152128" },
+            },
           },
         });
-        const pe = this.elements.create("payment", { layout: "tabs", fields: { billingDetails: { address: "never", name: "auto", email: "never" } } });
+        const pe = this.elements.create("payment", { layout: "tabs", wallets: { applePay: "never", googlePay: "never" }, fields: { billingDetails: { address: "never", name: "auto", email: "never" } } });
         pe.on("ready", () => this.status(""));
         pe.on("loaderror", () => this.status("Payment couldn’t load. Refresh the page, or email us and we’ll take the order by hand.", true));
         pe.mount(mount);
@@ -443,9 +628,10 @@
       box.innerHTML = totalsHTML({ ship });
       const total = sub + (ship?.price || 0); $$("[data-total]").forEach((el) => (el.textContent = money(total)));
       this._total = total; this._ship = ship;
-      /* Keep the element's idea of the amount in step with the summary, or Stripe
+      /* Keep both elements' idea of the amount in step with the summary, or Stripe
          refuses the confirmation with a mismatch. */
       try { this.elements?.update({ amount: Math.max(50, Math.round(total * 100)) }); } catch { /* element not mounted yet */ }
+      this.wallet?.refresh();
     },
 
     async pay(form) {
@@ -502,18 +688,11 @@
       }
     },
 
-    /* A pending record keyed by the PaymentIntent, so /order-confirmation/ can render
-       the order after the redirect. Marked paid only once Stripe says it was. */
     park(form, quote) {
-      const fd = new FormData(form); const s = Ship.get();
-      Orders.add({
-        id: quote.order, intentId: quote.intentId, tracking: null, placed: Date.now(), method: "Card",
-        email: fd.get("email") || "", name: `${fd.get("first") || ""} ${fd.get("last") || ""}`.trim() || "Guest",
-        address: { line1: fd.get("address") || "", line2: fd.get("address2") || "", city: fd.get("city") || "", state: fd.get("state") || "", zip: fd.get("zip") || s.zip, country: fd.get("country") || s.country },
-        shipping: { ...(this.quote() || { name: "Standard", days: [4, 7] }), price: quote.shipping },
-        items: quote.lines.map((l) => ({ id: l.id, qty: l.qty, name: l.name, price: l.unit })),
-        subtotal: quote.subtotal, discount: quote.discount, promo: quote.promo,
-        total: quote.total, status: "pending", guest: !Auth.user(),
+      const fd = new FormData(form); const sh = Ship.get();
+      parkOrder(quote, {
+        email: fd.get("email"), name: `${fd.get("first") || ""} ${fd.get("last") || ""}`, method: "Card", fromCart: true,
+        address: { line1: fd.get("address"), line2: fd.get("address2"), city: fd.get("city"), state: fd.get("state"), zip: fd.get("zip") || sh.zip, country: fd.get("country") || sh.country },
       });
     },
   };
@@ -531,12 +710,15 @@
     const lost = (msg) => { box.innerHTML = `<div class="empty"><p>${esc(msg)}</p><a class="btn btn--ghost btn--sm" href="${U('/contact/')}">Contact us</a></div>`; };
 
     let status = null;
-    if (secret && window.Stripe && window.__STRIPE_PK__) {
+    if (secret) {
       box.innerHTML = `<div class="empty"><p>Confirming your payment…</p></div>`;
-      try {
-        const { paymentIntent } = await Stripe(window.__STRIPE_PK__).retrievePaymentIntent(secret);
-        status = paymentIntent?.status || null;
-      } catch { status = null; }
+      const stripe = await whenStripe();
+      if (stripe) {
+        try {
+          const { paymentIntent } = await stripe.retrievePaymentIntent(secret);
+          status = paymentIntent?.status || null;
+        } catch { status = null; }
+      }
     }
 
     /* Send the receipts from here rather than waiting on the Stripe webhook, which
@@ -573,7 +755,8 @@
     if (status === "succeeded" && o.status !== "confirmed") {
       o.status = "confirmed";
       store.set(Orders.key, Orders.all().map((x) => (x.id === o.id ? o : x)));
-      Cart.clear(); Promo.clear();
+      /* A wallet order from a product page bought that jar alone; the cart is untouched. */
+      if (o.fromCart !== false) { Cart.clear(); Promo.clear(); } else if (o.promo) Promo.clear();
     }
 
     const eta = new Date(o.placed + ((o.shipping?.days?.[1] ?? 7) + 1) * 864e5).toLocaleDateString("en-US", { weekday: "long", month: "long", day: "numeric" });
@@ -839,7 +1022,7 @@
   /* ---------- 8. Boot ---------- */
   document.addEventListener("DOMContentLoaded", () => {
     initIntro(); Drawer.init(); render(); markNav();
-    initPDP(); initDeskbar(); initCapture(); initShipCalc(); Checkout.init(); initConfirmation(); initTrack(); initContact(); initCookie(); initDisplayOptions(); initReveal();
+    initPDP(); initWallets(); initDeskbar(); initCapture(); initShipCalc(); Checkout.init(); initConfirmation(); initTrack(); initContact(); initCookie(); initDisplayOptions(); initReveal();
     window.addEventListener("storage", (e) => { if (e.key?.startsWith("sw_")) render(); }); // multi-tab sync
   });
 

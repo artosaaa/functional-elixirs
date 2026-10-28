@@ -76,17 +76,24 @@ export async function POST(request) {
 
   try {
     /* A checkout recalculates as the shopper types their ZIP. Reuse the intent it
-       already has rather than leaving a trail of abandoned ones in the dashboard. */
+       already has rather than leaving a trail of abandoned ones in the dashboard —
+       but only a card-only one: an intent made before checkout went card-only still
+       carries every method the dashboard had on, and the browser would refuse it. */
     const existing = str(body.intentId, 80);
     let intent;
     if (/^pi_[A-Za-z0-9_]+$/.test(existing)) {
       const current = await stripe(`/payment_intents/${existing}`);
-      if (current.status === "requires_payment_method" || current.status === "requires_confirmation") {
+      const cardOnly = current.payment_method_types?.length === 1 && current.payment_method_types[0] === "card";
+      if (cardOnly && (current.status === "requires_payment_method" || current.status === "requires_confirmation")) {
         intent = await stripe(`/payment_intents/${existing}`, payload);
       }
     }
     if (!intent) {
-      intent = await stripe("/payment_intents", { ...payload, automatic_payment_methods: { enabled: true } });
+      /* Card only. Apple Pay and Google Pay are cards as far as Stripe is concerned,
+         so this is what lets the wallet button work — and what keeps Klarna, Cash App,
+         Amazon Pay, bank debits and Link out of the checkout, whatever the dashboard
+         has switched on. The browser asks for the same list, and the two must match. */
+      intent = await stripe("/payment_intents", { ...payload, payment_method_types: ["card"] });
     }
     return json({
       clientSecret: intent.client_secret,

@@ -1,6 +1,6 @@
 /* Home · Shop · Product (all SKUs) · Collections · Cart · Checkout · Confirmation · Track */
 import { BEE, BEE_FLY, bees, LINE } from "../site.mjs";
-import { page, jsonld, breadcrumbs, productCard, stripeHead, faqList, ctaBand, stars, ICONS, esc, money, BRAND, CFG, abs, HERO_URL, valueBullets, guaranteeBlock, REVIEWS_VERIFIED } from "../layout.mjs";
+import { page, jsonld, breadcrumbs, productCard, stripeHead, walletSlot, faqList, ctaBand, stars, ICONS, esc, money, BRAND, CFG, abs, HERO_URL, valueBullets, guaranteeBlock, REVIEWS_VERIFIED } from "../layout.mjs";
 import { PRODUCTS, HERO, byId } from "../products.mjs";
 import { art, altFor, photo, photoAlt, resolvedPhoto } from "../art.mjs";
 import { existsSync } from "node:fs";
@@ -81,7 +81,7 @@ function home() {
     <span class="mk-rule" aria-hidden="true"></span>
     <p class="mk-price"><span class="mk-price__num">${money(p.price)}</span><span class="mk-price__sub">${esc(p.sub)}</span></p>
     <div class="mk-signature__acts">
-      <button class="btn btn--gold" type="button" data-add="${p.id}">Add to cart</button>
+      <div class="mk-signature__buy"><button class="btn btn--gold" type="button" data-add="${p.id}">Add to cart</button>${walletSlot(p)}</div>
       <a class="btn btn--link" href="${p.url}">Read the full story</a>
     </div>
     <p class="mk-signature__note">${ICONS.truck} Free US shipping over $${CFG.freeShipOver}</p>
@@ -104,7 +104,7 @@ function home() {
 </div></div></section>
 
 <section class="mk-trust"><div class="wrap mk-trust__in">${trust.map(([ic, t]) => `<span>${ic}${t}</span>`).join("")}</div></section>`;
-  return { path: "/", html: page({ title: `${BRAND.name} — Honey + Fresh Ginger | Nature’s Daily Elixir`, description: "A wholesome blend of raw honey and real fresh ginger, crafted from family tradition. Nature’s Daily Elixir — a 15 oz jar made in small batches in the USA.", path: "/", body, jsonld: [jsonld.product(p)] }) };
+  return { path: "/", html: page({ title: `${BRAND.name} — Honey + Fresh Ginger | Nature’s Daily Elixir`, description: "A wholesome blend of raw honey and real fresh ginger, crafted from family tradition. Nature’s Daily Elixir — a 15 oz jar made in small batches in the USA.", path: "/", body, jsonld: [jsonld.product(p)], extraHead: stripeHead() }) };
 }
 
 /* ---------------- SHOP ---------------- */
@@ -132,6 +132,7 @@ ${single ? `<section class="section--tight shop-single-sec">${bees([
       <div class="qty" role="group" aria-label="Quantity"><button type="button" data-dec aria-label="Decrease quantity">−</button><input type="number" data-qty-input inputmode="numeric" min="1" max="${Math.max(1, p.stock)}" value="1" aria-label="Quantity"></div>
       <button class="btn btn--gold" type="button" data-add="${p.id}">Add to cart — ${money(p.price)}</button>
     </div>
+    ${walletSlot(p)}
     <p class="shop-single__more"><a href="${p.url}">Ingredients, storage and the full story <span class="arrow" aria-hidden="true">→</span></a></p>
     <div class="shop-single__promise">
       <div>${ICONS.truck}<span>Free US shipping over $${CFG.freeShipOver}</span></div>
@@ -143,7 +144,7 @@ ${soldOut.length ? `<section class="section--tight"><div class="wrap">
   <div class="products products--few">${soldOut.map(productCard).join("")}</div>
 </div></section>` : ""}
 `;
-  return { path: "/shop/", html: page({ title: "Shop Honey with Fresh Ginger — 15 oz Jar", description: "Shop Functional Elixirs Honey with Fresh Ginger: the 15 oz signature jar, $23.99. Raw honey and fresh ginger root, nothing else. Free US shipping over $50.", path: "/shop/", body, breadcrumbs: [{ name: "Shop", href: "/shop/" }] }) };
+  return { path: "/shop/", html: page({ title: "Shop Honey with Fresh Ginger — 15 oz Jar", description: "Shop Functional Elixirs Honey with Fresh Ginger: the 15 oz signature jar, $23.99. Raw honey and fresh ginger root, nothing else. Free US shipping over $50.", path: "/shop/", body, breadcrumbs: [{ name: "Shop", href: "/shop/" }], extraHead: single ? stripeHead() : "" }) };
 }
 
 /* ---------------- PRODUCT ---------------- */
@@ -181,15 +182,12 @@ function product(p) {
     <div class="pdp__actions" data-buy-anchor>
       <div class="qty" role="group" aria-label="Quantity"><button type="button" data-dec aria-label="Decrease quantity">−</button><input type="number" data-qty-input inputmode="numeric" min="1" max="${Math.max(1, p.stock)}" value="1" aria-label="Quantity"></div>
       <button class="btn btn--primary btn--block" type="button" data-add="${p.id}" style="min-height:3.25rem">Add to cart — ${money(p.price)}</button>
+      ${walletSlot(p)}
     </div>
     <div class="objections">
       <p><strong>Worried it’s too hot?</strong> It’s honey first. The ginger arrives after, as warmth rather than heat.</p>
       <p><strong>How long does it last?</strong> ${esc(p.lasts)}</p>
       <p><strong>What if I change my mind?</strong> Send the jar back unopened and we’ll refund it in full — there’s no deadline. Return postage is yours. Once a jar is opened we can’t take it back: honey is food.</p>
-    </div>
-    <div class="express">
-      <button class="btn btn--ghost btn--block" type="button" data-buy-now="${p.id}">Buy it now</button>
-      <p class="express__or">Card, Apple&nbsp;Pay, Google&nbsp;Pay and Link at checkout</p>
     </div>
     <div class="ship-snippet">
       <div>${ICONS.truck}<span><strong data-ship-estimate="${p.id}">Arrives in 3–5 business days</strong> · Free shipping over $${CFG.freeShipOver} · <a href="/shipping/">Rates &amp; calculator</a></span></div>
@@ -233,7 +231,7 @@ function product(p) {
   </div>
 </div></div>
 <div class="buybar" id="buybar"><div class="buybar__info"><strong>${esc(p.name)}</strong><span>${esc(p.size)} · ${money(p.price)}</span></div><div class="cluster" style="flex-wrap:nowrap"><button class="btn btn--ghost btn--sm" type="button" data-buy-now="${p.id}">Buy now</button><button class="btn btn--primary btn--sm" type="button" data-add="${p.id}">Add</button></div></div>`;
-  return { path: p.url, html: page({ title: `${p.name} — ${p.sub} | ${money(p.price)}`, description: `${p.short} ${p.size}, ${money(p.price)}. Free US shipping over $${CFG.freeShipOver}. Apple Pay checkout.`, path: p.url, body, type: "product", image: abs(`/assets/img/og-${p.slug}.svg`), jsonld: [jsonld.product(p), jsonld.faq(faq)], breadcrumbs: [{ name: "Shop", href: "/shop/" }, { name: p.name, href: p.url }] }) };
+  return { path: p.url, html: page({ title: `${p.name} — ${p.sub} | ${money(p.price)}`, description: `${p.short} ${p.size}, ${money(p.price)}. Free US shipping over $${CFG.freeShipOver}. Apple Pay checkout.`, path: p.url, body, type: "product", image: abs(`/assets/img/og-${p.slug}.svg`), jsonld: [jsonld.product(p), jsonld.faq(faq)], breadcrumbs: [{ name: "Shop", href: "/shop/" }, { name: p.name, href: p.url }], extraHead: p.stock > 0 ? stripeHead() : "" }) };
 }
 
 /* ---------------- CART ---------------- */
@@ -267,8 +265,20 @@ function checkout() {
 <div class="wrap page-head"><div class="steps" aria-label="Checkout progress"><span>Cart</span><span aria-current="step">Information &amp; payment</span><span>Confirmation</span></div><h1>Checkout</h1></div>
 <section class="section--tight"><div class="wrap">
   <div class="empty" data-checkout-empty hidden><p>Your cart is empty.</p><a class="btn btn--ghost btn--sm" href="/shop/">Shop the jar</a></div>
-  <div class="checkout">
+  <div class="checkout" data-checkout>
   <aside class="checkout__side summary"><h2>Order summary</h2><div data-summary-lines></div>${promoForm()}<div data-checkout-totals></div><p class="secure">${ICONS.lock} Payments encrypted end-to-end. We never store card numbers.</p></aside>
+  <div class="checkout__main">
+  <!-- One button: Apple Pay on a device that has it, Google Pay everywhere else.
+       The wallet sheet hands over the email and delivery address, so the form below
+       stays folded away. It opens on its own when this browser has no wallet, and on
+       request for anyone who would rather type a card. -->
+  <section class="co-wallet" data-co-wallet hidden>
+    <h2>Pay</h2>
+    <div class="wallet wallet--cart" data-wallet="cart"><div class="wallet__btn" data-wallet-btn></div><p class="wallet__msg" data-wallet-msg role="status" aria-live="polite"></p></div>
+    <p class="co-wallet__note small muted">Your wallet fills in your email and delivery address — nothing to type. By paying you agree to our <a href="/terms/">Terms</a> and <a href="/privacy/">Privacy Policy</a>.</p>
+    <button class="btn btn--link co-wallet__alt" type="button" data-card-open aria-controls="checkout-form" aria-expanded="false">Pay by card instead</button>
+    <p class="express__or co-wallet__or">or pay by card</p>
+  </section>
   <form id="checkout-form" class="form" novalidate>
     <section class="co-section">
       <div class="co-section__head"><h2>Contact</h2><p class="small muted">We’ll email your receipt and tracking here.</p></div>
@@ -293,14 +303,14 @@ function checkout() {
       <p class="small muted">Live estimate for your ZIP. Free standard shipping on orders over $${CFG.freeShipOver}. <a href="/shipping/">Shipping details</a></p>
     </section>
     <section class="co-section">
-      <h2>Payment</h2>
-      <!-- Stripe's Payment Element. Card, Apple Pay, Google Pay and Link render here
-           according to what is enabled in the Stripe dashboard and what the shopper's
-           browser supports. Card details live inside Stripe's iframe: they never touch
-           this page's DOM or our server, which is what keeps us in PCI SAQ-A. -->
+      <h2>Card</h2>
+      <!-- Stripe's Payment Element, card only — wallets have their own button above, and
+           nothing else the dashboard may have switched on (Klarna, Cash App, bank debit,
+           Link) is offered. Card details live inside Stripe's iframe: they never touch
+           this page's DOM or our server, which is what keeps us in PCI SAQ-A. The billing
+           address is the shipping address above; there is no separate one to ask for. -->
       <div id="payment-element" data-payment-element></div>
       <p class="field-note small muted" data-payment-status role="status" aria-live="polite">Loading secure payment…</p>
-      <label class="check"><input type="checkbox" name="billing_same" checked> Billing address same as shipping</label>
     </section>
     <section class="co-section">
       <div class="field"><label for="gift">Gift note <span class="muted">(optional — we never include prices)</span></label><textarea class="textarea" id="gift" name="gift" style="min-height:5rem"></textarea></div>
@@ -309,8 +319,9 @@ function checkout() {
     </section>
   </form>
   </div>
+  </div>
 </div></section>`;
-  return { path: "/checkout/", html: page({ title: "Checkout", description: "Secure checkout — card, Apple Pay, Google Pay or Link. Guest checkout with live shipping rates.", path: "/checkout/", body, noindex: true, extraHead: stripeHead() }) };
+  return { path: "/checkout/", html: page({ title: "Checkout", description: "Secure checkout — Apple Pay, Google Pay or card. Guest checkout with live shipping rates.", path: "/checkout/", body, noindex: true, extraHead: stripeHead() }) };
 }
 
 function confirmation() {
