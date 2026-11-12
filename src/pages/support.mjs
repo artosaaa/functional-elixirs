@@ -37,8 +37,6 @@ function contact() {
 <section class="section--tight"><div class="wrap contact-grid">
   <div>
     <div class="contact-card"><strong>Email</strong><a href="mailto:${BRAND.email}">${BRAND.email}</a><span class="muted small">Orders, wholesale, press, and recipe ideas — all welcome.</span></div>
-    <div class="contact-card"><strong>Order help</strong><span class="small">Have your order number (FE-XXXXXX) handy. Or <a href="/track-order/">track it yourself</a>.</span></div>
-    <div class="contact-card"><strong>Social</strong><span class="small"><a href="${BRAND.social.instagram}" rel="noopener">Instagram</a> · <a href="${BRAND.social.facebook}" rel="noopener">Facebook</a></span></div>
   </div>
   <form id="contact-form" class="form-card form" novalidate>
     <div class="field-row"><div class="field"><label for="c-name">Name</label><input class="input" id="c-name" name="name" autocomplete="name" required><p class="error">Please enter your name.</p></div><div class="field"><label for="c-email">Email</label><input class="input" id="c-email" name="email" type="email" autocomplete="email" required><p class="error">Enter a valid email.</p></div></div>

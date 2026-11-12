@@ -128,7 +128,6 @@ export const stars = (n = 5) => `<span class="stars" aria-hidden="true">${ICONS.
 
 /* ---------- Line icons for the mockup home page (64-unit grid, stroke = currentColor) ---------- */
 const L = (d, extra = "") => `<svg viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false" ${extra}>${d}</svg>`;
-export const BEE = L('<ellipse cx="32" cy="40" rx="11" ry="15"/><path d="M22 35h20M21 41h22M23 47h18M32 55v4"/><circle cx="32" cy="20" r="6"/><path d="M29 15l-4-7M35 15l4-7"/><path d="M21 33c-9-4-16-2-17 3s6 9 16 5M43 33c9-4 16-2 17 3s-6 9-16 5"/>');
 export const LINE = {
   leaf: L('<path d="M52 12C30 12 14 26 14 48c22 0 38-14 38-36z"/><path d="M14 48c8-12 18-22 30-30"/>'),
   honeycomb: L('<path d="M32 6l10 6v12l-10 6-10-6V12z"/><path d="M20 26l10 6v12l-10 6-10-6V32z"/><path d="M44 26l10 6v12l-10 6-10-6V32z"/>'),
@@ -136,26 +135,7 @@ export const LINE = {
   no: L('<circle cx="32" cy="32" r="20"/><path d="M18 18l28 28"/><path d="M24 40c4-8 8-12 16-16"/>'),
   jar: L('<path d="M20 18h24v4a4 4 0 0 1-4 4H24a4 4 0 0 1-4-4z"/><path d="M18 26h28l2 26a4 4 0 0 1-4 4H20a4 4 0 0 1-4-4z"/><path d="M22 36h20"/>'),
   drop: L('<path d="M32 8c-10 14-16 22-16 30a16 16 0 0 0 32 0c0-8-6-16-16-30z"/><path d="M24 40a8 8 0 0 0 6 8"/>'),
+  sun: L('<circle cx="32" cy="32" r="10"/><path d="M32 8v8M32 48v8M8 32h8M48 32h8M15 15l6 6M43 43l6 6M15 49l6-6M43 21l6-6"/>'),
   heart: L('<path d="M32 54S8 40 8 24a12 12 0 0 1 24-4 12 12 0 0 1 24 4c0 16-24 30-24 30z"/>'),
 };
-
-/* ---------- Bee mark ----------
-   Wings live on their own <g> so CSS can flutter them around the hinge at (32,20).
-   Used as a static mark in the masthead, the CTA band and the recipe list. */
-/* bees() returns a decorative, pointer-events-none layer of bees that drift across a
-   section behind its content. Each bee gets its own lane (top), direction (from/to),
-   speed (dur), start offset (delay), size, tilt and bob. The CSS in section 23a does
-   the flying; reduced motion and the Reduce-motion switch hide the whole layer. */
-export const bees = (list) => `<div class="bees" aria-hidden="true">${list
-  .map((b) => `<span class="bee-drift" style="--top:${b.top};--from:${b.from};--to:${b.to};--dur:${b.dur}s;--delay:${b.delay}s;--size:${b.size}rem;--tilt:${b.tilt ?? 8}deg;--bob:${b.bob ?? 1.1}rem">${BEE_FLY}</span>`)
-  .join("")}</div>`;
-
-export const BEE_FLY = `<svg class="bee" viewBox="0 0 64 52" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">
-  <g class="bee__wing bee__wing--l"><path d="M29 21c-7-9-17-12-21-7s2 12 13 12"/></g>
-  <g class="bee__wing bee__wing--r"><path d="M35 21c7-9 17-12 21-7s-2 12-13 12"/></g>
-  <ellipse cx="32" cy="30" rx="9" ry="12"/>
-  <path d="M24 26h16M23.5 32h17M25.5 38h13"/>
-  <circle cx="32" cy="13" r="5"/>
-  <path d="M29 9l-3-5M35 9l3-5"/>
-</svg>`;
 

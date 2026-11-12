@@ -1,5 +1,4 @@
 /* Our story · Ingredients & sourcing · Gift guide */
-import { BEE, BEE_FLY, bees } from "../site.mjs";
 import { page, jsonld, breadcrumbs, productCard, faqList, ctaBand, ICONS, esc, money, BRAND, CFG, HERO_URL } from "../layout.mjs";
 import { HERO } from "../products.mjs";
 import { art, altFor, photo } from "../art.mjs";
@@ -8,15 +7,13 @@ const head = (crumb, eyebrow, h1, lede, center = false) => `${breadcrumbs([{ nam
 
 function story() {
   const path = "/about-us/";
-  /* The family photograph the page was built around: two children at the edge of a
-     fountain, from the album. Shown at its own aspect ratio with its caption; the
-     original scan is kept in brand-source/photo-family-archive.jpg. */
+  /* Our mom, drawn holding the jar — the page is her story. The drawing is on white,
+     like this section, so it sits on the page unframed and fades out at the hem.
+     The layered original was supplied as MomSketch.psd; its flattened copy is
+     brand-source/sketch-mom-2026.png. */
   const body = `${breadcrumbs([{ name: "About us", href: path }])}
-<section class="about-hero">${bees([
-  { top: "16%", from: "104vw", to: "-8vw", dur: 48, delay: 2, size: 1.15, tilt: -8, bob: 1.2 },
-  { top: "72%", from: "-10vw", to: "106vw", dur: 62, delay: 19, size: 0.9, tilt: 6, bob: 1 },
-])}<div class="wrap about-hero__in about-hero__in--story">
-  <figure class="about-hero__photo about-hero__photo--archive reveal"><img src="/assets/img/about-family-archive.jpg" srcset="/assets/img/about-family-archive-720.jpg 720w, /assets/img/about-family-archive.jpg 1200w" sizes="(min-width: 56em) 32rem, 100vw" alt="A photograph from the family album: two children in striped shirts and white dungarees standing at the edge of a large fountain, statues and jets of water behind them" width="1200" height="1888" fetchpriority="high" decoding="async"><figcaption>From the family album.</figcaption></figure>
+<section class="about-hero"><div class="wrap about-hero__in about-hero__in--story">
+  <figure class="about-hero__photo about-hero__photo--sketch reveal"><img src="/assets/img/about-mom-sketch.jpg" srcset="/assets/img/about-mom-sketch-480.jpg 480w, /assets/img/about-mom-sketch.jpg 750w" sizes="(min-width: 56em) 26rem, 80vw" alt="A drawing of our mom in a dark apron and a string of pearls, holding a jar in both hands" width="750" height="1050" fetchpriority="high" decoding="async"></figure>
   <div class="about-hero__copy reveal">
     <p class="mk-eyebrow">Our story</p>
     <h1 class="mk-h1 mk-h1--page">It started<br>with our mom.</h1>
@@ -30,7 +27,6 @@ function story() {
 </div></section>
 
 <section class="stripes stripes--band"><div class="wrap"><div class="mk-band reveal">
-  <span class="mk-band__bee" aria-hidden="true">${BEE_FLY}</span>
   <div class="mk-band__text"><h2 class="mk-h3">From our mother’s recipe to your daily ritual</h2><p>Functional Elixirs — Nature’s Daily Elixir.</p></div>
   <a class="btn btn--gold" href="/shop/">Shop now</a>
 </div></div></section>`;
