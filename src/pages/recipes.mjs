@@ -1,6 +1,6 @@
 /* Recipes — built from the brand's own "How to enjoy it" notes. Scoop. Stir. Sip. */
 import { page, breadcrumbs, jsonld, esc, HERO_URL, BRAND, ICONS } from "../layout.mjs";
-import { LINE, BEE, BEE_FLY, bees } from "../site.mjs";
+import { LINE } from "../site.mjs";
 import { readdirSync, readFileSync } from "node:fs";
 
 /* Hero photography for the top of this page. The row renders only for the files
@@ -103,7 +103,7 @@ const RECIPES = [
     lede: "Bright enough for greens, warm enough for grain bowls.",
     you: ["1 tbsp Honey with Fresh Ginger", "2 tbsp olive oil", "1 tbsp lemon juice or apple cider vinegar", "Pinch of salt"],
     steps: ["Shake everything in a jar with a lid.", "Taste and balance — more lemon for sharpness, more honey for warmth.", "Keeps in the fridge for a week."] },
-  { id: "evening-ritual", icon: BEE, when: "Evening", time: "3 minutes", title: "The Evening Ritual",
+  { id: "evening-ritual", icon: ICONS.moon, when: "Evening", time: "3 minutes", title: "The Evening Ritual",
     lede: "Something warm and caffeine-free to close the day.",
     you: ["1 tsp Honey with Fresh Ginger", "1 mug warm milk, oat milk or chamomile tea"],
     steps: ["Warm the milk or brew the chamomile.", "Stir in the honey-ginger.", "Sip slowly, lights low."] },
@@ -125,10 +125,7 @@ const card = (r) => `<article class="recipe reveal" id="${r.id}">
 function recipes() {
   const path = "/recipes/";
   const body = `${breadcrumbs([{ name: "Recipes", href: path }])}
-<section class="rcp-head-sec">${bees([
-  { top: "20%", from: "-8vw", to: "104vw", dur: 40, delay: 1, size: 1.25, tilt: 9, bob: 1.3 },
-  { top: "66%", from: "106vw", to: "-10vw", dur: 56, delay: 13, size: 0.95, tilt: -7, bob: 1 },
-])}<div class="wrap page-head page-head--center">
+<section class="rcp-head-sec"><div class="wrap page-head page-head--center">
   <p class="mk-eyebrow">Recipes</p>
   <h1 class="mk-h1 mk-h1--page">Scoop. Stir. Sip.</h1>
   <span class="mk-rule mk-rule--center" aria-hidden="true"></span>
@@ -137,7 +134,6 @@ function recipes() {
 ${heroStrip()}
 <div class="wrap"><div class="recipes">${RECIPES.map(card).join("")}</div></div>
 <section class="stripes stripes--band"><div class="wrap"><div class="mk-band reveal">
-  <span class="mk-band__bee" aria-hidden="true">${BEE_FLY}</span>
   <div class="mk-band__text"><h2 class="mk-h3">Every recipe starts with the jar</h2><p>Honey with Fresh Ginger, 15 oz — crafted from family tradition.</p></div>
   <a class="btn btn--gold" href="${HERO_URL}">Shop now</a>
 </div></div></section>`;

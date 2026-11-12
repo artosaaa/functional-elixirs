@@ -1,5 +1,5 @@
 /* Page shell: <head> with SEO + JSON-LD, header, footer, cart drawer, cookie notice, runtime catalog */
-import { BRAND, CFG, NAV, FOOTER, SITE_URL, HERO_URL, esc, money, abs, ICONS, stars, logoMark, LOGO_SRC, BEE_FLY, REVIEWS_VERIFIED } from "./site.mjs";
+import { BRAND, CFG, NAV, FOOTER, SITE_URL, HERO_URL, esc, money, abs, ICONS, stars, logoMark, LOGO_SRC, REVIEWS_VERIFIED } from "./site.mjs";
 import { PRODUCTS, catalogJSON } from "./products.mjs";
 const HERO_PRICE = PRODUCTS[0].price;
 import { readFileSync } from "node:fs";
@@ -48,7 +48,7 @@ const doptOpt = (key, name, desc) => `<label class="dopt__opt"><span class="dopt
 const A11Y_ICON = '<svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><circle cx="12" cy="4.2" r="1.9"/><path d="M4.2 8.1h15.6M12 8.6v6.2M12 14.8l-3.1 5.6M12 14.8l3.1 5.6"/></svg>';
 
 /* The brand intro: a curtain over the first page of a visit — plaque, name, rule,
-   tagline, a bee crossing, then it lifts to show the page already rendered beneath.
+   tagline, then it lifts to show the page already rendered beneath.
    It is in every page's markup but displayed only when the inline script in <head>
    sets html[data-intro="on"]: once per session, never under reduced motion or the
    Reduce-motion switch, and never without JavaScript. site.js schedules the exit. */
@@ -58,7 +58,6 @@ const intro = () => `<div class="intro" id="intro" aria-hidden="true">
     <span class="intro__name"><span>Functional</span><span>Elixirs</span></span>
     <span class="intro__rule"></span>
     <span class="intro__tag">Nature’s Daily Elixir</span>
-    <span class="intro__bee">${BEE_FLY}</span>
   </div>
 </div>`;
 /* Decides before first paint whether the intro shows, so a returning visitor never sees
@@ -157,7 +156,7 @@ function footer() {
         ${doptOpt("contrast", "Higher contrast", "Near-black text and stronger lines throughout.")}
         ${doptOpt("spacing", "Wider text spacing", "More room between letters, words and lines.")}
         ${doptOpt("links", "Underline links", "Every link underlined, not only when hovered.")}
-        ${doptOpt("motion", "Reduce motion", "Stops the bees, the reveals and every other animation.")}
+        ${doptOpt("motion", "Reduce motion", "Stops the reveals and every other animation.")}
       </div>
       <div class="dopt__foot"><button class="dopt__reset" type="button" data-dopt-reset>Reset to defaults</button><a href="/accessibility/">Accessibility statement</a></div>
     </div>
